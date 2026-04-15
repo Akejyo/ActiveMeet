@@ -1,34 +1,26 @@
-import express from 'express';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { engine } from 'express-handlebars';
-import routes from './routes/index.js';
-
+import express from "express";
 const app = express();
-const PORT = process.env.PORT || 3000;
+import constructorMethod from "./routes/index.js";
+import exphbs from "express-handlebars";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const rewriteUnsupportedBrowserMethods = (req, res, next) => {
+  if (req.body && req.body._method) {
+    req.method = req.body._method;
+    delete req.body._method;
+  }
+  next();
+};
 
-app.engine(
-  'handlebars',
-  engine({
-    defaultLayout: 'main',
-    helpers: {
-      eq: (a, b) => a === b
-    }
-  })
-);
-
-app.set('view engine', 'handlebars');
-app.set('views', path.join(__dirname, 'views'));
-
-app.use(express.urlencoded({ extended: true }));
+app.use("/public", express.static("public"));
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.urlencoded({ extended: true }));
+app.use(rewriteUnsupportedBrowserMethods);
+app.engine("handlebars", exphbs.engine({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
+constructorMethod(app);
 
-app.use('/', routes);
 
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+app.listen(3000, () => {
+  console.log("We've now got a server!");
+  console.log("Your routes will be running on http://localhost:3000");
 });
