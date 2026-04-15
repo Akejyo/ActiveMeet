@@ -1,0 +1,49 @@
+<section class="card">
+  <h1>Edit Profile</h1>
+  <p class="muted">Update your profile information and preferences.</p>
+
+  <form class="form fake-form">
+    <div class="grid-2">
+      <label>Full Name
+        <input type="text" value="{{user.name}}" />
+      </label>
+
+      <label>Username
+        <input type="text" value="{{user.username}}" />
+      </label>
+    </div>
+
+    <div class="grid-2">
+      <label>City
+        <input type="text" value="New York" />
+      </label>
+
+      <label>State
+        <input type="text" value="NY" />
+      </label>
+    </div>
+
+    <label>Bio
+      <textarea rows="4">{{user.bio}}</textarea>
+    </label>
+
+    <div class="grid-2">
+      <label>Skill Level
+        <select>
+          <option {{#if (eq user.skill "Beginner")}}selected{{/if}}>Beginner</option>
+          <option {{#if (eq user.skill "Intermediate")}}selected{{/if}}>Intermediate</option>
+          <option {{#if (eq user.skill "Advanced")}}selected{{/if}}>Advanced</option>
+        </select>
+      </label>
+
+      <label>Attended Events Visibility
+        <select>
+          <option selected>Public</option>
+          <option>Private</option>
+        </select>
+      </label>
+    </div>
+
+    <button type="submit" class="btn">Save Profile</button>
+  </form>
+</section>

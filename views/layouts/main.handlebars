@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ActiveMeet - {{title}}</title>
+  <link rel="stylesheet" href="/css/main.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav">
+      <a href="/" class="logo">ActiveMeet</a>
+      <nav class="nav-links">
+        <a href="/">Home</a>
+        <a href="/posts/create">Create Post</a>
+        <a href="/following">Following</a>
+        <a href="/profile">Profile</a>
+        <a href="/report">Report</a>
+        <a href="/login" class="btn btn-outline small">Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page container">
+    {{{body}}}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© 2026 ActiveMeet — Connect through sports.</p>
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

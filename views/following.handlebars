@@ -1,0 +1,16 @@
+<section>
+  <h1>Following</h1>
+  <p class="muted">People you follow and whose posts affect your recommendations.</p>
+
+  <div class="list">
+    {{#each following}}
+      <div class="card list-item">
+        <div>
+          <h3>{{name}}</h3>
+          <p class="muted">Main activity: {{sport}}</p>
+        </div>
+        <button class="btn btn-outline small">{{status}}</button>
+      </div>
+    {{/each}}
+  </div>
+</section>

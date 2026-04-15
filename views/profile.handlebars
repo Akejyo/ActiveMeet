@@ -1,0 +1,50 @@
+<section class="card profile-header">
+  <div>
+    <h1>{{user.name}}</h1>
+    <p class="muted">{{user.username}} · {{user.city}}</p>
+    <p>{{user.bio}}</p>
+  </div>
+
+  <div class="profile-stats">
+    <div><strong>{{user.followers}}</strong><span>Followers</span></div>
+    <div><strong>{{user.following}}</strong><span>Following</span></div>
+    <div><strong>{{user.skill}}</strong><span>Level</span></div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Interests</h2>
+  <div class="chips">
+    {{#each user.interests}}
+      <span class="chip">{{this}}</span>
+    {{/each}}
+  </div>
+</section>
+
+<section class="card">
+  <h2>Badges</h2>
+  <div class="chips">
+    {{#each user.badges}}
+      <span class="chip badge">{{this}}</span>
+    {{/each}}
+  </div>
+</section>
+
+<section>
+  <div class="section-title">
+    <h2>Your Posts</h2>
+    <a href="/profile/edit" class="btn small">Edit Profile</a>
+  </div>
+
+  <div class="post-list">
+    {{#each posts}}
+      <article class="card post-card">
+        <span class="tag">{{sport}}</span>
+        <h3>{{title}}</h3>
+        <p class="muted">{{location}} · {{date}}</p>
+        <p>{{description}}</p>
+        <a href="/posts/{{id}}" class="btn small">Open</a>
+      </article>
+    {{/each}}
+  </div>
+</section>

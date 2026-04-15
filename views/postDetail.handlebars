@@ -1,0 +1,41 @@
+<section class="card">
+  <div class="post-top">
+    <span class="tag">{{post.sport}}</span>
+    <span class="muted">{{post.date}} · {{post.time}}</span>
+  </div>
+
+  <h1>{{post.title}}</h1>
+  <p class="muted">By {{post.author}} · {{post.location}}</p>
+  <p>{{post.description}}</p>
+
+  <div class="meta-row">
+    <span>Skill: {{post.skill}}</span>
+    <span>Age: {{post.ageRange}}</span>
+    <span>{{post.gender}}</span>
+  </div>
+
+  <div class="action-row">
+    <button class="btn">Request to Join</button>
+    <button class="btn btn-outline">Like</button>
+    <a href="/posts/1/edit" class="btn btn-outline">Edit</a>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Comments</h2>
+  <div class="comment-list">
+    {{#each comments}}
+      <div class="comment">
+        <strong>{{user}}</strong>
+        <p>{{content}}</p>
+      </div>
+    {{/each}}
+  </div>
+
+  <form class="form fake-form">
+    <label>Add a comment
+      <textarea rows="3" placeholder="Write your comment..."></textarea>
+    </label>
+    <button type="submit" class="btn small">Post Comment</button>
+  </form>
+</section>
