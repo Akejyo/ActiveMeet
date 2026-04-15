@@ -1,5 +1,6 @@
+/* TODO: Modify CSS */
 :root {
-  --bg: #0f172a;
+  --bg: #0b1220;
   --panel: #111827;
   --panel-2: #1f2937;
   --text: #f8fafc;
@@ -18,7 +19,7 @@
 body {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
-  background: linear-gradient(180deg, #0b1220 0%, #111827 100%);
+  background: var(--bg);
   color: var(--text);
 }
 

@@ -2,7 +2,7 @@ import express from 'express';
 const router = express.Router();
 
 //* Temporary data
-import { sampleUser } from './sampleData.js';
+import { sampleUser, samplePosts } from './sampleData.js';
 
 router.get('/', (req, res) => {
   res.render('profile/profile', {
@@ -15,7 +15,10 @@ router.get('/', (req, res) => {
 router.get('/edit', (req, res) => {
   res.render('profile/profileEdit', {
     title: 'Edit Profile',
-    user: sampleUser
+    user: sampleUser,
+    isBeginner: sampleUser.skill === 'Beginner',
+    isIntermediate: sampleUser.skill === 'Intermediate',
+    isAdvanced: sampleUser.skill === 'Advanced'
   });
 });
 

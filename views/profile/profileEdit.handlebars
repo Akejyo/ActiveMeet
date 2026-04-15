@@ -30,9 +30,9 @@
     <div class="grid-2">
       <label>Skill Level
         <select>
-          <option {{#if (eq user.skill "Beginner")}}selected{{/if}}>Beginner</option>
-          <option {{#if (eq user.skill "Intermediate")}}selected{{/if}}>Intermediate</option>
-          <option {{#if (eq user.skill "Advanced")}}selected{{/if}}>Advanced</option>
+          <option {{#if isBeginner}}selected{{/if}}>Beginner</option>
+          <option {{#if isIntermediate}}selected{{/if}}>Intermediate</option>
+          <option {{#if isAdvanced}}selected{{/if}}>Advanced</option>
         </select>
       </label>
 
