@@ -15,5 +15,5 @@ const getCollectionFn = (collection) => {
 
 export const users = getCollectionFn('users');
 export const posts = getCollectionFn('posts');
-export const JoinRequests = getCollectionFn('JoinRequests');
-export const Reports = getCollectionFn('Reports');
+export const joinRequests = getCollectionFn('joinRequests');
+export const reports = getCollectionFn('reports');
