@@ -52,7 +52,7 @@ export async function checkEmail(email){
     let userCollection = await users() //Unique email for login
     email = email.toLowerCase()
     let ue = await userCollection.findOne({email: email})
-    if (ue) throw "Email is already in use"
+    if (ue) throw "Email already exists"
     return email
 }
 
@@ -61,7 +61,7 @@ export function checkCity(city){
     if (typeof(city) != 'string') throw "City needs to be a string"
     city = city.trim()
     if (city.length < 1 || city.length > 45) throw "Length of city needs to be between 1 and 45" //shortest city name in US is 1 char and largest is 45 chars
-    let accept1 = /^[a-zA-Z]+$/
+    let accept1 = /^[a-zA-Z\s]+$/
     if (!accept1.test(city)) throw "Invalid character in city, can only contain letters"
     return city
 }
@@ -103,7 +103,7 @@ export function checkAge(age){
 export function checkGender(gen){
     if(!gen) throw "No gender was provided"
     if (typeof(gen) != 'string') throw "gender needs to be a string"
-    gender = ['male', 'female']
+    let gender = ['male', 'female']
     gen = gen.trim()
     gen = gen.toLowerCase()
     if (!gender.includes(gen)) throw "Please only type male or female"
@@ -131,6 +131,39 @@ export function checkSportInterests(spIntr){ //array
 
 export function checkPassword(pwd){
     //TODO what will be the min for password
+    if (!pwd) throw "No password provided"
+    if (typeof(pwd) != 'string') throw "Password has to be a string"
+    pwd = pwd.trim()
+    if (pwd.length < 8) throw "Password has to be at least 8 characters long"
+    //further chesks TODO (special char, uppercase, lowercase, number, etc.)
+    let upercase  = false
+    let num = false
+    let special = false
+    for (let c of pwd){
+        if (c === " ") {
+            throw "password can not have spaces"
+        } else if ( c.charCodeAt() >= 65 && c.charCodeAt() <= 90) {
+            upercase = true
+        } else if ( c.charCodeAt() >= 97 && c.charCodeAt() <= 122){
+
+        } else if (c.charCodeAt() >= 48 && c.charCodeAt() <= 57) {
+            num = true
+        } else {
+            special = true
+        }
+    }
+    if (!(upercase && num && special)) throw "Password must have at least one Uppercase letter, one number and one special character"
+    return pwd
+}
+
+export function checkSkillLevel(sk){
+    if(!sk) throw "No skill level provided"
+    if (typeof(sk) != 'string') throw "Skill level has to be a string"
+    sk = sk.trim()
+    let skillLevels = ['beginner', 'intermediate', 'advanced']
+    sk = sk.toLowerCase()
+    if (!skillLevels.includes(sk)) throw "Invalid skill level provided (beginner, intermediate, advanced)"
+    return sk
 }
 
 export function checkVisibility(vis){
@@ -143,13 +176,21 @@ export function checkVisibility(vis){
 
 //TODO validate posts fields
 
+export async function checkAuthorId(authorId){
+    authorId = checkId(authorId)
+    let users1 = await users()
+    let found = await users1.findOne({_id: new ObjectId(authorId)})
+    if (!found) throw "There is no user with that id"
+    return authorId
+}
+
 export function checkSport(sport){ //single sport
     if(!sport) throw "No sport was provided"
     if(typeof(sport) != 'string') throw "Sport has to be a string"
     sport = sport.trim()
     let sports = ['basketball', 'soccer', 'tennis', 'baseball', 'volleyball', 
         'football', 'hockey', 'golf', 'swimming', 'running', 'badminton', 'bowling',
-        'archery', 'cycling', 'boxing', 'cricket', 'darts', 'gymnastics', 'gym'] //could add more
+        'archery', 'cycling', 'boxing', 'cricket', 'darts', 'gymnastics', 'gym', 'hiking'] //could add more
     sport = sport.toLowerCase()
     if (!sports.includes(sport)) throw "Invalid sport provided"
     return sport
@@ -160,8 +201,8 @@ export function checkTitle(title){
     if(typeof(title) != 'string') throw "Title has to be a string"
     title = title.trim()
     if(title.length < 3 || title.length > 20) throw "Title has to be between 3 and 20 characters"
-    let accept1 = /^[a-zA-Z]+$/
-    if (!accept1.test(title)) throw "Invalid character in title, can only contain letters"
+    let accept1 = /^[a-zA-Z/s ]+$/
+    if (!accept1.test(title)) throw "Invalid character in title, can only contain letters and spaces"
     return title
 }
 
@@ -176,7 +217,7 @@ export function checkDescription(desc){
 
 export function checkDateAndTime(dateAndTime){
     if(!dateAndTime) throw "No date and time provided"
-    if (typeof(dateAndTime) != 'date') throw "Date and time has to be a date object"
+    if (!(dateAndTime instanceof Date)) throw "Date and time has to be a date object"
     if (dateAndTime < new Date()) throw "Date and time has to be in the future"
     return dateAndTime
 }
@@ -215,9 +256,9 @@ export function checkSkillLevelRestriction(sk){
     if(!sk) throw "No skill level restriction provided"
     if (typeof(sk) != 'string') throw "Skill level restriction has to be a string"
     sk = sk.trim()
-    let skillLevels = ['beginner', 'intermediate', 'advanced']
+    let skillLevels = ['beginner', 'intermediate', 'advanced', 'all levels']
     sk = sk.toLowerCase()
-    if (!skillLevels.includes(sk)) throw "Invalid skill level restriction provided (beginner, intermediate, advanced)"
+    if (!skillLevels.includes(sk)) throw "Invalid skill level restriction provided (beginner, intermediate, advanced, all levels)"
     return sk
 }
 
@@ -231,18 +272,26 @@ export function checkGenderRestriction(gr){
     return gr
 }
 
-export function checkLocation(locObj){
-    //TODO what does this look like?
+export function checkLocation(locObj){ //Works for string now, could change to be object
+    if(!locObj) throw "No location provided"
+    if (typeof(locObj) != 'string') throw "Location has to be a string"
+    locObj = locObj.trim()
+    if (locObj.length < 5 || locObj.length > 100) throw "Location has to be between 5 and 100 characters"
+    return locObj
 } 
 
 export function checkComments(cmm){ //array
     if (!cmm) throw "No comments provided"
     if (!Array.isArray(cmm)) throw "Comments has to be an array"
     for (let i = 0; i < cmm.length; i++) {
-        if (typeof(cmm[i]) != 'string') throw "Each comment has to be a string"
-        cmm[i] = cmm[i].trim()
-        if (cmm[i].length < 1) throw "Comments can't be empty"
-        if (cmm[i].length > 300) throw "Comments can't be longer than 300 characters"
+        if (!Object.isObject(cmm[i])) throw "Each comment has to be an object" //{user: 'name', content; 'string comment'
+        if (!cmm[i].user || !cmm[i].content) throw "Each comment has to have user and content"
+        if (Object.keys(cmm[i]).length != 2) throw "Each comment can only have user and content fields"
+        if (typeof(cmm[i].user) != 'string' || typeof(cmm[i].content) != 'string') throw "User and content of each comment has to be a string"
+        cmm[i].user = cmm[i].user.trim()
+        cmm[i].content = cmm[i].content.trim()
+        if (cmm[i].user.length < 2 || cmm[i].user.length > 50) throw "User of each comment has to be between 2 and 50 characters"
+        if (cmm[i].content.length < 2 || cmm[i].content.length > 300) throw "Content of each comment has to be between 2 and 300 characters"
     }
     return cmm
 }
@@ -267,6 +316,14 @@ export function checkStatusJoin(st){ //pending, accepted, denied
     st = st.toLowerCase()
     if (!status.includes(st)) throw "Invalid status provided (pending, accepted, denied)"
     return st
+}
+
+export async function checkPostId(postId){
+    postId = checkId(postId)
+    let posts1 = await posts()
+    let found = await posts1.findOne({_id: new ObjectId(postId)})
+    if (!found) throw "There is no post with that id"
+    return postId
 }
 
 export function checkMessage(mss){ //optional message
