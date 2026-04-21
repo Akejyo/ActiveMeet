@@ -280,6 +280,14 @@ export function checkLocation(locObj){ //Works for string now, could change to b
     return locObj
 } 
 
+export function checkComment(comment){
+    if (!comment) throw "No comment provided"
+    if (typeof(comment) != 'string') throw "Comment has to be a string"
+    comment = comment.trim()
+    if (comment.length < 2 || comment.length > 300) throw "Comment has to be between 2 and 300 characters"
+    return comment
+}
+
 export function checkComments(cmm){ //array
     if (!cmm) throw "No comments provided"
     if (!Array.isArray(cmm)) throw "Comments has to be an array"
@@ -370,3 +378,5 @@ export function checkNotes(nt){
     if (nt.length > 300) throw "Please keep notes under 300 characters"
     return nt
 }
+
+//TODO add key word search for inaproproate content

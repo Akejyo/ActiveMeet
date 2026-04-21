@@ -1,7 +1,8 @@
 //TODO functions to add, delete, ... from database
 
 import { posts, reports } from "../config/mongoCollections.js";
-import {chechAuthorId, checkPostId, checkReason} from "../helpers.js";
+import { ObjectId } from "mongodb";
+import {checkAuthorId, checkPostId, checkReason} from "../helpers.js";
 
 export async function createReport(reporterId, reportedPostId, reason){
     reporterId = await checkAuthorId(reporterId)
