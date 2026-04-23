@@ -342,7 +342,21 @@ export function checkMessage(mss){ //optional message
     return mss
 }
 
+export async function checkCommentId(commentId){
+    commentId = checkId(commentId);
+    let postsCollection = await posts();
+    let comment = await postsCollection.findOne({"comments.commentsId": new ObjectId(commentId)});
+    if(!found) throw "Error: No comment found with that id";
+    return commentId;
+}
 //TODO validate report fields
+export function checkStatus(status){
+    if(!status || typeof status !== "string") throw "Error: Invalid status";
+    status = status.trim().toLowerCase();
+    const validStatus = ["open", "full", "closed", "cancelled"];
+    if(!validStatus.includes(status)) throw "Error: Invalid status";
+    return status;
+}
 
 export function checkReason(reas){
     if (!reas) throw "No reason provided"
