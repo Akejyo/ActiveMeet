@@ -4,7 +4,7 @@ import { posts } from "../config/mongoCollections.js";
 import { checkAuthorId, checkTitle, checkSport, checkDescription, checkDateAndTime,
     checkMaxParticipants, checkAgeRestrictions, checkSkillLevelRestriction, 
     checkGenderRestriction, checkLocation, checkComment, checkPostId, checkCommentId,
-    checkStatus
+    checkStatusPosts
 } from "../helpers.js";
 import { ObjectId } from "mongodb";
 
@@ -63,7 +63,7 @@ const exportedMethods ={
     async addComment(postId, authorId, comment){
         postId = await checkPostId(postId)
         authorId = await checkAuthorId(authorId)
-        comment = await checkComment(comment)
+        comment = checkComment(comment)
         let posts1 = await posts()
         let updateRes = await posts1.updateOne({_id: new ObjectId(postId)}, {$push: {comments: 
             {
@@ -81,8 +81,14 @@ const exportedMethods ={
         postId = await checkPostId(postId);
         commentId = await checkCommentId(commentId);
         const postsCollection = await posts();
-        const update = await postsCollection.updateOne({_id: new ObjectId(postId)}, 
-        {$pull: {comments: {commentId: new ObjectId(commentId)}}});
+        const update = await postsCollection.updateOne(
+            {_id: new ObjectId(postId)}, 
+            {
+                $pull: {
+                    comments: {commentId: new ObjectId(commentId)}
+                }
+            }
+        );
         if(!update.acknowledged || update.modifiedCount === 0) throw "Error: Could not remove comment";
         return await this.getPostById(postId);
     },
@@ -98,7 +104,7 @@ const exportedMethods ={
         skillLevelRestriction = checkSkillLevelRestriction(skillLevelRestriction);
         genderRestriction = checkGenderRestriction(genderRestriction);
         location = checkLocation(location);
-        status = checkStatus(status);
+        status = checkStatusPosts(status);
 
         const updateObj = {
             title,
@@ -123,7 +129,7 @@ const exportedMethods ={
     },
     // Removes post by postId (Finds and deleted post by postId)
     async removePost(postId){
-        postId = checkPostId(postId);
+        postId = await checkPostId(postId);
         const postsCollection = await posts();
         const remove = await postsCollection.findOneAndDelete(
             {_id: new ObjectId(postId)}
@@ -134,7 +140,7 @@ const exportedMethods ={
     // Likes post (stores userId in likedBy object attribute of post object)
     async likePost(postId, userId){
         postId = await checkPostId(postId);
-        userId = await checkUserId(userId);
+        userId = await checkAuthorId(userId);
         const postsCollection = await posts();
 
         const update = await postsCollection.updateOne(
@@ -150,7 +156,7 @@ const exportedMethods ={
     // Dislikes post
     async dislikePost(postId, userId){
         postId = await checkPostId(postId);
-        userId = await checkUserId(userId);
+        userId = await checkAuthorId(userId);
         const postsCollection = await posts();
         const update = await postsCollection.updateOne(
             {_id: new ObjectId(postId)},
@@ -159,6 +165,8 @@ const exportedMethods ={
                 $addToSet: {dislikedBy: userId} 
             }
         );
+        if(!update.acknowledged || update.matchedCount === 0) throw "Error: Could not dislike post";
+        return await this.getPostById(postId);
     }
 };
 

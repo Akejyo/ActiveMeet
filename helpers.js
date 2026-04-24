@@ -201,7 +201,7 @@ export function checkTitle(title){
     if(typeof(title) != 'string') throw "Title has to be a string"
     title = title.trim()
     if(title.length < 3 || title.length > 20) throw "Title has to be between 3 and 20 characters"
-    let accept1 = /^[a-zA-Z/s ]+$/
+    let accept1 = /^[a-zA-Z\s]+$/
     if (!accept1.test(title)) throw "Invalid character in title, can only contain letters and spaces"
     return title
 }
@@ -292,7 +292,7 @@ export function checkComments(cmm){ //array
     if (!cmm) throw "No comments provided"
     if (!Array.isArray(cmm)) throw "Comments has to be an array"
     for (let i = 0; i < cmm.length; i++) {
-        if (!Object.isObject(cmm[i])) throw "Each comment has to be an object" //{user: 'name', content; 'string comment'
+        if (typeof(cmm[i]) !== "object" || Array.isArray(cmm[i])) throw "Each comment has to be an object" //{user: 'name', content; 'string comment'
         if (!cmm[i].user || !cmm[i].content) throw "Each comment has to have user and content"
         if (Object.keys(cmm[i]).length != 2) throw "Each comment can only have user and content fields"
         if (typeof(cmm[i].user) != 'string' || typeof(cmm[i].content) != 'string') throw "User and content of each comment has to be a string"
@@ -345,19 +345,11 @@ export function checkMessage(mss){ //optional message
 export async function checkCommentId(commentId){
     commentId = checkId(commentId);
     let postsCollection = await posts();
-    let comment = await postsCollection.findOne({"comments.commentsId": new ObjectId(commentId)});
-    if(!found) throw "Error: No comment found with that id";
+    let comment = await postsCollection.findOne({"comments.commentId": new ObjectId(commentId)});
+    if(!comment) throw "Error: No comment found with that id";
     return commentId;
 }
 //TODO validate report fields
-export function checkStatus(status){
-    if(!status || typeof status !== "string") throw "Error: Invalid status";
-    status = status.trim().toLowerCase();
-    const validStatus = ["open", "full", "closed", "cancelled"];
-    if(!validStatus.includes(status)) throw "Error: Invalid status";
-    return status;
-}
-
 export function checkReason(reas){
     if (!reas) throw "No reason provided"
     if (typeof(reas) != 'string') throw "Reason has to be a string"
