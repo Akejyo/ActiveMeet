@@ -1,34 +1,35 @@
-<section class="auth-wrapper">
-  <div class="card auth-card large">
+<section class='auth-wrapper'>
+  <div class='card auth-card large'>
     <h1>Create Account</h1>
-    <p class="muted">Join the sports community and meet people with similar interests.</p>
+    <p class='muted'>Join the sports community and meet people with similar
+      interests.</p>
 
-    <form class="form">
-      <div class="grid-2">
+    <form class='form'>
+      <div class='grid-2'>
         <label>Full Name
-          <input type="text" placeholder="Your name" required />
+          <input type='text' placeholder='Your name' required />
         </label>
 
         <label>Username
-          <input type="text" placeholder="@username" required />
+          <input type='text' placeholder='@username' required />
         </label>
       </div>
 
-      <div class="grid-2">
-        {{!-- * Now it's browser's own validation --}}
+      <div class='grid-2'>
+        {{! * Now it's browser's own validation }}
         <label>Email
-          <input type="email" placeholder="Email address" required />
+          <input type='email' placeholder='Email address' required />
         </label>
-        {{!-- TODO: Password JS --}}
+        {{! TODO: Password JS }}
         <label>Password
-          <input type="password" placeholder="Create password" required />
+          <input type='password' placeholder='Create password' required />
         </label>
       </div>
 
-      <div class="grid-3">
-        {{!-- ! This age need to be validated --}}
+      <div class='grid-3'>
+        {{! ! This age need to be validated }}
         <label>Age
-          <input type="number" placeholder="18" />
+          <input type='number' placeholder='18' />
         </label>
 
         <label>Gender
@@ -49,21 +50,22 @@
         </label>
       </div>
 
-      <div class="grid-2">
+      <div class='grid-2'>
         <label>City
-          <input type="text" placeholder="New York" />
+          <input type='text' placeholder='New York' />
         </label>
 
         <label>State
-          <input type="text" placeholder="NY" />
+          <input type='text' placeholder='NY' />
         </label>
       </div>
-  {{!-- TODO: JS validation, auto jump to next step --}}
-      <button type="submit" class="btn full">Create Account</button>
+      {{! TODO: JS validation, auto jump to next step }}
+      <button type='submit' class='btn full'>Create Account</button>
     </form>
 
-    <p class="form-note">
-      Next step: <a href="/profile/interest-setup">Set your interests</a>
+    <p class='form-note'>
+      Next step:
+      <a href='/profile/interest-setup'>Set your interests</a>
     </p>
   </div>
 </section>

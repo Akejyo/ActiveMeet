@@ -117,6 +117,9 @@ p {
   font-weight: 700;
   cursor: pointer;
   display: inline-block;
+  transition:
+    color 0.2s ease,
+    background 0.2s ease;
 }
 
 .btn:hover {
@@ -128,6 +131,7 @@ p {
   background: transparent;
   border: 1px solid var(--border);
   color: var(--text);
+  transition: all 0.2s ease;
 }
 
 .btn-outline:hover {
@@ -137,6 +141,7 @@ p {
 .btn.small {
   padding: 8px 12px;
   font-size: 0.9rem;
+  height: fit-content;
 }
 
 .btn.full {
@@ -169,6 +174,7 @@ textarea {
   background: var(--panel-2);
   color: var(--text);
   outline: none;
+  transition: all 0.2s ease;
 }
 
 input:focus,
@@ -203,7 +209,6 @@ textarea:focus {
 }
 
 .post-top,
-.meta-row,
 .action-row,
 .section-title,
 .profile-header {
@@ -216,6 +221,12 @@ textarea:focus {
 .meta-row {
   color: var(--muted);
   margin: 12px 0;
+  display: flex;
+  gap: 12px;
+}
+
+.tag {
+  margin-bottom: 15px;
 }
 
 .tag,
@@ -241,11 +252,59 @@ textarea:focus {
 }
 
 .chip-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
   background: var(--panel-2);
   border: 1px solid var(--border);
-  padding: 10px 14px;
+  padding: 10px 15px;
   border-radius: 999px;
   font-weight: 500;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.chip-option:hover {
+  border-color: var(--primary);
+}
+
+.chip-option input[type='checkbox'] {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+/* Fake √ */
+.chip-option input[type='checkbox']::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 10px;
+  width: 5px;
+  height: 10px;
+  border: solid var(--white);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) scale(0);
+  transition: transform 0.2s ease;
+}
+
+.chip-option input[type='checkbox']:checked {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.chip-option input[type='checkbox']:checked::after {
+  transform: rotate(45deg) scale(1);
 }
 
 .list-item {

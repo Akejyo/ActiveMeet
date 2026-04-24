@@ -1,18 +1,18 @@
-{{!-- TODO: This page's style need to be improved, maybe we can do two columns. Add a now list CSS class --}}
-{{!-- ? Maybe we can replace 'Create Post' to the nav bar --}}
+{{! TODO: This page's style need to be improved, maybe we can do two columns. Add a now list CSS class }}
+{{! ? Maybe we can replace 'Create Post' to the nav bar }}
 
-<section class="hero">
+<section class='hero'>
   <div>
     <h1>Welcome back, {{user.name}}</h1>
     <p>Find people nearby who share your favorite sports and activities.</p>
   </div>
-  <a href="/posts/create" class="btn">Create New Post</a>
+  <a href='/posts/create' class='btn'>Create New Post</a>
 </section>
 
-<section class="card">
+<section class='card'>
   <h2>Search & Filters</h2>
-  <form class="grid-3">
-    <input type="text" placeholder="Search sports or activities..." />
+  <form class='grid-3'>
+    <input type='text' placeholder='Search sports or activities...' />
     <select>
       <option>All Sports</option>
       <option>Basketball</option>
@@ -20,36 +20,36 @@
       <option>Hiking</option>
       <option>Soccer</option>
     </select>
-    <button class="btn" type="submit">Apply Filters</button>
+    <button class='btn' type='submit'>Apply Filters</button>
   </form>
 </section>
 
 <section>
   <h2>Recommended Posts</h2>
-  <div class="post-list">
+  <div class='post-list'>
     {{#each posts}}
-      <article class="card post-card">
-        <div class="post-top">
-          <span class="tag">{{sport}}</span>
-          <span class="muted">{{date}} · {{time}}</span>
+      <article class='card post-card'>
+        <div class='post-top'>
+          <span class='tag'>{{sport}}</span>
+          <span class='muted'>{{date}} · {{time}}</span>
         </div>
         <h3>{{title}}</h3>
-        <p class="muted">By {{author}} · {{location}}</p>
+        <p class='muted'>By {{author}} · {{location}}</p>
         <p>{{description}}</p>
 
-        <div class="meta-row">
+        <div class='meta-row'>
           <span>Skill: {{skill}}</span>
           <span>Age: {{ageRange}}</span>
           <span>{{gender}}</span>
         </div>
 
-        <div class="meta-row">
+        <div class='meta-row'>
           <span>👍 {{likes}}</span>
           <span>💬 {{comments}}</span>
         </div>
 
-        <div class="action-row">
-          <a href="/posts/{{id}}" class="btn small">View Details</a>
+        <div class='action-row'>
+          <a href='/posts/{{id}}' class='btn small'>View Details</a>
         </div>
       </article>
     {{/each}}
