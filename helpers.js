@@ -121,10 +121,10 @@ export function checkAge(age){
 export function checkGender(gen){
     if(!gen) throw "No gender was provided"
     if (typeof(gen) != 'string') throw "gender needs to be a string"
-    let gender = ['male', 'female']
+    let gender = ['male', 'female', 'other']
     gen = gen.trim()
     gen = gen.toLowerCase()
-    if (!gender.includes(gen)) throw "Please only type male or female"
+    if (!gender.includes(gen)) throw "Please only type male, female, or other"
     return gen
 }
 

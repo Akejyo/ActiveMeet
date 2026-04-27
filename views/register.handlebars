@@ -4,45 +4,45 @@
     <p class='muted'>Join the sports community and meet people with similar
       interests.</p>
 
-    <form class='form'>
+    <form class='form' method="POST" action="/profile/register">
       <div class='grid-2'>
-        <label>Full Name
-          <input type='text' placeholder='Your name' required />
+        <label>First Name
+          <input type='text' name="firstName" placeholder='First name' required />
         </label>
 
-        <label>Username
-          <input type='text' placeholder='@username' required />
+        <label>Last Name
+          <input type='text' name="lastName" placeholder='Last name' required />
         </label>
       </div>
 
       <div class='grid-2'>
         {{! * Now it's browser's own validation }}
         <label>Email
-          <input type='email' placeholder='Email address' required />
+          <input type='email' name="email" placeholder='Email address' required />
         </label>
         {{! TODO: Password JS }}
         <label>Password
-          <input type='password' placeholder='Create password' required />
+          <input type='password' name="password" placeholder='Create password' required />
         </label>
       </div>
 
       <div class='grid-3'>
         {{! ! This age need to be validated }}
         <label>Age
-          <input type='number' placeholder='18' />
+          <input type='number' name="age" placeholder='18' />
         </label>
 
         <label>Gender
-          <select>
+          <select name="gender">
             <option>Male</option>
             <option>Female</option>
-            <option>Non-binary</option>
-            <option>Prefer not to say</option>
+            <option>Other</option>
+            {{!-- <option>Prefer not to say</option> --}}
           </select>
         </label>
 
         <label>Skill Level
-          <select>
+          <select name="skill">
             <option>Beginner</option>
             <option>Intermediate</option>
             <option>Advanced</option>
@@ -52,11 +52,11 @@
 
       <div class='grid-2'>
         <label>City
-          <input type='text' placeholder='New York' />
+          <input type='text' name="city" placeholder='New York' />
         </label>
 
         <label>State
-          <input type='text' placeholder='NY' />
+          <input type='text' name="state" placeholder='NY' />
         </label>
       </div>
       {{! TODO: JS validation, auto jump to next step }}

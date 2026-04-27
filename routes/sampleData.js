@@ -50,9 +50,12 @@ export const samplePosts = [
 ];
 
 export const sampleUser = {
-  name: 'Alex Carter',
-  username: '@alexfit',
-  city: 'New York, NY',
+  // name: 'Alex Carter',
+  // username: '@alexfit', //Not username but email
+  firstName: 'Alex',
+  lastName: 'Carter',
+  city: 'New York',
+  state: 'NY',
   age: 22,
   gender: 'Male',
   skill: 'Intermediate',

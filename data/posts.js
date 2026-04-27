@@ -1,6 +1,6 @@
 //TODO functions to add, delete, ... from database
 
-import { posts } from "../config/mongoCollections.js";
+import { posts, users } from "../config/mongoCollections.js";
 import { checkAuthorId, checkTitle, checkSport, checkDescription, checkDateAndTime,
     checkMaxParticipants, checkAgeRestrictions, checkSkillLevelRestriction, 
     checkGenderRestriction, checkLocation, checkComment, checkPostId, checkCommentId,
@@ -43,6 +43,9 @@ export async function createPost(title, authorId, sport, description, eventDateT
     let iRes = await posts1.insertOne(newPost)
     if (!iRes.acknowledged || !iRes.insertedId) throw 'Could not add post'
     let ret = await posts1.findOne({_id: iRes.insertedId})
+    let users1 = await users() //add postId to user's createdPostIds array
+    let updateUser = await users1.updateOne({_id: new ObjectId(authorId)}, {$push: {createdPostIds: iRes.insertedId.toString()}})
+    if (!updateUser.acknowledged || updateUser.modifiedCount === 0) throw 'Could not update user with post'
     return ret;
 }
 // Finds and returns post associated with postId

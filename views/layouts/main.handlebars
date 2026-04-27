@@ -15,7 +15,11 @@
           <a href='/following'>Following</a>
           <a href='/profile'>Profile</a>
           <a href='/report'>Report</a>
-          <a href='/profile/login' class='btn btn-outline small'>Login</a>
+          {{#if logedIn}}
+            <a href='/profile/logout' class='btn btn-outline small'>Logout</a>
+          {{else}}
+            <a href='/profile/login' class='btn btn-outline small'>Login</a>
+          {{/if}}
         </nav>
       </div>
     </header>
