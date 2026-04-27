@@ -365,6 +365,11 @@ textarea:focus {
   border: 1px solid var(--border);
 }
 
+.unpressable {
+    pointer-events: none;
+    cursor: default;
+}
+
 @media (max-width: 768px) {
   .hero,
   .nav {
