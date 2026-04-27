@@ -2,7 +2,7 @@
 
 import {users} from "../config/mongoCollections.js"
 import { checkAge, checkCity, checkEmail, checkFirstName, checkGender, checkLastName, checkAuthorId,
-    checkState, checkBio, checkPassword, checkVisibility, checkSportInterests, checkSkillLevel
+    checkState, checkBio, checkPassword, checkVisibility, checkSportInterests, checkSkillLevel, checkEmailFieldsOnly
 } from "../helpers.js";
 import bcrypt from 'bcrypt';
 import { ObjectId } from "mongodb";
@@ -58,6 +58,17 @@ export async function addFollower(userId, followerId){
     let updateFollower = await users1.updateOne({_id: new ObjectId(followerId)}, {$addToSet: {followingIds: userId}})
     if (!updateFollower.acknowledged || updateFollower.modifiedCount === 0) throw 'Could not update follower'
     return true
+}
+
+export async function authenticateUser(email, password){
+    email = checkEmailFieldsOnly(email)
+    password = checkPassword(password)
+    let users1 = await users()
+    let user = await users1.findOne({email: email})
+    if (!user) throw 'Either email or password is incorrect'
+    let isMatch = await bcrypt.compare(password, user.password)
+    if (!isMatch) throw 'Either email or password is incorrect'
+    return user
 }
 
 //Add more function if needed (updates, remove, etc...)

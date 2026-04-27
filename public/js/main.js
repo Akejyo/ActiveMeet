@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   forms.forEach((form) => {
     form.addEventListener('submit', (e) => {
-      e.preventDefault();
+      e.preventDefault(); //Comment out to test form submission
       alert('Just for test');
     });
   });

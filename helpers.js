@@ -56,6 +56,24 @@ export async function checkEmail(email){
     return email
 }
 
+export function checkEmailFieldsOnly(email){
+    if (!email) throw "Email was not provided"
+    if (typeof(email) != 'string') throw "Email must be a string"
+    email = email.trim()
+    let par = email.split('@')
+    if (par.length != 2) throw "Invalid email format"
+    if (par[0].length > 64) throw "Invalid email format"
+    let acpe1 = /^[a-zA-Z0-9!#\$%&'\*\+\-\/=\?\^_\{~\.`}]*$/ //Found to be the accepted chars for username email address
+    if(!acpe1.test(par[0])) throw "Invalid email format"
+    if(par[0].includes("..")) throw "Invalid email format"
+    if(par[1].includes("..")) throw "Invalid email format"
+    if(par[0][0] === '.' || par[0][par[0].length - 1] === "." || par[1][0] === '.' || par[1][par[1].length - 1] === "." ) throw "Invalid email format"
+    let acpe2 = /^[a-zA-Z0-9\-.]*$/
+    if(!acpe2.test(par[1])) throw "Invalid email format"
+    if(email.length > 320) throw "Invalid email format"
+    return email.toLowerCase()
+}
+
 export function checkCity(city){
     if(!city) throw "No city was provided"
     if (typeof(city) != 'string') throw "City needs to be a string"
