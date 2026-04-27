@@ -34,6 +34,7 @@ router.route('/')
       for(let i = 0; i < postIds.length; i++){
         let p = await posts1.findOne({_id: new ObjectId(postIds[i])})
         if(p){
+          p.eventDateTime = p.eventDateTime.toString()
           pos.push(p)
         }
       }
@@ -69,7 +70,7 @@ router.route('/login')
     res.render('login', { title: 'Login' });
   }
 })
-.post(async (req, res) => {
+.post(async (req, res) => { //TODO xss protection and check session
   let { email, password } = req.body
   let message = []
   let error = false
@@ -131,7 +132,7 @@ router.route('/register')
     res.render('register', { title: 'Register' });
   }
 })
-.post(async (req, res) => {
+.post(async (req, res) => { //xss for all and check session
   //TODO
   //redirect to set interests page
 });
