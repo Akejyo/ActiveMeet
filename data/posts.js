@@ -170,3 +170,12 @@ export async function dislikePost(postId, userId){
     if(!update.acknowledged || update.matchedCount === 0) throw "Error: Could not dislike post";
     return await this.getPostById(postId);
 }
+
+export async function findAuthor(authorId){
+    authorId = await checkAuthorId(authorId);
+    const users1 = await users();
+    let ret = await users1.findOne({_id: new ObjectId(authorId)})
+    if (!ret) throw "No post found"
+    let re2 = ret.firstName + " " + ret.lastName
+    return re2
+}

@@ -3,7 +3,7 @@
 
 <section class='hero'>
   <div>
-    <h1>Welcome back, {{user.name}}</h1>
+    <h1>Welcome back, {{user.firstName}} {{user.lastName}}</h1>
     <p>Find people nearby who share your favorite sports and activities.</p>
   </div>
   <a href='/posts/create' class='btn'>Create New Post</a>
@@ -45,6 +45,7 @@
 
         <div class='meta-row'>
           <span>👍 {{likes}}</span>
+          <span>👎 {{dislikes}}</span>
           <span>💬 {{comments}}</span>
         </div>
 
