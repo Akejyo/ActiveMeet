@@ -23,7 +23,7 @@ router.route('/')
       skill: req.session.user.skill,
       bio: req.session.user.bio,
       interests: req.session.user.sportsInterests,
-      followers: req.session.user.folowerNumber,
+      followers: req.session.user.followerNumber,
       following: req.session.user.followingNumber,
       badges: [] //Change later when we have badges implemented
     }
@@ -106,8 +106,10 @@ router.route('/login')
         gender: res2.gender,
         bio: res2.bio,
         sportsInterests: res2.sportsInterests,
-        folowerNumber: res2.followerIds.length,
+        followerNumber: res2.followerIds.length,
+        followerIds: res2.followerIds,
         followingNumber: res2.followingIds.length,
+        followingIds: res2.followingIds,
         createdPostIds: res2.createdPostIds,
         joinedPostIds: res2.joinedPostIds,
         blockedUserIds: res2.blockedUserIds,

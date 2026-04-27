@@ -19,7 +19,7 @@ router.get('/', async (req, res) => {
         skill: req.session.user.skill,
         bio: req.session.user.bio,
         interests: req.session.user.sportsInterests,
-        followers: req.session.user.folowerNumber,
+        followers: req.session.user.followerNumber,
         following: req.session.user.followingNumber,
         badges: [] //Change later when we have badges implemented
       }
@@ -47,6 +47,7 @@ router.get('/', async (req, res) => {
       }
       //filter out posts based on user TODO (blocked users)
       //sort posts2 based on user interests TODO
+      //sort posts2 based on following list TODO
       res.render('home', {
         title: 'Home',
         user: us,
