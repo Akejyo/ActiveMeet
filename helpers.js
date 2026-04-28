@@ -403,4 +403,12 @@ export function checkNotes(nt){
     return nt
 }
 
+export async function findAuthor(authorId){
+    authorId = await checkAuthorId(authorId);
+    const users1 = await users();
+    let ret = await users1.findOne({_id: new ObjectId(authorId)})
+    if (!ret) throw "No post found"
+    let re2 = ret.firstName + " " + ret.lastName
+    return re2
+}
 //TODO add key word search for inaproproate content
