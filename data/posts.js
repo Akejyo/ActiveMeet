@@ -92,7 +92,7 @@ export async function removeComment(postId, commentId){
         }
     );
     if(!update.acknowledged || update.modifiedCount === 0) throw "Error: Could not remove comment";
-    return await this.getPostById(postId);
+    return await getPostById(postId);
 }
 // Update Post (finds post by postId and updates it with all inputted params)
 export async function updatePost(postId, title, sport, description, eventDateTime, maxParticipants, ageRestriction, skillLevelRestriction, genderRestriction, location, status){
@@ -127,7 +127,7 @@ export async function updatePost(postId, title, sport, description, eventDateTim
         {$set: updateObj}
     );
     if(!update.acknowledged || update.modifiedCount === 0) throw "Error: Could not update post";
-    return await this.getPostById(postId);
+    return await getPostById(postId);
 }
 // Removes post by postId (Finds and deleted post by postId)
 export async function removePost(postId){
@@ -153,7 +153,7 @@ export async function likePost(postId, userId){
         }
     );
     if(!update.acknowledged || update.matchedCount === 0) throw "Error: Could not like post";
-    return await this.getPostById(postId);
+    return await getPostById(postId);
 }
 // Dislikes post
 export async function dislikePost(postId, userId){
@@ -168,6 +168,6 @@ export async function dislikePost(postId, userId){
         }
     );
     if(!update.acknowledged || update.matchedCount === 0) throw "Error: Could not dislike post";
-    return await this.getPostById(postId);
+    return await getPostById(postId);
 }
 

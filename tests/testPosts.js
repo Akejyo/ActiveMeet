@@ -1,4 +1,15 @@
-import postsData from "../data/posts.js";
+import {
+    createPost,
+    getPostById,
+    getAllPosts,
+    addComment,
+    removeComment,
+    updatePost,
+    removePost,
+    likePost,
+    dislikePost
+} from "../data/posts.js";
+
 import { users } from "../config/mongoCollections.js";
 import { dbConnection, closeConnection } from "../config/mongoConnection.js";
 
@@ -17,8 +28,20 @@ const main = async () => {
     const insertUser = await userCollection.insertOne(user);
     const userId = insertUser.insertedId.toString();
 
+    let postId;
+    let commentId;
+
+    const runFailTest = async (name, fn) => {
+        try {
+            await fn();
+            console.log(`${name}: FAILED, should have thrown`);
+        } catch (e) {
+            console.log(`${name}: passed, threw error:`, e);
+        }
+    };
+
     try {
-        const post = await postsData.createPost(
+        const post = await createPost(
             "Pickup Game",
             userId,
             "basketball",
@@ -31,45 +54,81 @@ const main = async () => {
             "Central Park"
         );
 
+        postId = post._id.toString();
+
         console.log("CREATE POST:", post);
 
-        const postId = post._id.toString();
+        console.log("GET POST:", await getPostById(postId));
 
-        console.log("GET POST:", await postsData.getPostById(postId));
+        console.log("GET ALL POSTS:", await getAllPosts());
 
-        console.log("GET ALL POSTS:", await postsData.getAllPosts());
-
-        const withComment = await postsData.addComment(
+        const withComment = await addComment(
             postId,
             userId,
             "I want to join!"
         );
 
+        commentId = withComment.comments[0].commentId.toString();
+
         console.log("ADD COMMENT:", withComment);
 
-        const commentId = withComment.comments[0].commentId.toString();
+        console.log("LIKE POST:", await likePost(postId, userId));
 
-        console.log("LIKE POST:", await postsData.likePost(postId, userId));
+        console.log("DISLIKE POST:", await dislikePost(postId, userId));
 
-        console.log("DISLIKE POST:", await postsData.dislikePost(postId, userId));
+        console.log(
+            "UPDATE POST:",
+            await updatePost(
+                postId,
+                "Soccer Match",
+                "soccer",
+                "Casual soccer game",
+                new Date("2026-12-02T15:00:00"),
+                12,
+                { min: 18, max: 35 },
+                "all levels",
+                "co-ed",
+                "Hoboken Field",
+                "open"
+            )
+        );
 
-        console.log("UPDATE POST:", await postsData.updatePost(
-            postId,
-            "Soccer Match",
-            "soccer",
-            "Casual soccer game",
-            new Date("2026-12-02T15:00:00"),
-            12,
-            { min: 18, max: 35 },
-            "all levels",
-            "co-ed",
-            "Hoboken Field",
-            "open"
-        ));
+        // Failure / edge case tests
 
-        console.log("REMOVE COMMENT:", await postsData.removeComment(postId, commentId));
+        await runFailTest("Invalid post id", async () => {
+            await getPostById("123");
+        });
 
-        console.log("REMOVE POST:", await postsData.removePost(postId));
+        await runFailTest("Invalid comment removal", async () => {
+            await removeComment(postId, "badid");
+        });
+
+        await runFailTest("Empty comment", async () => {
+            await addComment(postId, userId, "");
+        });
+
+        // Like twice should not duplicate user
+        await likePost(postId, userId);
+        const likedPost = await likePost(postId, userId);
+
+        console.log(
+            "DOUBLE LIKE TEST:",
+            likedPost.likedBy.length === 1
+                ? "passed"
+                : "FAILED"
+        );
+
+        console.log(
+            "REMOVE COMMENT:",
+            await removeComment(postId, commentId)
+        );
+
+        console.log("REMOVE POST:", await removePost(postId));
+
+        await runFailTest("Delete nonexistent post", async () => {
+            await removePost(postId);
+        });
+
     } catch (e) {
         console.log("ERROR:", e);
     }
