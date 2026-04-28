@@ -1,22 +1,26 @@
-<section class="auth-wrapper">
-  <div class="card auth-card">
+<section class='auth-wrapper'>
+  <div class='card auth-card'>
     <h1>Login</h1>
-    <p class="muted">Welcome back to ActiveMeet.</p>
+    <p class='muted'>Welcome back to ActiveMeet.</p>
 
-    <form class="form">
+    <form class='form' method='POST' action='/profile/login'>
       <label>Email
-        <input type="email" placeholder="Enter your email" required />
+        <input type='email' name="email" placeholder='Enter your email' value="{{prev.email}}" required />
       </label>
 
       <label>Password
-        <input type="password" placeholder="Enter your password" required />
+        <input type='password' name="password" placeholder='Enter your password' value="{{prev.password}}" required />
       </label>
 
-      <button type="submit" class="btn full">Login</button>
+      <button type='submit' class='btn full'>Login</button>
     </form>
+    {{#if error}}
+    <p id="errmess2">{{message}}</p>
+    {{/if}}
 
-    <p class="form-note">
-      Don't have an account? <a href="/profile/register">Register here</a>
+    <p class='form-note'>
+      Don't have an account?
+      <a href='/profile/register'>Register here</a>
     </p>
   </div>
 </section>

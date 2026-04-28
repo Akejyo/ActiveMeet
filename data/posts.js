@@ -1,6 +1,6 @@
 //TODO functions to add, delete, ... from database
 
-import { posts } from "../config/mongoCollections.js";
+import { posts, users } from "../config/mongoCollections.js";
 import { checkAuthorId, checkTitle, checkSport, checkDescription, checkDateAndTime,
     checkMaxParticipants, checkAgeRestrictions, checkSkillLevelRestriction, 
     checkGenderRestriction, checkLocation, checkComment, checkPostId, checkCommentId,
@@ -43,8 +43,11 @@ export async function createPost(title, authorId, sport, description, eventDateT
     let iRes = await posts1.insertOne(newPost)
     if (!iRes.acknowledged || !iRes.insertedId) throw 'Could not add post'
     let ret = await posts1.findOne({_id: iRes.insertedId})
+    let users1 = await users() //add postId to user's createdPostIds array
+    let updateUser = await users1.updateOne({_id: new ObjectId(authorId)}, {$push: {createdPostIds: iRes.insertedId.toString()}})
+    if (!updateUser.acknowledged || updateUser.modifiedCount === 0) throw 'Could not update user with post'
     return ret;
-};
+}
 // Finds and returns post associated with postId
 export async function getPostById(postId){
     postId = await checkPostId(postId);
@@ -52,12 +55,12 @@ export async function getPostById(postId){
     const post = await postsCollection.findOne({_id: new ObjectId(postId)});
     if(post === null) throw `Error: no post found with PostId: ${postId}`;
     return post;
-};
+}
 // Returns all posts (finds and returns with no conditions)
 export async function getAllPosts(){
     const postsCollection = await posts();
     return await postsCollection.find({}).toArray();
-};
+}
 // Create comment (Finds post by postId, pushes comment subobject with commentId and authorId)
 export async function addComment(postId, authorId, comment){
     postId = await checkPostId(postId)
@@ -74,7 +77,7 @@ export async function addComment(postId, authorId, comment){
     if (!updateRes.acknowledged || updateRes.modifiedCount === 0) throw 'Could not add comment'
     let ret = await posts1.findOne({_id: new ObjectId(postId)})
     return ret;
-};
+}
 // Remove comment (finds post by postId, then comment under that post by commentId, and removes the comment)
 export async function removeComment(postId, commentId){
     postId = await checkPostId(postId);
@@ -90,7 +93,7 @@ export async function removeComment(postId, commentId){
     );
     if(!update.acknowledged || update.modifiedCount === 0) throw "Error: Could not remove comment";
     return await getPostById(postId);
-};
+}
 // Update Post (finds post by postId and updates it with all inputted params)
 export async function updatePost(postId, title, sport, description, eventDateTime, maxParticipants, ageRestriction, skillLevelRestriction, genderRestriction, location, status){
     postId = await checkPostId(postId);
@@ -125,7 +128,7 @@ export async function updatePost(postId, title, sport, description, eventDateTim
     );
     if(!update.acknowledged || update.modifiedCount === 0) throw "Error: Could not update post";
     return await getPostById(postId);
-};
+}
 // Removes post by postId (Finds and deleted post by postId)
 export async function removePost(postId){
     postId = await checkPostId(postId);
@@ -135,7 +138,7 @@ export async function removePost(postId){
     );
     if(!remove) throw "Error: Post could not be removed";
     return {deleted: true};
-};
+}
 // Likes post (stores userId in likedBy object attribute of post object)
 export async function likePost(postId, userId){
     postId = await checkPostId(postId);
@@ -151,7 +154,7 @@ export async function likePost(postId, userId){
     );
     if(!update.acknowledged || update.matchedCount === 0) throw "Error: Could not like post";
     return await getPostById(postId);
-};
+}
 // Dislikes post
 export async function dislikePost(postId, userId){
     postId = await checkPostId(postId);
@@ -166,6 +169,5 @@ export async function dislikePost(postId, userId){
     );
     if(!update.acknowledged || update.matchedCount === 0) throw "Error: Could not dislike post";
     return await getPostById(postId);
-};
-
+}
 

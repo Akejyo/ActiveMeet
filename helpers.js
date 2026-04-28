@@ -56,6 +56,24 @@ export async function checkEmail(email){
     return email
 }
 
+export function checkEmailFieldsOnly(email){
+    if (!email) throw "Email was not provided"
+    if (typeof(email) != 'string') throw "Email must be a string"
+    email = email.trim()
+    let par = email.split('@')
+    if (par.length != 2) throw "Invalid email format"
+    if (par[0].length > 64) throw "Invalid email format"
+    let acpe1 = /^[a-zA-Z0-9!#\$%&'\*\+\-\/=\?\^_\{~\.`}]*$/ //Found to be the accepted chars for username email address
+    if(!acpe1.test(par[0])) throw "Invalid email format"
+    if(par[0].includes("..")) throw "Invalid email format"
+    if(par[1].includes("..")) throw "Invalid email format"
+    if(par[0][0] === '.' || par[0][par[0].length - 1] === "." || par[1][0] === '.' || par[1][par[1].length - 1] === "." ) throw "Invalid email format"
+    let acpe2 = /^[a-zA-Z0-9\-.]*$/
+    if(!acpe2.test(par[1])) throw "Invalid email format"
+    if(email.length > 320) throw "Invalid email format"
+    return email.toLowerCase()
+}
+
 export function checkCity(city){
     if(!city) throw "No city was provided"
     if (typeof(city) != 'string') throw "City needs to be a string"
@@ -103,10 +121,10 @@ export function checkAge(age){
 export function checkGender(gen){
     if(!gen) throw "No gender was provided"
     if (typeof(gen) != 'string') throw "gender needs to be a string"
-    let gender = ['male', 'female']
+    let gender = ['male', 'female', 'other']
     gen = gen.trim()
     gen = gen.toLowerCase()
-    if (!gender.includes(gen)) throw "Please only type male or female"
+    if (!gender.includes(gen)) throw "Please only type male, female, or other"
     return gen
 }
 
@@ -384,5 +402,15 @@ export function checkNotes(nt){
     if (nt.length > 300) throw "Please keep notes under 300 characters"
     return nt
 }
+
+export async function findAuthor(authorId){
+    authorId = await checkAuthorId(authorId);
+    const users1 = await users();
+    let ret = await users1.findOne({_id: new ObjectId(authorId)})
+    if (!ret) throw "No post found"
+    let re2 = ret.firstName + " " + ret.lastName
+    return re2
+}
+
 
 //TODO add key word search for inaproproate content
