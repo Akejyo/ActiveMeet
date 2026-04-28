@@ -2,7 +2,8 @@ import express from 'express';
 const router = express.Router();
 
 import { sampleUser, samplePosts } from './sampleData.js';
-import { findAuthor, getAllPosts } from '../data/posts.js';
+import { getAllPosts } from '../data/posts.js';
+import {findAuthor} from "../helpers.js"
 
 router.get('/', async (req, res) => {
   if (!req.session.user){
