@@ -4,17 +4,132 @@
   <p class='muted'>These preferences will be used for recommendations on your
     home page.</p>
 
-  <form class='form'>
+  <form class='form' method='POST' action="/profile/interest-setup">
     <div class='chips-grid'>
-      <label class='chip-option'><input type='checkbox' /> Basketball</label>
-      <label class='chip-option'><input type='checkbox' /> Soccer</label>
-      <label class='chip-option'><input type='checkbox' /> Running</label>
-      <label class='chip-option'><input type='checkbox' /> Hiking</label>
-      <label class='chip-option'><input type='checkbox' /> Gym</label>
-      <label class='chip-option'><input type='checkbox' /> Tennis</label>
-      <label class='chip-option'><input type='checkbox' /> Swimming</label>
-      <label class='chip-option'><input type='checkbox' /> Volleyball</label>
+      {{#if interests.basketball}}
+        <label class='chip-option'><input type='checkbox' name="Basketball" checked /> Basketball</label>
+      {{else}}
+        <label class='chip-option'><input type='checkbox' name="Basketball" /> Basketball</label>
+      {{/if}}
+
+      {{#if interests.soccer}}
+        <label class='chip-option'><input type='checkbox' name="Soccer" checked /> Soccer</label>
+      {{else}}
+        <label class='chip-option'><input type='checkbox' name="Soccer" /> Soccer</label>
+      {{/if}}
+
+      {{#if interests.tennis}}
+        <label class='chip-option'><input type='checkbox' name="Tennis" checked /> Tennis</label>
+      {{else}}
+        <label class='chip-option'><input type='checkbox' name="Tennis" /> Tennis</label>
+      {{/if}}
+
+       {{#if interests.baseball}}
+        <label class='chip-option'><input type='checkbox' name="Baseball" checked /> Baseball</label>
+      {{else}}
+        <label class='chip-option'><input type='checkbox' name="Baseball" /> Baseball</label>
+      {{/if}}
+
+       {{#if interests.volleyball}}
+        <label class='chip-option'><input type='checkbox' name="Volleyball" checked /> Volleyball</label>
+      {{else}}
+        <label class='chip-option'><input type='checkbox' name="Volleyball" /> Volleyball</label>
+      {{/if}}
+
+       {{#if interests.football}}
+        <label class='chip-option'><input type='checkbox' name="Football" checked /> Football</label>
+      {{else}}
+        <label class='chip-option'><input type='checkbox' name="Football" /> Football</label>
+      {{/if}}
+
+       {{#if interests.hockey}}
+        <label class='chip-option'><input type='checkbox' name="Hockey" checked /> Hockey</label>
+      {{else}}
+        <label class='chip-option'><input type='checkbox' name="Hockey" /> Hockey</label>
+      {{/if}}
+
+       {{#if interests.golf}}
+        <label class='chip-option'><input type='checkbox' name="Golf" checked /> Golf</label>
+      {{else}}
+        <label class='chip-option'><input type='checkbox' name="Golf" /> Golf</label>
+      {{/if}}
+
+       {{#if interests.swimming}}
+        <label class='chip-option'><input type='checkbox' name="Swimming" checked /> Swimming</label>
+      {{else}}
+        <label class='chip-option'><input type='checkbox' name="Swimming" /> Swimming</label>
+      {{/if}}
+
+       {{#if interests.running}}
+        <label class='chip-option'><input type='checkbox' name="Running" checked /> Running</label>
+      {{else}}
+        <label class='chip-option'><input type='checkbox' name="Running" /> Running</label>
+      {{/if}}
+
+       {{#if interests.badminton}}
+        <label class='chip-option'><input type='checkbox' name="Badminton" checked /> Badminton</label>
+      {{else}}
+        <label class='chip-option'><input type='checkbox' name="Badminton" /> Badminton</label>
+      {{/if}}
+
+       {{#if interests.bowling}}
+        <label class='chip-option'><input type='checkbox' name="Bowling" checked /> Bowling</label>
+      {{else}}
+        <label class='chip-option'><input type='checkbox' name="Bowling" /> Bowling</label>
+      {{/if}}
+
+       {{#if interests.archery}}
+        <label class='chip-option'><input type='checkbox' name="Archery" checked /> Archery</label>
+      {{else}}
+        <label class='chip-option'><input type='checkbox' name="Archery" /> Archery</label>
+      {{/if}}
+
+       {{#if interests.cycling}}
+        <label class='chip-option'><input type='checkbox' name="Cycling" checked /> Cycling</label>
+      {{else}}
+        <label class='chip-option'><input type='checkbox' name="Cycling" /> Cycling</label>
+      {{/if}}
+
+       {{#if interests.boxing}}
+        <label class='chip-option'><input type='checkbox' name="Boxing" checked /> Boxing</label>
+      {{else}}
+        <label class='chip-option'><input type='checkbox' name="Boxing" /> Boxing</label>
+      {{/if}}
+
+       {{#if interests.cricket}}
+        <label class='chip-option'><input type='checkbox' name="Cricket" checked /> Cricket</label>
+      {{else}}
+        <label class='chip-option'><input type='checkbox' name="Cricket" /> Cricket</label>
+      {{/if}}
+
+       {{#if interests.darts}}
+        <label class='chip-option'><input type='checkbox' name="Darts" checked /> Darts</label>
+      {{else}}
+        <label class='chip-option'><input type='checkbox' name="Darts" /> Darts</label>
+      {{/if}}
+
+       {{#if interests.gymnastics}}
+        <label class='chip-option'><input type='checkbox' name="Gymnastics" checked /> Gymnastics</label>
+      {{else}}
+        <label class='chip-option'><input type='checkbox' name="Gymnastics" /> Gymnastics</label>
+      {{/if}}
+
+       {{#if interests.gym}}
+        <label class='chip-option'><input type='checkbox' name="Gym" checked /> Gym</label>
+      {{else}}
+        <label class='chip-option'><input type='checkbox' name="Gym" /> Gym</label>
+      {{/if}}
+
+       {{#if interests.hiking}}
+        <label class='chip-option'><input type='checkbox' name="Hiking" checked /> Hiking</label>
+      {{else}}
+        <label class='chip-option'><input type='checkbox' name="Hiking" /> Hiking</label>
+      {{/if}}
     </div>
+
+    {{#if error}}
+    <p id="errmess2">{{message}}</p>
+    {{/if}}
 
     <button type='submit' class='btn'>Save Interests</button>
   </form>

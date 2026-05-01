@@ -29,25 +29,23 @@
 
     <div class='grid-2'>
       <label>Skill Level
-        <label>Skill Level
-          <select>
-            {{#if isBeginner}}
-              <option selected>Beginner</option>
-            {{else}}
-              <option>Beginner</option>
-            {{/if}}
-            {{#if isIntermediate}}
-              <option selected>Intermediate</option>
-            {{else}}
-              <option>Intermediate</option>
-            {{/if}}
-            {{#if isAdvanced}}
-              <option selected>Advanced</option>
-            {{else}}
-              <option>Advanced</option>
-            {{/if}}
-          </select>
-        </label>
+        <select>
+          {{#if isBeginner}}
+            <option selected>Beginner</option>
+          {{else}}
+            <option>Beginner</option>
+          {{/if}}
+          {{#if isIntermediate}}
+            <option selected>Intermediate</option>
+          {{else}}
+            <option>Intermediate</option>
+          {{/if}}
+          {{#if isAdvanced}}
+            <option selected>Advanced</option>
+          {{else}}
+            <option>Advanced</option>
+          {{/if}}
+        </select>
       </label>
 
       <label>Attended Events Visibility

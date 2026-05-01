@@ -140,7 +140,9 @@ export function checkBio(bio){
 export function checkSportInterests(spIntr){ //array
     if (!spIntr) throw "No sport interests were provided"
     if (!Array.isArray(spIntr)) throw "Sport interests has to be an array"
-    if (spIntr.length == 0) throw "Please provide at least one sport interest"
+    if (spIntr.length == 0) {
+        return []
+    }
     for (let i = 0; i < spIntr.length; i++) {
         spIntr[i] = checkSport(spIntr[i])
     }

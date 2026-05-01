@@ -71,4 +71,13 @@ export async function authenticateUser(email, password){
     return user
 }
 
+
+export async function editSportInterests(userId, sportsInterests){
+    userId = await checkAuthorId(userId)
+    sportsInterests = checkSportInterests(sportsInterests)
+    let users1 = await users()
+    let updateUser = await users1.updateOne({_id: new ObjectId(userId)}, {$set: {sportsInterests: sportsInterests}})
+    if (!updateUser.acknowledged) throw 'Could not update sport interests'
+    return true
+}
 //Add more function if needed (updates, remove, etc...)
