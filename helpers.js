@@ -413,6 +413,4 @@ export async function findAuthor(authorId){
     let re2 = ret.firstName + " " + ret.lastName
     return re2
 }
-
-
 //TODO add key word search for inaproproate content
