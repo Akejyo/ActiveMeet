@@ -135,6 +135,14 @@ export async function updateUser(userId, updateData) {
   return updateUser
 }
 
+export async function deleteUser(userId) {
+  userId = await checkAuthorId(userId)
+  let users1 = await users()
+  let deleteUser = await users1.findOneAndDelete({ _id: new ObjectId(userId) })
+  if (!deleteUser) throw `Could not delete user with id ${userId}`
+  return { deleted: true }
+}
+
 export async function addFollower(userId, followerId) {
   userId = await checkAuthorId(userId)
   followerId = await checkAuthorId(followerId)
@@ -154,5 +162,19 @@ export async function addFollower(userId, followerId) {
   return true
 }
 
-//Add more function if needed (updates, remove, etc...)
-
+export async function removeFollower(userId, followerId) {
+  userId = await checkAuthorId(userId)
+  followerId = await checkAuthorId(followerId)
+  let users1 = await users()
+  let updateUser = await users1.updateOne(
+    { _id: new ObjectId(userId) },
+    { $pull: { followerIds: followerId } },
+  )
+  if (updateUser.modifiedCount === 0) throw 'Could not remove follower'
+  let updateFollower = await users1.updateOne(
+    { _id: new ObjectId(followerId) },
+    { $pull: { followingIds: userId } },
+  )
+  if (updateFollower.modifiedCount === 0) throw 'Could not update follower'
+  return true
+}
