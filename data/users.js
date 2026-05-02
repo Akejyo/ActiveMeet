@@ -1,11 +1,24 @@
 //TODO functions to add, delete, ... from database
 
-import {users} from "../config/mongoCollections.js"
-import { checkAge, checkCity, checkEmail, checkFirstName, checkGender, checkLastName, checkAuthorId,
-    checkState, checkBio, checkPassword, checkVisibility, checkSportInterests, checkSkillLevel, checkEmailFieldsOnly
-} from "../helpers.js";
-import bcrypt from 'bcrypt';
-import { ObjectId } from "mongodb";
+import { users } from '../config/mongoCollections.js'
+import {
+  checkAge,
+  checkCity,
+  checkEmail,
+  checkFirstName,
+  checkGender,
+  checkLastName,
+  checkAuthorId,
+  checkState,
+  checkBio,
+  checkPassword,
+  checkVisibility,
+  checkSportInterests,
+  checkSkillLevel,
+  checkEmailFieldsOnly,
+} from '../helpers.js'
+import bcrypt from 'bcrypt'
+import { ObjectId } from 'mongodb'
 
 export async function createUser(
   first,
@@ -131,6 +144,20 @@ export async function deleteUser(userId) {
   return { deleted: true }
 }
 
+export async function updatePassword(userId, newPassword) {
+  userId = await checkAuthorId(userId)
+  newPassword = checkPassword(newPassword)
+  let saltRounds = 15
+  let pass = await bcrypt.hash(newPassword, saltRounds)
+  let users1 = await users()
+  let updateUser = await users1.updateOne(
+    { _id: new ObjectId(userId) },
+    { $set: { password: pass } },
+  )
+  if (updateUser.modifiedCount === 0) throw 'Could not update password'
+  return true
+}
+
 export async function addFollower(userId, followerId) {
   userId = await checkAuthorId(userId)
   followerId = await checkAuthorId(followerId)
@@ -167,24 +194,100 @@ export async function removeFollower(userId, followerId) {
   return true
 }
 
-export async function authenticateUser(email, password){
-    email = checkEmailFieldsOnly(email)
-    password = checkPassword(password)
-    let users1 = await users()
-    let user = await users1.findOne({email: email})
-    if (!user) throw 'Either email or password is incorrect'
-    let isMatch = await bcrypt.compare(password, user.password)
-    if (!isMatch) throw 'Either email or password is incorrect'
-    return user
+export async function authenticateUser(email, password) {
+  email = checkEmailFieldsOnly(email)
+  password = checkPassword(password)
+  let users1 = await users()
+  let user = await users1.findOne({ email: email })
+  if (!user) throw 'Either email or password is incorrect'
+  let isMatch = await bcrypt.compare(password, user.password)
+  if (!isMatch) throw 'Either email or password is incorrect'
+  return user
 }
 
-
-export async function editSportInterests(userId, sportsInterests){
-    userId = await checkAuthorId(userId)
-    sportsInterests = checkSportInterests(sportsInterests)
-    let users1 = await users()
-    let updateUser = await users1.updateOne({_id: new ObjectId(userId)}, {$set: {sportsInterests: sportsInterests}})
-    if (!updateUser.acknowledged) throw 'Could not update sport interests'
-    return true
+export async function editSportInterests(userId, sportsInterests) {
+  userId = await checkAuthorId(userId)
+  sportsInterests = checkSportInterests(sportsInterests)
+  let users1 = await users()
+  let updateUser = await users1.updateOne(
+    { _id: new ObjectId(userId) },
+    { $set: { sportsInterests: sportsInterests } },
+  )
+  if (!updateUser.acknowledged) throw 'Could not update sport interests'
+  return true
 }
-//Add more function if needed (updates, remove, etc...)
+
+export async function getPublicUserProfile(userId) {
+  userId = await checkAuthorId(userId)
+  let users1 = await users()
+  let user = await users1.findOne(
+    { _id: new ObjectId(userId) },
+    {
+      projection: {
+        firstName: 1,
+        lastName: 1,
+        city: 1,
+        state: 1,
+        bio: 1,
+        sportsInterests: 1,
+        skill: 1,
+        visibility: 1,
+        joinedPostIds: 1,
+        createdPostIds: 1,
+      },
+    },
+  )
+  if (!user) throw 'User not found'
+  if (user.visibility === 'private') delete user.joinedPostIds
+  return user
+}
+
+export async function updateEventsVisibility(userId, visibility) {
+  userId = await checkAuthorId(userId)
+  visibility = checkVisibility(visibility)
+  let users1 = await users()
+  let updateUser = await users1.updateOne(
+    { _id: new ObjectId(userId) },
+    { $set: { visibility: visibility } },
+  )
+  if (updateUser.modifiedCount === 0) throw 'Could not update events visibility'
+  return true
+}
+
+export async function getFollowers(userId) {
+  userId = await checkAuthorId(userId)
+  let users1 = await users()
+  let user = await users1.findOne(
+    { _id: new ObjectId(userId) },
+    { projection: { followerIds: 1 } },
+  )
+  if (!user) throw 'User not found'
+
+  user.followerIds = user.followerIds.map((id) => new ObjectId(id))
+  let followers = await users1
+    .find(
+      { _id: { $in: user.followerIds } },
+      { projection: { firstName: 1, lastName: 1 } },
+    )
+    .toArray()
+  return followers
+}
+
+export async function getFollowing(userId) {
+  userId = await checkAuthorId(userId)
+  let users1 = await users()
+  let user = await users1.findOne(
+    { _id: new ObjectId(userId) },
+    { projection: { followingIds: 1 } },
+  )
+  if (!user) throw 'User not found'
+
+  user.followingIds = user.followingIds.map((id) => new ObjectId(id))
+  let following = await users1
+    .find(
+      { _id: { $in: user.followingIds } },
+      { projection: { firstName: 1, lastName: 1 } },
+    )
+    .toArray()
+  return following
+}
