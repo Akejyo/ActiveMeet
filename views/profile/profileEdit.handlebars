@@ -1,38 +1,50 @@
-<section class="card">
+<section class='card'>
   <h1>Edit Profile</h1>
-  <p class="muted">Update your profile information and preferences.</p>
+  <p class='muted'>Update your profile information and preferences.</p>
 
-  <form class="form">
-    <div class="grid-2">
-      <label>Full Name
-        <input type="text" value="{{user.name}}" />
+  <form class='form'>
+    <div class='grid-2'>
+      <label>First Name
+        <input type='text' value='{{user.firstName}}' />
       </label>
 
-      <label>Username
-        <input type="text" value="{{user.username}}" />
+      <label>Last Name
+        <input type='text' value='{{user.lastName}}' />
       </label>
     </div>
 
-    <div class="grid-2">
+    <div class='grid-2'>
       <label>City
-        <input type="text" value="New York" />
+        <input type='text' value='{{user.city}}' />
       </label>
 
       <label>State
-        <input type="text" value="NY" />
+        <input type='text' value='{{user.state}}' />
       </label>
     </div>
 
     <label>Bio
-      <textarea rows="4">{{user.bio}}</textarea>
+      <textarea rows='4'>{{user.bio}}</textarea>
     </label>
 
-    <div class="grid-2">
+    <div class='grid-2'>
       <label>Skill Level
         <select>
-          <option {{#if isBeginner}}selected{{/if}}>Beginner</option>
-          <option {{#if isIntermediate}}selected{{/if}}>Intermediate</option>
-          <option {{#if isAdvanced}}selected{{/if}}>Advanced</option>
+          {{#if isBeginner}}
+            <option selected>Beginner</option>
+          {{else}}
+            <option>Beginner</option>
+          {{/if}}
+          {{#if isIntermediate}}
+            <option selected>Intermediate</option>
+          {{else}}
+            <option>Intermediate</option>
+          {{/if}}
+          {{#if isAdvanced}}
+            <option selected>Advanced</option>
+          {{else}}
+            <option>Advanced</option>
+          {{/if}}
         </select>
       </label>
 
@@ -44,6 +56,6 @@
       </label>
     </div>
 
-    <button type="submit" class="btn">Save Profile</button>
+    <button type='submit' class='btn'>Save Profile</button>
   </form>
 </section>

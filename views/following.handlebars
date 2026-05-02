@@ -1,17 +1,18 @@
-{{!-- TODO: This page's style need to be improved, maybe we can do two columns. Add a now list CSS class --}}
+{{! TODO: This page's style need to be improved, maybe we can do two columns. Add a now list CSS class }}
 
 <section>
   <h1>Following</h1>
-  <p class="muted">People you follow and whose posts affect your recommendations.</p>
+  <p class='muted'>People you follow and whose posts affect your
+    recommendations.</p>
 
-  <div class="list">
+  <div class='list'>
     {{#each following}}
-      <div class="card list-item">
+      <div class='card list-item'>
         <div>
           <h3>{{name}}</h3>
-          <p class="muted">Main activity: {{sport}}</p>
+          <p class='muted'>Sport Interests: {{sports}}</p>
         </div>
-        <button class="btn btn-outline small">{{status}}</button>
+        <button class='btn btn-outline small unpressable'>{{status}}</button>
       </div>
     {{/each}}
   </div>

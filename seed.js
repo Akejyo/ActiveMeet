@@ -31,21 +31,21 @@ const main = async () => {
 
     let post1, post2, post3 = undefined
     try{
-        let dandT = new Date("2026-04-22T07:00:00Z")
+        let dandT = new Date("2026-05-25T07:00:00Z")
         post1 = await createPost("Basketball Game", user1._id.toString(), "Basketball", "Looking for players to join a friendly basketball game this weekend!",
             dandT, 10, {min: 18, max: 120}, 'intermediate', 'co-ed', "Central Park");
     }catch(e){
         console.log(e)
     }
     try{
-        let dandT2 = new Date("2026-05-01T15:00:00Z")
+        let dandT2 = new Date("2026-05-20T15:00:00Z")
         post2 = await createPost("Hiking Trip", user2._id.toString(), "Hiking", "Join us for a fun hiking trip in the mountains!",
             dandT2, 5, {min: 23, max: 50}, 'beginner', 'co-ed', "Death Mountain");
     }catch(e){
         console.log(e)
     }
     try{
-        let dandT3 = new Date("2026-05-15T10:00:00Z")
+        let dandT3 = new Date("2026-06-15T10:00:00Z")
         post3 = await createPost("Running Group", user3._id.toString(), "Running", "Join our weekly running group!",
             dandT3, 8, {min: 25, max: 80}, 'advanced', 'co-ed', "Hoboken Waterfront");
     }catch(e){

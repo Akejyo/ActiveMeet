@@ -1,69 +1,99 @@
-<section class="auth-wrapper">
-  <div class="card auth-card large">
+<section class='auth-wrapper'>
+  <div class='card auth-card large'>
     <h1>Create Account</h1>
-    <p class="muted">Join the sports community and meet people with similar interests.</p>
+    <p class='muted'>Join the sports community and meet people with similar
+      interests.</p>
 
-    <form class="form">
-      <div class="grid-2">
-        <label>Full Name
-          <input type="text" placeholder="Your name" required />
+    <form class='form' method="POST" action="/profile/register">
+      <div class='grid-2'>
+        <label>First Name
+          <input type='text' name="firstName" placeholder='First name' value="{{prev.firstName}}" required />
         </label>
 
-        <label>Username
-          <input type="text" placeholder="@username" required />
+        <label>Last Name
+          <input type='text' name="lastName" placeholder='Last name' value="{{prev.lastName}}" required />
         </label>
       </div>
 
-      <div class="grid-2">
-        {{!-- * Now it's browser's own validation --}}
+      <div class='grid-2'>
+        {{! * Now it's browser's own validation }}
         <label>Email
-          <input type="email" placeholder="Email address" required />
+          <input type='email' name="email" placeholder='Email address' value="{{prev.email}}" required />
         </label>
-        {{!-- TODO: Password JS --}}
+        {{! TODO: Password JS }}
         <label>Password
-          <input type="password" placeholder="Create password" required />
+          <input type='password' name="password" placeholder='Create password' value="{{prev.password}}" required />
         </label>
       </div>
 
-      <div class="grid-3">
-        {{!-- ! This age need to be validated --}}
+      <div class='grid-3'>
+        {{! ! This age need to be validated }}
         <label>Age
-          <input type="number" placeholder="18" />
+          <input type='number' name="age" placeholder='18' value="{{prev.age}}" />
         </label>
 
         <label>Gender
-          <select>
-            <option>Male</option>
-            <option>Female</option>
-            <option>Non-binary</option>
-            <option>Prefer not to say</option>
+          <select name="gender">
+            {{#if prev.m}}
+              <option value="male" selected>Male</option>
+            {{else}}
+              <option value="male">Male</option>
+            {{/if}}
+            {{#if prev.f}}
+              <option value="female" selected>Female</option>
+            {{else}}
+              <option value="female">Female</option>
+            {{/if}}
+            {{#if prev.o}}
+              <option value="other" selected>Other</option>
+            {{else}}
+              <option value="other">Other</option>
+            {{/if}}
           </select>
         </label>
 
         <label>Skill Level
-          <select>
-            <option>Beginner</option>
-            <option>Intermediate</option>
-            <option>Advanced</option>
+          <select name="skill">
+            {{#if prev.b}}
+              <option value="beginner" selected>Beginner</option>
+            {{else}}
+              <option value="beginner">Beginner</option>
+            {{/if}}
+            {{#if prev.i}}
+              <option value="intermediate" selected>Intermediate</option>
+            {{else}}
+              <option value="intermediate">Intermediate</option>
+            {{/if}}
+            {{#if prev.a}}
+              <option value="advanced" selected>Advanced</option>
+            {{else}}
+              <option value="advanced">Advanced</option>
+            {{/if}}
           </select>
         </label>
       </div>
 
-      <div class="grid-2">
+      <div class='grid-2'>
         <label>City
-          <input type="text" placeholder="New York" />
+          <input type='text' name="city" placeholder='New York' value="{{prev.city}}" />
         </label>
 
         <label>State
-          <input type="text" placeholder="NY" />
+          <input type='text' name="state" placeholder='NY' value="{{prev.state}}" />
         </label>
       </div>
-  {{!-- TODO: JS validation, auto jump to next step --}}
-      <button type="submit" class="btn full">Create Account</button>
+      {{! TODO: JS validation, auto jump to next step }}
+      <button type='submit' class='btn full'>Create Account</button>
     </form>
+    {{#if error}}
+    <p id="errmess2">{{message}}</p>
+    {{/if}}
 
-    <p class="form-note">
-      Next step: <a href="/profile/interest-setup">Set your interests</a>
+    <p class='form-note'>
+      Don't forget to add your bio and sport interests after registration to get better matches!
+      {{!-- <a href='/profile/interest-setup'>Set your interests</a> --}}
+      <br>
+      Already have an account? <a href='/profile/login'>Login here</a>
     </p>
   </div>
 </section>

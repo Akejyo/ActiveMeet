@@ -56,6 +56,24 @@ export async function checkEmail(email){
     return email
 }
 
+export function checkEmailFieldsOnly(email){
+    if (!email) throw "Email was not provided"
+    if (typeof(email) != 'string') throw "Email must be a string"
+    email = email.trim()
+    let par = email.split('@')
+    if (par.length != 2) throw "Invalid email format"
+    if (par[0].length > 64) throw "Invalid email format"
+    let acpe1 = /^[a-zA-Z0-9!#\$%&'\*\+\-\/=\?\^_\{~\.`}]*$/ //Found to be the accepted chars for username email address
+    if(!acpe1.test(par[0])) throw "Invalid email format"
+    if(par[0].includes("..")) throw "Invalid email format"
+    if(par[1].includes("..")) throw "Invalid email format"
+    if(par[0][0] === '.' || par[0][par[0].length - 1] === "." || par[1][0] === '.' || par[1][par[1].length - 1] === "." ) throw "Invalid email format"
+    let acpe2 = /^[a-zA-Z0-9\-.]*$/
+    if(!acpe2.test(par[1])) throw "Invalid email format"
+    if(email.length > 320) throw "Invalid email format"
+    return email.toLowerCase()
+}
+
 export function checkCity(city){
     if(!city) throw "No city was provided"
     if (typeof(city) != 'string') throw "City needs to be a string"
@@ -103,10 +121,10 @@ export function checkAge(age){
 export function checkGender(gen){
     if(!gen) throw "No gender was provided"
     if (typeof(gen) != 'string') throw "gender needs to be a string"
-    let gender = ['male', 'female']
+    let gender = ['male', 'female', 'other']
     gen = gen.trim()
     gen = gen.toLowerCase()
-    if (!gender.includes(gen)) throw "Please only type male or female"
+    if (!gender.includes(gen)) throw "Please only type male, female, or other"
     return gen
 }
 
@@ -122,7 +140,9 @@ export function checkBio(bio){
 export function checkSportInterests(spIntr){ //array
     if (!spIntr) throw "No sport interests were provided"
     if (!Array.isArray(spIntr)) throw "Sport interests has to be an array"
-    if (spIntr.length == 0) throw "Please provide at least one sport interest"
+    if (spIntr.length == 0) {
+        return []
+    }
     for (let i = 0; i < spIntr.length; i++) {
         spIntr[i] = checkSport(spIntr[i])
     }
@@ -201,7 +221,7 @@ export function checkTitle(title){
     if(typeof(title) != 'string') throw "Title has to be a string"
     title = title.trim()
     if(title.length < 3 || title.length > 20) throw "Title has to be between 3 and 20 characters"
-    let accept1 = /^[a-zA-Z/s ]+$/
+    let accept1 = /^[a-zA-Z\s]+$/
     if (!accept1.test(title)) throw "Invalid character in title, can only contain letters and spaces"
     return title
 }
@@ -292,7 +312,7 @@ export function checkComments(cmm){ //array
     if (!cmm) throw "No comments provided"
     if (!Array.isArray(cmm)) throw "Comments has to be an array"
     for (let i = 0; i < cmm.length; i++) {
-        if (!Object.isObject(cmm[i])) throw "Each comment has to be an object" //{user: 'name', content; 'string comment'
+        if (typeof(cmm[i]) !== "object" || Array.isArray(cmm[i])) throw "Each comment has to be an object" //{user: 'name', content; 'string comment'
         if (!cmm[i].user || !cmm[i].content) throw "Each comment has to have user and content"
         if (Object.keys(cmm[i]).length != 2) throw "Each comment can only have user and content fields"
         if (typeof(cmm[i].user) != 'string' || typeof(cmm[i].content) != 'string') throw "User and content of each comment has to be a string"
@@ -342,8 +362,14 @@ export function checkMessage(mss){ //optional message
     return mss
 }
 
+export async function checkCommentId(commentId){
+    commentId = checkId(commentId);
+    let postsCollection = await posts();
+    let comment = await postsCollection.findOne({"comments.commentId": new ObjectId(commentId)});
+    if(!comment) throw "Error: No comment found with that id";
+    return commentId;
+}
 //TODO validate report fields
-
 export function checkReason(reas){
     if (!reas) throw "No reason provided"
     if (typeof(reas) != 'string') throw "Reason has to be a string"
@@ -378,5 +404,15 @@ export function checkNotes(nt){
     if (nt.length > 300) throw "Please keep notes under 300 characters"
     return nt
 }
+
+export async function findAuthor(authorId){
+    authorId = await checkAuthorId(authorId);
+    const users1 = await users();
+    let ret = await users1.findOne({_id: new ObjectId(authorId)})
+    if (!ret) throw "No post found"
+    let re2 = ret.firstName + " " + ret.lastName
+    return re2
+}
+
 
 //TODO add key word search for inaproproate content

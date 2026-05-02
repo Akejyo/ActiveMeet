@@ -1,52 +1,53 @@
-{{!-- TODO: Modify style, we can search some other website for reference --}}
-{{!-- ? Do we need avatar? --}}
+{{! TODO: Modify style, we can search some other website for reference }}
+{{! ? Do we need avatar? }}
 
-<section class="card profile-header">
+<section class='card profile-header'>
   <div>
-    <h1>{{user.name}}</h1>
-    <p class="muted">{{user.username}} · {{user.city}}</p>
+    <h1>{{user.firstName}} {{user.lastName}}</h1>
+    <p class='muted'>{{user.city}}, {{user.state}}</p>
     <p>{{user.bio}}</p>
   </div>
 
-  <div class="profile-stats">
+  <div class='profile-stats'>
     <div><strong>{{user.followers}}</strong><span>Followers</span></div>
     <div><strong>{{user.following}}</strong><span>Following</span></div>
     <div><strong>{{user.skill}}</strong><span>Level</span></div>
   </div>
 </section>
 
-<section class="card">
+<section class='card'>
   <h2>Interests</h2>
-  <div class="chips">
+  <div class='chips'>
     {{#each user.interests}}
-      <span class="chip">{{this}}</span>
+      <span class='chip'>{{this}}</span>
     {{/each}}
   </div>
 </section>
 
-<section class="card">
+<section class='card'>
   <h2>Badges</h2>
-  <div class="chips">
+  <div class='chips'>
     {{#each user.badges}}
-      <span class="chip badge">{{this}}</span>
+      <span class='chip badge'>{{this}}</span>
     {{/each}}
   </div>
 </section>
 
 <section>
-  <div class="section-title">
+  <div class='section-title'>
     <h2>Your Posts</h2>
-    <a href="/profile/edit" class="btn small">Edit Profile</a>
+    <a href='/profile/edit' class='btn small'>Edit Profile</a>
+    <a href="/profile/interest-setup" class='btn small'>Set Interests</a>
   </div>
 
-  <div class="post-list">
+  <div class='post-list'>
     {{#each posts}}
-      <article class="card post-card">
-        <span class="tag">{{sport}}</span>
+      <article class='card post-card'>
+        <span class='tag'>{{sport}}</span>
         <h3>{{title}}</h3>
-        <p class="muted">{{location}} · {{date}}</p>
+        <p class='muted'>{{location}} · {{eventDateTime}}</p>
         <p>{{description}}</p>
-        <a href="/posts/{{id}}" class="btn small">Open</a>
+        <a href='/posts/{{_id}}' class='btn small'>Open</a>
       </article>
     {{/each}}
   </div>
