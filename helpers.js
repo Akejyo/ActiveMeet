@@ -190,6 +190,7 @@ export function checkVisibility(vis){
     if(!vis) throw "No visibility provided"
     if(typeof(vis) != 'string') throw "Visibility has to be a string"
     vis = vis.trim()
+    vis = vis.toLowerCase()
     if (vis != 'public' && vis != 'private') throw "Visibility has to be either public or private"
     return vis
 }

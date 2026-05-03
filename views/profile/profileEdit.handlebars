@@ -2,34 +2,34 @@
   <h1>Edit Profile</h1>
   <p class='muted'>Update your profile information and preferences.</p>
 
-  <form class='form'>
+  <form class='form' action='/profile/edit' method='POST'>
     <div class='grid-2'>
       <label>First Name
-        <input type='text' value='{{user.firstName}}' />
+        <input type='text' name="firstName" value='{{user.firstName}}' />
       </label>
 
       <label>Last Name
-        <input type='text' value='{{user.lastName}}' />
+        <input type='text' name="lastName" value='{{user.lastName}}' />
       </label>
     </div>
 
     <div class='grid-2'>
       <label>City
-        <input type='text' value='{{user.city}}' />
+        <input type='text' name="city" value='{{user.city}}' />
       </label>
 
       <label>State
-        <input type='text' value='{{user.state}}' />
+        <input type='text' name="state" value='{{user.state}}' />
       </label>
     </div>
 
     <label>Bio
-      <textarea rows='4'>{{user.bio}}</textarea>
+      <textarea rows='4' name="bio">{{user.bio}}</textarea>
     </label>
 
     <div class='grid-2'>
       <label>Skill Level
-        <select>
+        <select name="skill">
           {{#if isBeginner}}
             <option selected>Beginner</option>
           {{else}}
@@ -49,12 +49,24 @@
       </label>
 
       <label>Attended Events Visibility
-        <select>
-          <option selected>Public</option>
-          <option>Private</option>
+        <select name="visibility">
+          {{#if isPublic}}
+            <option selected>Public</option>
+          {{else}}
+            <option>Public</option>
+          {{/if}}
+          {{#if isPrivate}}
+            <option selected>Private</option>
+          {{else}}
+            <option>Private</option>
+          {{/if}}
         </select>
       </label>
     </div>
+
+    {{#if error}}
+      <p class='error'>{{message}}</p>
+    {{/if}}
 
     <button type='submit' class='btn'>Save Profile</button>
   </form>

@@ -6,9 +6,9 @@ import { ObjectId } from 'mongodb';
 //* Temporary data
 import { sampleUser, samplePosts } from './sampleData.js';
 import { checkEmailFieldsOnly, checkFirstName, checkLastName, checkCity, checkState, 
-  checkAge, checkGender, checkEmail, checkSkillLevel, checkPassword } from '../helpers.js';
+  checkAge, checkGender, checkEmail, checkSkillLevel, checkPassword, checkVisibility, checkBio } from '../helpers.js';
 import { authenticateUser } from '../data/users.js';
-import { createUser, editSportInterests } from '../data/users.js';
+import { createUser, editSportInterests, editProfile } from '../data/users.js';
 
 router.route('/')
 .get(async (req, res) => {
@@ -52,15 +52,132 @@ router.route('/')
   }
 });
 
-router.get('/edit', (req, res) => { //set logedIn to true if user is logged in, false otherwise
-  //TODO
-  res.render('profile/profileEdit', {
-    title: 'Edit Profile',
-    user: sampleUser,
-    isBeginner: sampleUser.skill === 'Beginner',
-    isIntermediate: sampleUser.skill === 'Intermediate',
-    isAdvanced: sampleUser.skill === 'Advanced'
-  });
+router.route('/edit')
+.get((req, res) => {
+  if(!req.session.user) {
+    res.redirect('/profile/login')
+  }else{
+    
+    res.render('profile/profileEdit', {
+      title: 'Edit Profile',
+      user: req.session.user,
+      isBeginner: (req.session.user.skill === 'beginner'),
+      isIntermediate: (req.session.user.skill === 'intermediate'),
+      isAdvanced: (req.session.user.skill === 'advanced'),
+      isPublic: (req.session.user.visibility === 'public'),
+      isPrivate: (req.session.user.visibility === 'private'),
+      logedIn: true
+    });
+  }
+})
+.post(async (req, res) => {
+  if(!req.session.user) {
+    res.redirect('/profile/login')
+  }else{
+    let { firstName, lastName, city, state, bio, skill, visibility } = req.body;
+    let message = [];
+    let error = false;
+    try{
+      firstName = checkFirstName(firstName);
+    }catch(e){
+      message.push(e);
+      error = true;
+    }
+    try{
+      lastName = checkLastName(lastName);
+    }catch(e){
+      message.push(e);
+      error = true;
+    }
+    try{
+      city = checkCity(city);
+    }catch(e){
+      message.push(e);
+      error = true;
+    }
+    try{
+      state = checkState(state);
+    }catch(e){
+      message.push(e);
+      error = true;
+    }
+    try{
+      bio = checkBio(bio);
+    }catch(e){
+      message.push(e);
+      error = true;
+    }
+    try{
+      skill = checkSkillLevel(skill);
+    }catch(e){
+      message.push(e);
+      error = true;
+    }
+    try{
+      visibility = checkVisibility(visibility);
+    }catch(e){
+      message.push(e);
+      error = true;
+    }
+    if(error){
+      let prev = {
+        firstName: firstName,
+        lastName: lastName,
+        city: city,
+        state: state,
+        bio: bio,
+        skill: skill,
+        visibility: visibility
+      }
+      return res.status(400).render('profile/profileEdit', { title: 'Edit Profile',
+        user: prev, 
+        isBeginner: (prev.skill === 'beginner'), //WRONG change later
+        isIntermediate: (prev.skill === 'intermediate'),
+        isAdvanced: (prev.skill === 'advanced'),
+        isPublic: (prev.visibility === 'public'),
+        isPrivate: (prev.visibility === 'private'),
+        logedIn: true,
+        error: true, message: message.join(' AND ')});
+    }else{
+      try{
+        let res2 = await editProfile(req.session.user._id, firstName, lastName, city, state, bio, skill, visibility)
+        if (!res2) throw 'Could not update profile'
+        delete req.session.user
+        req.session.user = {
+          _id: res2._id.toString(),
+          firstName: res2.firstName,
+          lastName: res2.lastName,
+          email: res2.email,
+          city: res2.city,
+          state: res2.state,
+          age: res2.age,
+          gender: res2.gender,
+          bio: res2.bio,
+          sportsInterests: res2.sportsInterests,
+          followerNumber: res2.followerIds.length,
+          followerIds: res2.followerIds,
+          followingNumber: res2.followingIds.length,
+          followingIds: res2.followingIds,
+          createdPostIds: res2.createdPostIds,
+          joinedPostIds: res2.joinedPostIds,
+          blockedUserIds: res2.blockedUserIds,
+          visibility: res2.visibility,
+          skill: res2.skill
+        }
+        return res.redirect('/profile')
+      }catch(e){
+        return res.status(400).render('profile/profileEdit', { title: 'Edit Profile',
+          user: req.session.user,
+          isBeginner: (req.session.user.skill === 'beginner'),
+          isIntermediate: (req.session.user.skill === 'intermediate'),
+          isAdvanced: (req.session.user.skill === 'advanced'),
+          isPublic: (req.session.user.visibility === 'public'),
+          isPrivate: (req.session.user.visibility === 'private'),
+          logedIn: true,
+          error: true, message: e });
+      }
+    }
+  }
 });
 
 // login and register
