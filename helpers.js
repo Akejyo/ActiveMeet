@@ -228,6 +228,14 @@ export function checkTitle(title){
     return title
 }
 
+export function checkSearchText(searchText){
+    if (!searchText) return ""
+    if(typeof(searchText) != 'string') throw "Search text has to be a string"
+    searchText = searchText.trim()
+    if(searchText.length > 100) throw "Search text has to be between 0 and 100 characters"
+    return searchText
+}
+
 export function checkDescription(desc){
     if (!desc) throw "No description provided"
     if (typeof(desc) != 'string') throw "Description has to be a string"
