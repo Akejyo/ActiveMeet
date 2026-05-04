@@ -21,7 +21,18 @@ router.get('/:id', (req, res) => { //TODO both get and post routes
   });
 });
 
+router.post('/:id/like', (req, res) => {
+  // TODO: Implement the logic for liking a post
+});
+
+router.post('/:id/dislike', (req, res) => {
+  // TODO: Implement the logic for disliking a post
+});
+
 // TODO: Add a POST route for processing a request to join a post.
+router.post('/:id/join', (req, res) => {
+  // TODO: Implement the logic for joining a post
+});
 
 router.get('/:id/edit', (req, res) => { //TODO both get and post routes
     const postId = req.params.id;

@@ -10,6 +10,24 @@ import { checkEmailFieldsOnly, checkFirstName, checkLastName, checkCity, checkSt
 import { authenticateUser } from '../data/users.js';
 import { createUser, editSportInterests, editProfile } from '../data/users.js';
 
+// router.route('/:id').get(async (req, res) => {
+//   if(!req.session.user) {
+//     return res.redirect('/profile/login')
+//   }else{
+//     // TODO modify handlebars or add to view other users rather than own (with follow button)
+//     // TODO modify handlebars to add button to view other users (only if set to public)
+//     // TODO complete this route
+//   }
+// });
+
+router.route('/:id/follow').post(async (req, res) => {
+  // TODO: Implement the logic for following a user
+});
+
+router.route('/:id/unfollow').post(async (req, res) => {
+  // TODO: Implement the logic for unfollowing a user
+});
+
 router.route('/')
 .get(async (req, res) => {
   if(!req.session.user) {
@@ -131,7 +149,7 @@ router.route('/edit')
       }
       return res.status(400).render('profile/profileEdit', { title: 'Edit Profile',
         user: prev, 
-        isBeginner: (prev.skill === 'beginner'), //WRONG change later
+        isBeginner: (prev.skill === 'beginner'),
         isIntermediate: (prev.skill === 'intermediate'),
         isAdvanced: (prev.skill === 'advanced'),
         isPublic: (prev.visibility === 'public'),

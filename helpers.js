@@ -134,6 +134,7 @@ export function checkBio(bio){
     bio = bio.trim()
     if (bio.length < 5) throw "Please write something for bio, (over 5 chars)"
     if (bio.length > 200) throw "Please keep bio under 200 characters"
+    bio = keyWordModeration(bio)
     return bio
 }
 
@@ -233,6 +234,7 @@ export function checkDescription(desc){
     desc = desc.trim()
     if (desc.length < 5) throw "Please write something for description, (over 5 chars)"
     if (desc.length > 300) throw "Please keep description under 300 characters"
+    desc = keyWordModeration(desc);
     return desc
 }
 
@@ -375,9 +377,30 @@ export function checkReason(reas){
     if (!reas) throw "No reason provided"
     if (typeof(reas) != 'string') throw "Reason has to be a string"
     reas = reas.trim()
-    if (reas.length < 5) throw "Please write something for reason, (over 5 chars)"
+    if (reas.length < 4) throw "Please write something for reason, (over 4 chars)"
     if (reas.length > 300) throw "Please keep reason under 300 characters"
+    reas = keyWordModeration(reas);
     return reas
+}
+
+export function checkReason2(reas){
+    if (!reas) throw "No reason provided"
+    if (typeof(reas) != 'string') throw "Reason has to be a string"
+    reas = reas.trim()
+    let validReasons = ['inappropriate content', 'harassment', 'spam', 'fake event', 'other'];
+    reas = reas.toLowerCase()
+    if (!validReasons.includes(reas)) throw "Invalid reason provided"
+    return reas
+}
+
+export function checkReportType(rt){
+    if (!rt) throw "No report type provided"
+    if (typeof(rt) != 'string') throw "Report type has to be a string"
+    rt = rt.trim()
+    let reportTypes = ['post', 'user']
+    rt = rt.toLowerCase()
+    if (!reportTypes.includes(rt)) throw "Invalid report type provided (post, user)"
+    return rt
 }
 
 export function checkStatusReport(st) { //open, reviewed, resolved, dismissed
@@ -415,5 +438,13 @@ export async function findAuthor(authorId){
     return re2
 }
 
-
-//TODO add key word search for inaproproate content
+//key word search for inaproproate content
+export function keyWordModeration(text) {
+    let inappropriateWords = ['fuck', 'stupid', 'imbecile', 'idiot', 'bitch', 'asshole', 
+        'dick', 'piss', 'cunt', 'shit']; //Could add more 
+    let words = text.toLowerCase().split(' ');
+    for (let word of words) {
+        if (inappropriateWords.includes(word)) throw "Inappropriate content found";
+    }
+    return text
+}

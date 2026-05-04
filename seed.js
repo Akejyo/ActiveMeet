@@ -3,7 +3,7 @@ import { users, posts, joinRequests, reports} from './config/mongoCollections.js
 import { createUser, addFollower } from './data/users.js'
 import { createPost, addComment } from './data/posts.js'
 import { createJoinRequest } from './data/joinRequests.js'
-import { createReport } from './data/reports.js'
+import { createReport2 } from './data/reports.js'
 import { ObjectId } from 'mongodb'
 
 const main = async () => {    //TODO: Add more seed data, posts, comments, likes, follows, etc
@@ -61,7 +61,8 @@ const main = async () => {    //TODO: Add more seed data, posts, comments, likes
 
     let rep1 = undefined
     try{
-        rep1 = await createReport(user3._id.toString(), post2._id.toString(), "Why to death mountain, inappropriate location");
+        rep1 = await createReport2(user3._id.toString(), "post", user1.email, "Inappropriate content", "His post on basketball is inappropriate.");
+        // rep1 = await createReport(user3._id.toString(), post2._id.toString(), "Why to death mountain, inappropriate location");
     }catch(e){
         console.log(e)
     }

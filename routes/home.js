@@ -4,6 +4,8 @@ const router = express.Router();
 import { getAllPosts } from '../data/posts.js';
 import {findAuthor} from "../helpers.js"
 
+//TODO: Add functionality to the filter button
+
 router.get('/', async (req, res) => {
   if (!req.session.user){
     res.redirect('/profile/login')
