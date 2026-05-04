@@ -2,8 +2,6 @@
 import express from 'express';
 const router = express.Router();
 
-//* Temporary data
-// import { followingList } from './sampleData.js';
 import { ObjectId } from 'mongodb';
 import { users } from '../config/mongoCollections.js';
 

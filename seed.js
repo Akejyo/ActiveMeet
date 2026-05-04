@@ -6,7 +6,7 @@ import { createJoinRequest } from './data/joinRequests.js'
 import { createReport } from './data/reports.js'
 import { ObjectId } from 'mongodb'
 
-const main = async () => {
+const main = async () => {    //TODO: Add more seed data, posts, comments, likes, follows, etc
     const db = await dbConnection()
     await db.dropDatabase()
     let user1, user2, user3 = undefined

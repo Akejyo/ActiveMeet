@@ -1,4 +1,3 @@
-//TODO functions to add, delete, ... from database
 
 import {users} from "../config/mongoCollections.js"
 import { checkAge, checkCity, checkEmail, checkFirstName, checkGender, checkLastName, checkAuthorId,

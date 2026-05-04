@@ -1,4 +1,3 @@
-//TODO functions to add, delete, ... from database
 
 import { posts, users } from "../config/mongoCollections.js";
 import { checkAuthorId, checkTitle, checkSport, checkDescription, checkDateAndTime,

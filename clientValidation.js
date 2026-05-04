@@ -1,4 +1,4 @@
-export const checkCheck = {
+export const checkCheck = { //TODO: FIX and/or add when all forms are done
   isValidName(name) {
     name = this.isString(name, 'Name')
     if (name.length < 2 || name.length > 20)

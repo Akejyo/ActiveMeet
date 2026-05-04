@@ -1,4 +1,3 @@
-//TODO functions to add, delete, ... from database
 
 import { joinRequests, posts } from "../config/mongoCollections.js";
 import { checkAuthorId, checkPostId, checkMessage } from "../helpers.js";

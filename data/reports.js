@@ -1,4 +1,3 @@
-//TODO functions to add, delete, ... from database
 
 import { posts, reports } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
