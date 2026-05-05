@@ -2,48 +2,63 @@
   <h1>Create a New Post</h1>
   <p class='muted'>Organize a sports activity and invite the community to join.</p>
 
-  <form class='form'>
+  <form class='form' action='/posts/create' method='POST'>
     <label>Post Title
-      <input type='text' placeholder='e.g. Saturday Basketball 5v5' required />
+      <input type='text' name="title" placeholder='e.g. Saturday Basketball 5v5' required />
     </label>
 
     <div class='grid-2'>
       <label>Sport Type
-        <select>
+        <select name="sport">
           <option>Basketball</option>
-          <option>Running</option>
-          <option>Hiking</option>
           <option>Soccer</option>
           <option>Tennis</option>
+          <option>Baseball</option>
+          <option>Volleyball</option>
+          <option>Football</option>
+          <option>Hockey</option>
+          <option>Golf</option>
+          <option>Swimming</option>
+          <option>Running</option>
+          <option>Badminton</option>
+          <option>Bowling</option>
+          <option>Archery</option>
+          <option>Cycling</option>
+          <option>Boxing</option>
+          <option>Cricket</option>
+          <option>Darts</option>
+          <option>Gymnastics</option>
+          <option>Gym</option>
+          <option>Hiking</option>
         </select>
       </label>
 
       <label>Location
-        <input type='text' placeholder='Enter location' />
+        <input type='text' name="location" placeholder='Enter location' />
       </label>
     </div>
 
     <div class='grid-3'>
       <label>Date
-        <input type='date' />
+        <input type='date' name="date" />
       </label>
 
       <label>Time
-        <input type='time' />
+        <input type='time' name="time" />
       </label>
 
       <label>Max Participants
-        <input type='number' placeholder='10' />
+        <input type='number' name="maxParticipants" placeholder='10' />
       </label>
     </div>
 
     <div class='grid-3'>
       <label>Age Restriction
-        <input type='text' placeholder='e.g. 18-30' />
+        <input type='text' name="ageRestriction" placeholder='e.g. 18-30' />
       </label>
 
       <label>Skill Level
-        <select>
+        <select name="skillLevel">
           <option>Beginner</option>
           <option>Intermediate</option>
           <option>Advanced</option>
@@ -52,7 +67,7 @@
       </label>
 
       <label>Gender
-        <select>
+        <select name="gender">
           <option>Co-ed</option>
           <option>Male only</option>
           <option>Female only</option>
@@ -62,7 +77,7 @@
 
     <label>Description
       <textarea
-        rows='5'
+        rows='5' name="description"
         placeholder='Describe the activity, expectations, equipment, etc.'
       ></textarea>
     </label>
