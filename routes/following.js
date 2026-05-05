@@ -18,7 +18,8 @@ router.get('/', async (req, res) => {
         let obj = {
           name: `${user.firstName} ${user.lastName}`,
           sports: user.sportsInterests.join(", "),
-          status: "Following"
+          status: "Following",
+          id: user._id
         }
         following.push(obj)
       }

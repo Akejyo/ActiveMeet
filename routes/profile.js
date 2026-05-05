@@ -1,7 +1,7 @@
 import express from 'express';
 const router = express.Router();
 
-import { posts } from '../config/mongoCollections.js';
+import { posts, users } from '../config/mongoCollections.js';
 import { ObjectId } from 'mongodb';
 //* Temporary data
 import { sampleUser, samplePosts } from './sampleData.js';
@@ -9,24 +9,6 @@ import { checkEmailFieldsOnly, checkFirstName, checkLastName, checkCity, checkSt
   checkAge, checkGender, checkEmail, checkSkillLevel, checkPassword, checkVisibility, checkBio } from '../helpers.js';
 import { authenticateUser } from '../data/users.js';
 import { createUser, editSportInterests, editProfile } from '../data/users.js';
-
-// router.route('/:id').get(async (req, res) => {
-//   if(!req.session.user) {
-//     return res.redirect('/profile/login')
-//   }else{
-//     // TODO modify handlebars or add to view other users rather than own (with follow button)
-//     // TODO modify handlebars to add button to view other users (only if set to public)
-//     // TODO complete this route
-//   }
-// });
-
-router.route('/:id/follow').post(async (req, res) => {
-  // TODO: Implement the logic for following a user
-});
-
-router.route('/:id/unfollow').post(async (req, res) => {
-  // TODO: Implement the logic for unfollowing a user
-});
 
 router.route('/')
 .get(async (req, res) => {
@@ -54,14 +36,26 @@ router.route('/')
       for(let i = 0; i < postIds.length; i++){
         let p = await posts1.findOne({_id: new ObjectId(postIds[i])})
         if(p){
-          p.eventDateTime = p.eventDateTime.toString()
+          // p.eventDateTime = p.eventDateTime.toString()
+          p.eventDateTime = `${p.eventDateTime.toLocaleDateString()} ${p.eventDateTime.toLocaleTimeString()}`;
           pos.push(p)
+        }
+      }
+      let joinedPosts = []
+      let joinedPostIds = req.session.user.joinedPostIds
+      for(let i = 0; i < joinedPostIds.length; i++){
+        let p = await posts1.findOne({_id: new ObjectId(joinedPostIds[i])})
+        if(p){
+          // p.eventDateTime = p.eventDateTime.toString()
+          p.eventDateTime = `${p.eventDateTime.toLocaleDateString()} ${p.eventDateTime.toLocaleTimeString()}`;
+          joinedPosts.push(p)
         }
       }
       res.render('profile/profile', {
         title: 'Profile',
         user: us,
         posts: pos,
+        joinedPosts: joinedPosts,
         logedIn: true
       });
     }catch(e){
@@ -439,6 +433,72 @@ router.get('/logout', (req, res) => {
     delete req.session.user
     res.redirect('/profile/login')
   }
+});
+
+router.route('/:id').get(async (req, res) => {
+  if(!req.session.user) {
+    return res.redirect('/profile/login')
+  }else{
+    try{
+      let users1 = await users();
+      let user = await users1.findOne({ _id: new ObjectId(req.params.id) });
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+      if (user._id.toString() === req.session.user._id.toString()) {
+        return res.redirect('/profile');
+      } else {
+        let following = false;
+        if (user.followerIds && user.followerIds.includes(req.session.user._id)) {
+          following = true;
+        }
+        if (user.visibility === 'private') {
+          return res.status(200).render('profile/publicProfile', { title: 'Public Profile', 
+            logedIn: true, public: false, user: user, following: following });
+        } else {
+          let postsJoined = [];
+          if (user.joinedPostIds) {
+            let posts1 = await posts();
+            for (let i = 0; i < user.joinedPostIds.length; i++) {
+              let p = await posts1.findOne({ _id: new ObjectId(user.joinedPostIds[i]) });
+              if (p) {
+                // p.eventDateTime = p.eventDateTime.toString();
+                p.eventDateTime = `${p.eventDateTime.toLocaleDateString()} ${p.eventDateTime.toLocaleTimeString()}`;
+                postsJoined.push(p);
+              }
+            }
+          }
+          let posts2 = [];
+          if (user.createdPostIds) {
+            let posts1 = await posts();
+            for (let i = 0; i < user.createdPostIds.length; i++) {
+              let p = await posts1.findOne({ _id: new ObjectId(user.createdPostIds[i]) });
+              if (p) {
+                // p.eventDateTime = p.eventDateTime.toString();
+                p.eventDateTime = `${p.eventDateTime.toLocaleDateString()} ${p.eventDateTime.toLocaleTimeString()}`;
+                posts2.push(p);
+              }
+            }
+          }
+          return res.status(200).render('profile/publicProfile', { title: 'Public Profile', 
+            logedIn: true, public: true, user: user, following: following, 
+            postsJoined: postsJoined, posts: posts2 });
+        }
+      }
+    }catch(e){
+      res.status(400).json({ error: e });
+    }
+  }
+});
+
+router.route('/:id/follow').post(async (req, res) => {
+  // TODO: Implement the logic for following a user
+  res.json({ message: 'User followed successfully' });
+});
+
+router.route('/:id/unfollow').post(async (req, res) => {
+  // TODO: Implement the logic for unfollowing a user
+  res.json({ message: 'User unfollowed successfully' });
 });
 
 export default router;

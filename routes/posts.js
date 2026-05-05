@@ -48,6 +48,7 @@ router.route('/:id').get(async (req, res) => { //TODO both get and post routes
         sport: post.sport,
         title: post.title,
         author: user.firstName + ' ' + user.lastName,
+        authorId: post.authorId,
         location: post.location,
         date: post.eventDateTime.toLocaleDateString(),
         time: post.eventDateTime.toLocaleTimeString(),
@@ -82,33 +83,33 @@ router.route('/:id').get(async (req, res) => { //TODO both get and post routes
   res.redirect(`/posts/${req.params.id}`)
 });
 
-router.post('/:id/like', (req, res) => {
+router.get('/:id/like', (req, res) => {
   // TODO: Implement the logic for liking a post
   res.redirect(`/posts/${req.params.id}`)
 });
 
-router.post('/:id/dislike', (req, res) => {
+router.get('/:id/dislike', (req, res) => {
   // TODO: Implement the logic for disliking a post
   res.redirect(`/posts/${req.params.id}`)
 });
 
 // TODO: Add a POST route for processing a request to join a post.
-router.post('/:id/join', (req, res) => {
+router.get('/:id/join', (req, res) => {
   // TODO: Implement the logic for joining a post
   res.redirect(`/posts/${req.params.id}`);
 });
 
-router.post('/:id/accept/:userId', (req, res) => {
+router.get('/:id/accept/:userId', (req, res) => {
   // TODO: Implement the logic for accepting a request to join a post
   res.redirect(`/posts/${req.params.id}`);
 });
 
-router.post('/:id/decline/:userId', (req, res) => {
+router.get('/:id/decline/:userId', (req, res) => {
   // TODO: Implement the logic for declining a request to join a post
   res.redirect(`/posts/${req.params.id}`);
 });
 
-router.post('/:id/decline/:userId', (req, res) => {
+router.get('/:id/decline/:userId', (req, res) => {
   // TODO: Implement the logic for declining a request to join a post
   res.redirect(`/posts/${req.params.id}`);
 });

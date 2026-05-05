@@ -34,6 +34,7 @@ router.route('/').get(async (req, res) => {
           sport: a.sport,
           title: a.title,
           author: c,
+          authorId: a.authorId,
           location: a.location,
           date: a.eventDateTime.toLocaleDateString(),
           time: a.eventDateTime.toLocaleTimeString(),
@@ -65,7 +66,6 @@ router.route('/').get(async (req, res) => {
   if (!req.session.user){
     res.redirect('/profile/login')
   } else {
-    // TODO: Add functionality for the filter button
     let { searchText, sport } = req.body;
     let message = []
     let error = false
