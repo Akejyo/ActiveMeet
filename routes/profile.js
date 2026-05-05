@@ -3,8 +3,6 @@ const router = express.Router();
 
 import { posts, users } from '../config/mongoCollections.js';
 import { ObjectId } from 'mongodb';
-//* Temporary data
-import { sampleUser, samplePosts } from './sampleData.js';
 import { checkEmailFieldsOnly, checkFirstName, checkLastName, checkCity, checkState, 
   checkAge, checkGender, checkEmail, checkSkillLevel, checkPassword, checkVisibility, checkBio } from '../helpers.js';
 import { authenticateUser } from '../data/users.js';
@@ -266,7 +264,7 @@ router.route('/register')
 .post(async (req, res) => { //xss for all and check session
   if (req.session.user) {
     res.redirect('/profile')
-  } else {  //Missing: bio, visibility?
+  } else {
     let { firstName, lastName, email, password, age, city, state, gender, skill } = req.body
     let message = []
     let error = false
@@ -462,7 +460,6 @@ router.route('/:id').get(async (req, res) => {
             for (let i = 0; i < user.joinedPostIds.length; i++) {
               let p = await posts1.findOne({ _id: new ObjectId(user.joinedPostIds[i]) });
               if (p) {
-                // p.eventDateTime = p.eventDateTime.toString();
                 p.eventDateTime = `${p.eventDateTime.toLocaleDateString()} ${p.eventDateTime.toLocaleTimeString()}`;
                 postsJoined.push(p);
               }
@@ -474,7 +471,6 @@ router.route('/:id').get(async (req, res) => {
             for (let i = 0; i < user.createdPostIds.length; i++) {
               let p = await posts1.findOne({ _id: new ObjectId(user.createdPostIds[i]) });
               if (p) {
-                // p.eventDateTime = p.eventDateTime.toString();
                 p.eventDateTime = `${p.eventDateTime.toLocaleDateString()} ${p.eventDateTime.toLocaleTimeString()}`;
                 posts2.push(p);
               }
@@ -492,13 +488,76 @@ router.route('/:id').get(async (req, res) => {
 });
 
 router.route('/:id/follow').post(async (req, res) => {
-  // TODO: Implement the logic for following a user
-  res.json({ message: 'User followed successfully' });
+  if(!req.session.user) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  } else {
+    try {
+      let users1 = await users();
+      let user = await users1.findOne({ _id: new ObjectId(req.params.id) });
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+      if (!user.followerIds.includes(req.session.user._id)) {
+        user.followerIds.push(req.session.user._id);
+        let result = await users1.updateOne({ _id: new ObjectId(req.params.id) }, { $set: { followerIds: user.followerIds }});
+        if (!result) {
+          return res.status(500).json({ error: 'Failed to update user, possible internal server error' });
+        }
+      }
+      let thisuser = await users1.findOne({ _id: new ObjectId(req.session.user._id) });
+      if (!thisuser) {
+        return res.status(404).json({ error: 'Current user not found' });
+      }
+      if (!thisuser.followingIds.includes(user._id.toString())) {
+        thisuser.followingIds.push(user._id.toString());
+        req.session.user.followingIds = thisuser.followingIds;
+        req.session.user.followingNumber = thisuser.followingIds.length;
+        let result = await users1.updateOne({ _id: new ObjectId(req.session.user._id) }, { $set: { followingIds: thisuser.followingIds }});
+        if (!result) {
+          return res.status(500).json({ error: 'Failed to update user, possible internal server error' });
+        }
+      }
+    } catch (e) {
+      return res.status(500).json({ error: `An error occurred: ${e}` });
+    }
+  }
+  res.redirect(`/profile/${req.params.id}`);
 });
 
 router.route('/:id/unfollow').post(async (req, res) => {
-  // TODO: Implement the logic for unfollowing a user
-  res.json({ message: 'User unfollowed successfully' });
+  if(!req.session.user) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  try {
+    let users1 = await users();
+    let user = await users1.findOne({ _id: new ObjectId(req.params.id) });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    if (user.followerIds.includes(req.session.user._id)) {
+      user.followerIds = user.followerIds.filter(id => id.toString() !== req.session.user._id.toString());
+      let result = await users1.updateOne({ _id: new ObjectId(req.params.id) }, {$set: { followerIds: user.followerIds}});
+      if (!result) {
+        return res.status(500).json({ error: 'Failed to update user, possible internal server error' });
+      }
+    }
+    let thisuser = await users1.findOne({ _id: new ObjectId(req.session.user._id) });
+    if (!thisuser) {
+      return res.status(404).json({ error: 'Current user not found' });
+    }
+    if (thisuser.followingIds.includes(user._id.toString())) {
+      thisuser.followingIds = thisuser.followingIds.filter(id => id.toString() !== user._id.toString());
+      req.session.user.followingIds = thisuser.followingIds;
+      req.session.user.followingNumber = thisuser.followingIds.length;
+      let result = await users1.updateOne({ _id: new ObjectId(req.session.user._id) }, {$set: { followingIds: thisuser.followingIds}});
+      if (!result) {
+        return res.status(500).json({ error: 'Failed to update user, possible internal server error' });
+      }
+    }
+  }catch(e) {
+    return res.status(500).json({ error: `An error occurred: ${e}` });
+  }
+  res.redirect(`/profile/${req.params.id}`);
 });
 
 export default router;

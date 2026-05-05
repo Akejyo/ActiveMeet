@@ -72,7 +72,7 @@ router.route('/:id').get(async (req, res) => { //TODO both get and post routes
       }
       let isAuthor = post.authorId === req.session.user._id;
       res.status(200).render('post/postDetail', { title: 'Post Detail', 
-        post: post2, comments: comments, isAuthor: isAuthor });
+        post: post2, comments: comments, isAuthor: isAuthor, logedIn: true });
     }catch(e) {
       return res.status(500).json({ error: `An error occurred: ${e}`});
     }
