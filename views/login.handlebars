@@ -1,26 +1,60 @@
-<section class='auth-wrapper'>
-  <div class='card auth-card'>
+<section class='login-page-container' id='login-page'>
+  <div class='login-half-circle'></div>
+
+  <div class='login-main-panel'>
+    <div class='login-welcome'>
+      <h1>ActiveMeet</h1>
+      <p>Connect with people through sports, activities, and local events.</p>
+
+      <div class='login-button-stack'>
+        <button
+          type='button'
+          class='login-signup-button'
+          id='show-login-button'
+        >Login</button>
+
+        <a
+          href='/profile/register'
+          class='login-signup-button page-transition-link'
+        >Sign Up</a>
+      </div>
+    </div>
+  </div>
+
+  <div class='login-panel card auth-card' id='login-panel'>
     <h1>Login</h1>
     <p class='muted'>Welcome back to ActiveMeet.</p>
 
-    <form class='form' method='POST' action='/profile/login'>
+    <form class='form' method='POST' action='/profile/login' id='login-form'>
       <label>Email
-        <input type='email' name="email" placeholder='Enter your email' value="{{prev.email}}" required>
+        <input
+          type='email'
+          name='email'
+          id='login-email'
+          placeholder='Enter your email'
+          value='{{prev.email}}'
+          required
+        />
       </label>
 
       <label>Password
-        <input type='password' name="password" placeholder='Enter your password' value="{{prev.password}}" required>
+        <input
+          type='password'
+          name='password'
+          id='login-password'
+          placeholder='Enter your password'
+          value='{{prev.password}}'
+          required
+        />
       </label>
+
+      <p id='login-client-error' class='error' hidden></p>
 
       <button type='submit' class='btn full'>Login</button>
     </form>
-    {{#if error}}
-    <p id="errmess2">{{message}}</p>
-    {{/if}}
 
-    <p class='form-note'>
-      Don't have an account?
-      <a href='/profile/register'>Register here</a>
-    </p>
+    {{#if error}}
+      <p id='errmess2'>{{message}}</p>
+    {{/if}}
   </div>
 </section>
