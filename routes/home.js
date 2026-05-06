@@ -4,8 +4,6 @@ const router = express.Router();
 import { getAllPosts } from '../data/posts.js';
 import {findAuthor, checkSport, checkSearchText} from "../helpers.js"
 
-//TODO: Filter on default get for user interests and following list
-
 router.route('/').get(async (req, res) => {
   if (!req.session.user){
     res.redirect('/profile/login')
@@ -48,9 +46,30 @@ router.route('/').get(async (req, res) => {
         }
         posts2.push(b)
       }
-      //filter out posts based on user TODO (blocked users)
-      //sort posts2 based on user interests TODO
-      //sort posts2 based on following list TODO
+      //filter out posts based on user's blocked users
+      posts2 = posts2.filter(post => !req.session.user.blockedUserIds.includes(post.authorId));
+      //filter out own posts
+      posts2 = posts2.filter(post => post.authorId !== req.session.user._id.toString());
+      //sort posts2 based on user interests
+      posts2.sort((a, b) => {
+        if (req.session.user.sportsInterests.includes(a.sport) && !req.session.user.sportsInterests.includes(b.sport)) {
+          return -1;
+        }
+        if (!req.session.user.sportsInterests.includes(a.sport) && req.session.user.sportsInterests.includes(b.sport)) {
+          return 1;
+        }
+        return 0;
+      });
+      //sort posts2 based on following list
+      posts2.sort((a, b) => {
+        if (req.session.user.followingIds.includes(a.authorId) && !req.session.user.followingIds.includes(b.authorId)) {
+          return -1;
+        }
+        if (!req.session.user.followingIds.includes(a.authorId) && req.session.user.followingIds.includes(b.authorId)) {
+          return 1;
+        }
+        return 0;
+      });
       res.render('home', {
         title: 'Home',
         user: us,
@@ -138,6 +157,7 @@ router.route('/').get(async (req, res) => {
           sport: a.sport,
           title: a.title,
           author: c,
+          authorId: a.authorId,
           location: a.location,
           date: a.eventDateTime.toLocaleDateString(),
           time: a.eventDateTime.toLocaleTimeString(),
@@ -157,6 +177,26 @@ router.route('/').get(async (req, res) => {
         }
         posts2.push(b)
       }
+      //filter out blocked users
+      posts2 = posts2.filter(post => !req.session.user.blockedUserIds.includes(post.authorId));
+      //filter out own posts
+      posts2 = posts2.filter(post => post.authorId !== req.session.user._id.toString());
+      //sort based on user's interests
+      posts2.sort((a, b) => {
+        const aIsInterested = req.session.user.sportsInterests.includes(a.sport);
+        const bIsInterested = req.session.user.sportsInterests.includes(b.sport);
+        if (aIsInterested && !bIsInterested) return -1;
+        if (!aIsInterested && bIsInterested) return 1;
+        return 0;
+      });
+      //sort based on user's following list
+      posts2.sort((a, b) => {
+        const aIsFollowing = req.session.user.followingIds.includes(a.authorId);
+        const bIsFollowing = req.session.user.followingIds.includes(b.authorId);
+        if (aIsFollowing && !bIsFollowing) return -1;
+        if (!aIsFollowing && bIsFollowing) return 1;
+        return 0;
+      });
       res.render('home', {
         title: 'Home',
         user: us,
