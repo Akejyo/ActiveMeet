@@ -271,6 +271,20 @@ export function checkMaxParticipants(part){
     return part
 }
 
+export function parsAndCheckAgeRestriction(str){ //format 12-120, 18-50  to {min: 12, max: 120}
+    if (!str) throw "No age restriction string provided"
+    if (typeof(str) != 'string') throw "Age restriction has to be a string"
+    str = str.trim()
+    let parts = str.split('-')
+    if (parts.length != 2) throw "Invalid age restriction format. Please use the format 'min-max'"
+    let min = parseInt(parts[0])
+    let max = parseInt(parts[1])
+    if (isNaN(min) || isNaN(max)) throw "Invalid age values in the string"
+    if (min > max) throw "Minimum age has to be less than maximum age"
+    let ret = checkAgeRestrictions({ min: min, max: max })
+    return ret
+}
+
 export function checkAgeRestrictions(obj){ //{min: 13, max: 120}
     if (!obj) throw "No age restrictions provided"
     if (typeof(obj) != 'object') throw "Age restrictions has to be an object"
@@ -278,7 +292,7 @@ export function checkAgeRestrictions(obj){ //{min: 13, max: 120}
     if (!obj.min || !obj.max) throw "Age restrictions has to have min and max properties"
     if (Object.keys(obj).length != 2) throw "Age restrictions can only have min and max properties"
     if (typeof(obj.min) != 'number' || typeof(obj.max) != 'number') throw "Age restrictions has to be a number"
-    if (obj.min < 13 || obj.max > 120) throw "Invalid age range provided"
+    if (obj.min < 13 || obj.max > 120) throw "Invalid age range provided (13-120)"
     if (obj.min > obj.max) throw "Minimum age has to be less than maximum age"
     return obj
 }

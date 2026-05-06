@@ -7,20 +7,139 @@ import { posts, users } from '../config/mongoCollections.js';
 
 //* Temporary data
 import { samplePosts } from './sampleData.js';
+import { checkDateAndTime, checkLocation, checkMaxParticipants, parsAndCheckAgeRestriction, 
+  checkSport, checkTitle, checkSkillLevelRestriction, checkGenderRestriction, checkDescription
+} from '../helpers.js';
+import e from 'express';
+import { createPost } from '../data/posts.js';
 
-router.route('/create').get((req, res) => {  //TODO post route
+router.route('/create').get((req, res) => {
   if (!req.session.user) {
     return res.redirect('/profile/login');
   } else {
     res.render('post/postCreate', { title: 'Create Post', logedIn: true });
   }
 })
-.post((req, res) => {
-  // TODO: Implement the logic for creating a new post
+.post(async (req, res) => {
+  if (!req.session.user) {
+    return res.redirect('/profile/login');
+  } else {
+    let { sport, title, location, date, time, maxParticipants, ageRestriction, 
+      skillLevel, genderRestriction, description } = req.body;
+    let message = []
+    let error = false;
+    try{
+      sport = checkSport(sport);
+    }catch(e){
+      message.push(e)
+      error = true;
+    }
+    try{
+      title = checkTitle(title);
+    }catch(e){
+      message.push(e)
+      error = true;
+    }
+    try{
+      location = checkLocation(location);
+    }catch(e){
+      message.push(e)
+      error = true;
+    }
+    let dateAndTime = undefined
+    try{
+      dateAndTime = new Date(`${date}T${time}`);
+      dateAndTime = checkDateAndTime(dateAndTime);
+    }catch(e){
+      message.push(e)
+      error = true;
+    }
+    try{
+      maxParticipants = checkMaxParticipants(maxParticipants);
+    } catch(e){
+      message.push(e)
+      error = true;
+    }
+    let ageRestriction2 = undefined
+    try{
+      ageRestriction2 = parsAndCheckAgeRestriction(ageRestriction);
+    } catch(e){
+      message.push(e)
+      error = true;
+    }
+    try{
+      skillLevel = checkSkillLevelRestriction(skillLevel);
+    } catch(e){
+      message.push(e)
+      error = true;
+    }
+    try{
+      genderRestriction = checkGenderRestriction(genderRestriction);
+    } catch(e){
+      message.push(e)
+      error = true;
+    }
+    try{
+      description = checkDescription(description);
+    } catch(e){
+      message.push(e)
+      error = true;
+    }
+    let prev = {
+      isBasketball: (sport === "basketball"),
+      isSoccer: (sport === "soccer"),
+      isTennis: (sport === "tennis"),
+      isBaseball: (sport === "baseball"),
+      isVolleyball: (sport === "volleyball"),
+      isFootball: (sport === "football"),
+      isHockey: (sport === "hockey"),
+      isGolf: (sport === "golf"),
+      isSwimming: (sport === "swimming"),
+      isRunning: (sport === "running"),
+      isBadminton: (sport === "badminton"),
+      isBowling: (sport === "bowling"),
+      isArchery: (sport === "archery"),
+      isCycling: (sport === "cycling"),
+      isBoxing: (sport === "boxing"),
+      isCricket: (sport === "cricket"),
+      isDarts: (sport === "darts"),
+      isGymnastics: (sport === "gymnastics"),
+      isGym: (sport === "gym"),
+      isHiking: (sport === "hiking"),
+      title: title,
+      location: location,
+      date: date,
+      time: time,
+      maxParticipants: maxParticipants,
+      ageRestriction: ageRestriction,
+      isBeginner: (skillLevel === "beginner"),
+      isIntermediate: (skillLevel === "intermediate"),
+      isAdvanced: (skillLevel === "advanced"),
+      isAllLevels: (skillLevel === "all levels"),
+      isCoed: (genderRestriction === "co-ed"),
+      isMaleOnly: (genderRestriction === "male only"),
+      isFemaleOnly: (genderRestriction === "female only"),
+      description: description
+    }
+    if (error) {
+      return res.status(400).render('post/postCreate', { title: 'Create Post', logedIn: true, error: true,
+        prev: prev, message: message.join(" AND ") });
+    } else {
+      try{
+        let newPost = await createPost(title, req.session.user._id, sport, description,
+          dateAndTime, maxParticipants, ageRestriction2, skillLevel, genderRestriction, location
+        )
+        res.redirect(`/posts/${newPost._id}`);
+      }catch(e){
+        return res.status(500).render('post/postCreate', { title: 'Create Post', logedIn: true, 
+          prev: prev, error: true, message: e});
+      }
+    }
+  }
 });
 
 
-router.route('/:id').get(async (req, res) => { //TODO both get and post routes
+router.route('/:id').get(async (req, res) => { //TODO post route for comments
   if (!req.session.user) {
     return res.redirect('/profile/login');
   } else {

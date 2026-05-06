@@ -4,73 +4,181 @@
 
   <form class='form' action='/posts/create' method='POST'>
     <label>Post Title
-      <input type='text' name="title" placeholder='e.g. Saturday Basketball 5v5' required />
+      <input type='text' value='{{prev.title}}' name="title" placeholder='e.g. Saturday Basketball 5v5' required>
     </label>
 
     <div class='grid-2'>
       <label>Sport Type
         <select name="sport">
-          <option>Basketball</option>
-          <option>Soccer</option>
-          <option>Tennis</option>
-          <option>Baseball</option>
-          <option>Volleyball</option>
-          <option>Football</option>
-          <option>Hockey</option>
-          <option>Golf</option>
-          <option>Swimming</option>
-          <option>Running</option>
-          <option>Badminton</option>
-          <option>Bowling</option>
-          <option>Archery</option>
-          <option>Cycling</option>
-          <option>Boxing</option>
-          <option>Cricket</option>
-          <option>Darts</option>
-          <option>Gymnastics</option>
-          <option>Gym</option>
-          <option>Hiking</option>
+          {{#if prev.isBasketball}}
+            <option value="basketball" selected>Basketball</option>
+          {{else}}
+            <option value="basketball">Basketball</option>
+          {{/if}}
+          {{#if prev.isSoccer}}
+            <option value="soccer" selected>Soccer</option>
+          {{else}}
+            <option value="soccer">Soccer</option>
+          {{/if}}
+          {{#if prev.isTennis}}
+            <option value="tennis" selected>Tennis</option>
+          {{else}}
+            <option value="tennis">Tennis</option>
+          {{/if}}
+          {{#if prev.isBaseball}}
+            <option value="baseball" selected>Baseball</option>
+          {{else}}
+            <option value="baseball">Baseball</option>
+          {{/if}}
+          {{#if prev.isVolleyball}}
+            <option value="volleyball" selected>Volleyball</option>
+          {{else}}
+            <option value="volleyball">Volleyball</option>
+          {{/if}}
+          {{#if prev.isFootball}}
+            <option value="football" selected>Football</option>
+          {{else}}
+            <option value="football">Football</option>
+          {{/if}}
+          {{#if prev.isHockey}}
+            <option value="hockey" selected>Hockey</option>
+          {{else}}
+            <option value="hockey">Hockey</option>
+          {{/if}}
+          {{#if prev.isGolf}}
+            <option value="golf" selected>Golf</option>
+          {{else}}
+            <option value="golf">Golf</option>
+          {{/if}}
+          {{#if prev.isSwimming}}
+            <option value="swimming" selected>Swimming</option>
+          {{else}}
+            <option value="swimming">Swimming</option>
+          {{/if}}
+          {{#if prev.isRunning}}
+            <option value="running" selected>Running</option>
+          {{else}}
+            <option value="running">Running</option>
+          {{/if}}
+          {{#if prev.isBadminton}}
+            <option value="badminton" selected>Badminton</option>
+          {{else}}
+            <option value="badminton">Badminton</option>
+          {{/if}}
+          {{#if prev.isBowling}}
+            <option value="bowling" selected>Bowling</option>
+          {{else}}
+            <option value="bowling">Bowling</option>
+          {{/if}}
+          {{#if prev.isArchery}}
+            <option value="archery" selected>Archery</option>
+          {{else}}
+            <option value="archery">Archery</option>
+          {{/if}}
+          {{#if prev.isCycling}}
+            <option value="cycling" selected>Cycling</option>
+          {{else}}
+            <option value="cycling">Cycling</option>
+          {{/if}}
+          {{#if prev.isBoxing}}
+            <option value="boxing" selected>Boxing</option>
+          {{else}}
+            <option value="boxing">Boxing</option>
+          {{/if}}
+          {{#if prev.isCricket}}
+            <option value="cricket" selected>Cricket</option>
+          {{else}}
+            <option value="cricket">Cricket</option>
+          {{/if}}
+          {{#if prev.isDarts}}
+            <option value="darts" selected>Darts</option>
+          {{else}}
+            <option value="darts">Darts</option>
+          {{/if}}
+          {{#if prev.isGymnastics}}
+            <option value="gymnastics" selected>Gymnastics</option>
+          {{else}}
+            <option value="gymnastics">Gymnastics</option>
+          {{/if}}
+          {{#if prev.isGym}}
+            <option value="gym" selected>Gym</option>
+          {{else}}
+            <option value="gym">Gym</option>
+          {{/if}}
+          {{#if prev.isHiking}}
+            <option value="hiking" selected>Hiking</option>
+          {{else}}
+            <option value="hiking">Hiking</option>
+          {{/if}}
         </select>
       </label>
 
       <label>Location
-        <input type='text' name="location" placeholder='Enter location' />
+        <input type='text' value='{{prev.location}}' name="location" placeholder='Enter location'>
       </label>
     </div>
 
     <div class='grid-3'>
       <label>Date
-        <input type='date' name="date" />
+        <input type='date' value='{{prev.date}}' name="date">
       </label>
 
       <label>Time
-        <input type='time' name="time" />
+        <input type='time' value='{{prev.time}}' name="time">
       </label>
 
       <label>Max Participants
-        <input type='number' name="maxParticipants" placeholder='10' />
+        <input type='number' value='{{prev.maxParticipants}}' name="maxParticipants" placeholder='10'>
       </label>
     </div>
 
     <div class='grid-3'>
       <label>Age Restriction
-        <input type='text' name="ageRestriction" placeholder='e.g. 18-30' />
+        <input type='text' value='{{prev.ageRestriction}}' name="ageRestriction" placeholder='e.g. 18-30'>
       </label>
 
       <label>Skill Level
         <select name="skillLevel">
-          <option>Beginner</option>
-          <option>Intermediate</option>
-          <option>Advanced</option>
-          <option>All Levels</option>
+          {{#if prev.isBeginner}}
+            <option value="beginner" selected>Beginner</option>
+          {{else}}
+            <option value="beginner">Beginner</option>
+          {{/if}}
+          {{#if prev.isIntermediate}}
+            <option value="intermediate" selected>Intermediate</option>
+          {{else}}
+            <option value="intermediate">Intermediate</option>
+          {{/if}}
+          {{#if prev.isAdvanced}}
+            <option value="advanced" selected>Advanced</option>
+          {{else}}
+            <option value="advanced">Advanced</option>
+          {{/if}}
+          {{#if prev.isAllLevels}}
+            <option value="all levels" selected>All Levels</option>
+          {{else}}
+            <option value="all levels">All Levels</option>
+          {{/if}}
         </select>
       </label>
 
       <label>Gender
-        <select name="gender">
-          <option>Co-ed</option>
-          <option>Male only</option>
-          <option>Female only</option>
+        <select name="genderRestriction">
+          {{#if prev.isCoed}}
+            <option value="co-ed" selected>Co-ed</option>
+          {{else}}
+            <option value="co-ed">Co-ed</option>
+          {{/if}}
+          {{#if prev.isMaleOnly}}
+            <option value="male only" selected>Male only</option>
+          {{else}}
+            <option value="male only">Male only</option>
+          {{/if}}
+          {{#if prev.isFemaleOnly}}
+            <option value="female only" selected>Female only</option>
+          {{else}}
+            <option value="female only">Female only</option>
+          {{/if}}
         </select>
       </label>
     </div>
@@ -79,8 +187,12 @@
       <textarea
         rows='5' name="description"
         placeholder='Describe the activity, expectations, equipment, etc.'
-      ></textarea>
+      >{{prev.description}}</textarea>
     </label>
+
+    {{#if error}}
+      <p class='error'>{{message}}</p>
+    {{/if}}
 
     <button type='submit' class='btn'>Publish Post</button>
   </form>
