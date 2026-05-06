@@ -330,6 +330,7 @@ export function checkComment(comment){
     if (typeof(comment) != 'string') throw "Comment has to be a string"
     comment = comment.trim()
     if (comment.length < 2 || comment.length > 300) throw "Comment has to be between 2 and 300 characters"
+    comment = keyWordModeration(comment);
     return comment
 }
 

@@ -51,9 +51,13 @@
   </div>
 
   <form class='form' action='/posts/{{post.id}}' method='POST'>
+    <br>
     <label>Add a comment
-      <textarea rows='3' name="comment" placeholder='Write your comment...'></textarea>
+      <textarea rows='3' name="comment" placeholder='Write your comment...'>{{prev.comment}}</textarea>
     </label>
+    {{#if error}}
+      <p class='error'>{{message}}</p>
+    {{/if}}
     <button type='submit' class='btn small'>Post Comment</button>
   </form>
 </section>
