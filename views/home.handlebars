@@ -11,17 +11,116 @@
 
 <section class='card'>
   <h2>Search & Filters</h2>
-  <form class='grid-3'>
-    <input type='text' placeholder='Search sports or activities...' />
-    <select>
+  <form class='grid-3' action='/' method='POST'>
+    <input type='text' name="searchText" value="{{prev}}" placeholder='Search sports or activities...'>
+    <select name='sport'>
       <option>All Sports</option>
-      <option>Basketball</option>
-      <option>Running</option>
-      <option>Hiking</option>
-      <option>Soccer</option>
+      {{#if isBasketball}}
+        <option selected>Basketball</option>
+      {{else}}
+        <option>Basketball</option>
+      {{/if}}
+      {{#if isSoccer}}
+        <option selected>Soccer</option>
+      {{else}}
+        <option>Soccer</option>
+      {{/if}}
+      {{#if isTennis}}
+        <option selected>Tennis</option>
+      {{else}}
+        <option>Tennis</option>
+      {{/if}}
+      {{#if isBaseball}}
+        <option selected>Baseball</option>
+      {{else}}
+        <option>Baseball</option>
+      {{/if}}
+      {{#if isVolleyball}}
+        <option selected>Volleyball</option>
+      {{else}}
+        <option>Volleyball</option>
+      {{/if}}
+      {{#if isFootball}}
+        <option selected>Football</option>
+      {{else}}
+        <option>Football</option>
+      {{/if}}
+      {{#if isHockey}}
+        <option selected>Hockey</option>
+      {{else}}
+        <option>Hockey</option>
+      {{/if}}
+      {{#if isGolf}}
+        <option selected>Golf</option>
+      {{else}}
+        <option>Golf</option>
+      {{/if}}
+      {{#if isSwimming}}
+        <option selected>Swimming</option>
+      {{else}}
+        <option>Swimming</option>
+      {{/if}}
+      {{#if isRunning}}
+        <option selected>Running</option>
+      {{else}}
+        <option>Running</option>
+      {{/if}}
+      {{#if isBadminton}}
+        <option selected>Badminton</option>
+      {{else}}
+        <option>Badminton</option>
+      {{/if}}
+      {{#if isBowling}}
+        <option selected>Bowling</option>
+      {{else}}
+        <option>Bowling</option>
+      {{/if}}
+      {{#if isArchery}}
+        <option selected>Archery</option>
+      {{else}}
+        <option>Archery</option>
+      {{/if}}
+      {{#if isCycling}}
+        <option selected>Cycling</option>
+      {{else}}
+        <option>Cycling</option>
+      {{/if}}
+      {{#if isBoxing}}
+        <option selected>Boxing</option>
+      {{else}}
+        <option>Boxing</option>
+      {{/if}}
+      {{#if isCricket}}
+        <option selected>Cricket</option>
+      {{else}}
+        <option>Cricket</option>
+      {{/if}}
+      {{#if isDarts}}
+        <option selected>Darts</option>
+      {{else}}
+        <option>Darts</option>
+      {{/if}}
+      {{#if isGymnastics}}
+        <option selected>Gymnastics</option>
+      {{else}}
+        <option>Gymnastics</option>
+      {{/if}}
+      {{#if isGym}}
+        <option selected>Gym</option>
+      {{else}}
+        <option>Gym</option>
+      {{/if}}
+      {{#if isHiking}}
+        <option selected>Hiking</option>
+      {{else}}
+        <option>Hiking</option>
+      {{/if}}
     </select>
     <button class='btn' type='submit'>Apply Filters</button>
   </form>
+  {{#if error}}
+    <p class='error'>{{message}}</p>
+  {{/if}}
 </section>
 
 <section>
@@ -34,7 +133,7 @@
           <span class='muted'>{{date}} · {{time}}</span>
         </div>
         <h3>{{title}}</h3>
-        <p class='muted'>By {{author}} · {{location}}</p>
+        <p class='muted'>By <a href='/profile/{{authorId}}'>{{author}}</a> · {{location}}</p>
         <p>{{description}}</p>
 
         <div class='meta-row'>

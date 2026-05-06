@@ -1,4 +1,3 @@
-//TODO functions to add, delete, ... from database
 
 import { users } from '../config/mongoCollections.js'
 import {
@@ -291,3 +290,29 @@ export async function getFollowing(userId) {
     .toArray()
   return following
 }
+
+export async function editProfile(userId, firstName, lastName, city, state, bio, skill, visibility){
+    userId = await checkAuthorId(userId)
+    firstName = checkFirstName(firstName)
+    lastName = checkLastName(lastName)
+    city = checkCity(city)
+    state = checkState(state)
+    bio = checkBio(bio)
+    skill = checkSkillLevel(skill)
+    visibility = checkVisibility(visibility)
+    let profileData = {
+        firstName: firstName,
+        lastName: lastName,
+        city: city,
+        state: state,
+        bio: bio,
+        skill: skill,
+        visibility: visibility
+    }
+    let users1 = await users()
+    let updateUser = await users1.updateOne({_id: new ObjectId(userId)}, {$set: profileData})
+    if (!updateUser.acknowledged) throw 'Could not update profile'
+    let updatedUser = await users1.findOne({_id: new ObjectId(userId)})
+    return updatedUser
+}
+//Add more function if needed (updates, remove, etc...)

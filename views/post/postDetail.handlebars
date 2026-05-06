@@ -5,7 +5,7 @@
   </div>
 
   <h1>{{post.title}}</h1>
-  <p class='muted'>By {{post.author}} · {{post.location}}</p>
+  <p class='muted'>By <a href='/profile/{{post.authorId}}'>{{post.author}}</a> · {{post.location}}</p>
   <p>{{post.description}}</p>
 
   <div class='meta-row'>
@@ -14,11 +14,38 @@
     <span>{{post.gender}}</span>
   </div>
 
-  <div class='action-row'>
-    <button class='btn'>Request to Join</button>
-    <button class='btn btn-outline'>Like</button>
-    <a href='/posts/1/edit' class='btn btn-outline'>Edit</a>
+  <div class='meta-row'>
+    <span>👍 {{post.likes}}</span>
+    <span>👎 {{post.dislikes}}</span>
+    <span>💬 {{post.comments}}</span>
   </div>
+
+  <div class='action-row'>
+    {{#if isAuthor}}
+    {{else}}
+    <a href='/posts/{{post.id}}/join' class='btn'>Request to Join</a>
+    <a href='/posts/{{post.id}}/like' class='btn btn-outline'>Like</a>
+    <a href='/posts/{{post.id}}/dislike' class='btn btn-outline'>Dislike</a>
+    {{/if}}
+    {{#if isAuthor}}
+      <a href='/posts/{{post.id}}/edit' class='btn'>Edit</a>
+    {{/if}}
+  </div>
+  <br>
+  {{#if isAuthor}}
+  <div class='info-row'>
+    <span>Accepted: {{post.accepted.length}}</span>
+    <span>Requests: {{post.requests.length}}</span>
+    <br>
+    {{#each post.requests}}
+      <br>
+      <p>{{this.name}}</p>
+      <a href='/posts/{{../post.id}}/accept/{{this.id}}' class='btn btn-outline'>Accept</a>
+      <a href='/posts/{{../post.id}}/decline/{{this.id}}' class='btn btn-outline'>Decline</a>
+      <br>
+    {{/each}}
+  </div>
+  {{/if}}
 </section>
 
 <section class='card'>
@@ -26,16 +53,20 @@
   <div class='comment-list'>
     {{#each comments}}
       <div class='comment'>
-        <strong>{{user}}</strong>
+        <strong>{{author}}</strong>
         <p>{{content}}</p>
       </div>
     {{/each}}
   </div>
 
-  <form class='form'>
+  <form class='form' action='/posts/{{post.id}}' method='POST'>
+    <br>
     <label>Add a comment
-      <textarea rows='3' placeholder='Write your comment...'></textarea>
+      <textarea rows='3' name="comment" placeholder='Write your comment...'>{{prev.comment}}</textarea>
     </label>
+    {{#if error}}
+      <p class='error'>{{message}}</p>
+    {{/if}}
     <button type='submit' class='btn small'>Post Comment</button>
   </form>
 </section>

@@ -2,32 +2,63 @@
   <h1>Report Content or User</h1>
   <p class='muted'>Help us keep the community safe and respectful.</p>
 
-  <form class='form'>
+  <form class='form' action="/report" method="POST">
     <label>Report Type
-      <select>
-        <option>Post</option>
-        <option>User</option>
-        <option>Chat Message</option>
+      <select name="reportType">
+        {{#if prev.isPost}}
+          <option selected>Post</option>
+        {{else}}
+          <option>Post</option>
+        {{/if}}
+        {{#if prev.isUser}}
+          <option selected>User</option>
+        {{else}}
+          <option>User</option>
+        {{/if}}
       </select>
     </label>
 
-    <label>Target ID / Username
-      <input type='text' placeholder='e.g. post #12 or @username' />
+    <label>Email of Author or Person being reported
+      <input type='email' name='targetEmail' value="{{prev.targetEmail}}" placeholder='john@example.com' />
     </label>
-    {{! ? Maybe more reasons }}
+    
     <label>Reason
-      <select>
-        <option>Inappropriate Content</option>
-        <option>Harassment</option>
-        <option>Spam</option>
-        <option>Fake Event</option>
-        <option>Other</option>
+      <select name='reason'>
+        {{#if prev.isInappropriate}}
+          <option selected>Inappropriate Content</option>
+        {{else}}
+          <option>Inappropriate Content</option>
+        {{/if}}
+        {{#if prev.isHarassment}}
+          <option selected>Harassment</option>
+        {{else}}
+          <option>Harassment</option>
+        {{/if}}
+        {{#if prev.isSpam}}
+          <option selected>Spam</option>
+        {{else}}
+          <option>Spam</option>
+        {{/if}}
+        {{#if prev.isFakeEvent}}
+          <option selected>Fake Event</option>
+        {{else}}
+          <option>Fake Event</option>
+        {{/if}}
+        {{#if prev.isOther}}
+          <option selected>Other</option>
+        {{else}}
+          <option>Other</option>
+        {{/if}}
       </select>
     </label>
 
     <label>Description
-      <textarea rows='5' placeholder='Describe the issue...'></textarea>
+      <textarea rows='5' name='description' placeholder='Describe the issue...'>{{prev.description}}</textarea>
     </label>
+
+    {{#if error}}
+      <p class='error'>{{message}}</p>
+    {{/if}}
     {{! TODO: Add JS }}
     <button type='submit' class='btn danger'>Submit Report</button>
   </form>

@@ -134,6 +134,7 @@ export function checkBio(bio){
     bio = bio.trim()
     if (bio.length < 5) throw "Please write something for bio, (over 5 chars)"
     if (bio.length > 200) throw "Please keep bio under 200 characters"
+    bio = keyWordModeration(bio)
     return bio
 }
 
@@ -190,6 +191,7 @@ export function checkVisibility(vis){
     if(!vis) throw "No visibility provided"
     if(typeof(vis) != 'string') throw "Visibility has to be a string"
     vis = vis.trim()
+    vis = vis.toLowerCase()
     if (vis != 'public' && vis != 'private') throw "Visibility has to be either public or private"
     return vis
 }
@@ -226,12 +228,21 @@ export function checkTitle(title){
     return title
 }
 
+export function checkSearchText(searchText){
+    if (!searchText) return ""
+    if(typeof(searchText) != 'string') throw "Search text has to be a string"
+    searchText = searchText.trim()
+    if(searchText.length > 100) throw "Search text has to be between 0 and 100 characters"
+    return searchText
+}
+
 export function checkDescription(desc){
     if (!desc) throw "No description provided"
     if (typeof(desc) != 'string') throw "Description has to be a string"
     desc = desc.trim()
     if (desc.length < 5) throw "Please write something for description, (over 5 chars)"
     if (desc.length > 300) throw "Please keep description under 300 characters"
+    desc = keyWordModeration(desc);
     return desc
 }
 
@@ -260,6 +271,20 @@ export function checkMaxParticipants(part){
     return part
 }
 
+export function parsAndCheckAgeRestriction(str){ //format 12-120, 18-50  to {min: 12, max: 120}
+    if (!str) throw "No age restriction string provided"
+    if (typeof(str) != 'string') throw "Age restriction has to be a string"
+    str = str.trim()
+    let parts = str.split('-')
+    if (parts.length != 2) throw "Invalid age restriction format. Please use the format 'min-max'"
+    let min = parseInt(parts[0])
+    let max = parseInt(parts[1])
+    if (isNaN(min) || isNaN(max)) throw "Invalid age values in the string"
+    if (min > max) throw "Minimum age has to be less than maximum age"
+    let ret = checkAgeRestrictions({ min: min, max: max })
+    return ret
+}
+
 export function checkAgeRestrictions(obj){ //{min: 13, max: 120}
     if (!obj) throw "No age restrictions provided"
     if (typeof(obj) != 'object') throw "Age restrictions has to be an object"
@@ -267,7 +292,7 @@ export function checkAgeRestrictions(obj){ //{min: 13, max: 120}
     if (!obj.min || !obj.max) throw "Age restrictions has to have min and max properties"
     if (Object.keys(obj).length != 2) throw "Age restrictions can only have min and max properties"
     if (typeof(obj.min) != 'number' || typeof(obj.max) != 'number') throw "Age restrictions has to be a number"
-    if (obj.min < 13 || obj.max > 120) throw "Invalid age range provided"
+    if (obj.min < 13 || obj.max > 120) throw "Invalid age range provided (13-120)"
     if (obj.min > obj.max) throw "Minimum age has to be less than maximum age"
     return obj
 }
@@ -305,6 +330,7 @@ export function checkComment(comment){
     if (typeof(comment) != 'string') throw "Comment has to be a string"
     comment = comment.trim()
     if (comment.length < 2 || comment.length > 300) throw "Comment has to be between 2 and 300 characters"
+    comment = keyWordModeration(comment);
     return comment
 }
 
@@ -374,9 +400,30 @@ export function checkReason(reas){
     if (!reas) throw "No reason provided"
     if (typeof(reas) != 'string') throw "Reason has to be a string"
     reas = reas.trim()
-    if (reas.length < 5) throw "Please write something for reason, (over 5 chars)"
+    if (reas.length < 4) throw "Please write something for reason, (over 4 chars)"
     if (reas.length > 300) throw "Please keep reason under 300 characters"
+    reas = keyWordModeration(reas);
     return reas
+}
+
+export function checkReason2(reas){
+    if (!reas) throw "No reason provided"
+    if (typeof(reas) != 'string') throw "Reason has to be a string"
+    reas = reas.trim()
+    let validReasons = ['inappropriate content', 'harassment', 'spam', 'fake event', 'other'];
+    reas = reas.toLowerCase()
+    if (!validReasons.includes(reas)) throw "Invalid reason provided"
+    return reas
+}
+
+export function checkReportType(rt){
+    if (!rt) throw "No report type provided"
+    if (typeof(rt) != 'string') throw "Report type has to be a string"
+    rt = rt.trim()
+    let reportTypes = ['post', 'user']
+    rt = rt.toLowerCase()
+    if (!reportTypes.includes(rt)) throw "Invalid report type provided (post, user)"
+    return rt
 }
 
 export function checkStatusReport(st) { //open, reviewed, resolved, dismissed
@@ -414,5 +461,13 @@ export async function findAuthor(authorId){
     return re2
 }
 
-
-//TODO add key word search for inaproproate content
+//key word search for inaproproate content
+export function keyWordModeration(text) {
+    let inappropriateWords = ['fuck', 'stupid', 'imbecile', 'idiot', 'bitch', 'asshole', 
+        'dick', 'piss', 'cunt', 'shit']; //Could add more 
+    let words = text.toLowerCase().split(' ');
+    for (let word of words) {
+        if (inappropriateWords.includes(word)) throw "Inappropriate content found";
+    }
+    return text
+}
