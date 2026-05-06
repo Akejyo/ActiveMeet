@@ -1,9 +1,9 @@
 import express from 'express';
 const router = express.Router();
 import { ObjectId } from 'mongodb';
-import { posts, users } from '../config/mongoCollections.js';
+import { posts, users, joinRequests } from '../config/mongoCollections.js';
 
-//TODO: For all posts routes, modify handlebars to show different things based on owner of post.
+//TODO: Finish remaning Routes at the end
 
 //* Temporary data
 import { samplePosts } from './sampleData.js';
@@ -140,7 +140,7 @@ router.route('/create').get((req, res) => {
 });
 
 
-router.route('/:id').get(async (req, res) => { //TODO post route for comments
+router.route('/:id').get(async (req, res) => {
   if (!req.session.user) {
     return res.redirect('/profile/login');
   } else {
@@ -158,7 +158,9 @@ router.route('/:id').get(async (req, res) => { //TODO post route for comments
       }
       let requestUsers = [];
       for (let i = 0; i < post.pendingRequestIds.length; i++) {
-        let requestUser = await users1.findOne({ _id: new ObjectId(post.pendingRequestIds[i]) });
+        let joinRequest1 = await joinRequests();
+        let joinObj = await joinRequest1.findOne({ _id: new ObjectId(post.pendingRequestIds[i]) });
+        let requestUser = await users1.findOne({ _id: new ObjectId(joinObj.requesterId) });
         if (requestUser) {
           requestUsers.push({ id: requestUser._id, name: `${requestUser.firstName} ${requestUser.lastName}` });
         }
@@ -199,7 +201,6 @@ router.route('/:id').get(async (req, res) => { //TODO post route for comments
   }
 })
 .post(async (req, res) => {
-  // TODO: Implement the logic for posting a comment
   if (!req.session.user) {
     return res.redirect('/profile/login');
   }else{
