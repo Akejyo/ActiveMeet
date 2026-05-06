@@ -14,12 +14,21 @@
     <span>{{post.gender}}</span>
   </div>
 
+  <div class='meta-row'>
+    <span>👍 {{post.likes}}</span>
+    <span>👎 {{post.dislikes}}</span>
+    <span>💬 {{post.comments}}</span>
+  </div>
+
   <div class='action-row'>
+    {{#if isAuthor}}
+    {{else}}
     <a href='/posts/{{post.id}}/join' class='btn'>Request to Join</a>
     <a href='/posts/{{post.id}}/like' class='btn btn-outline'>Like</a>
     <a href='/posts/{{post.id}}/dislike' class='btn btn-outline'>Dislike</a>
+    {{/if}}
     {{#if isAuthor}}
-      <a href='/posts/{{post.id}}/edit' class='btn btn-outline'>Edit</a>
+      <a href='/posts/{{post.id}}/edit' class='btn'>Edit</a>
     {{/if}}
   </div>
   <br>

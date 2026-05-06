@@ -181,7 +181,9 @@ router.route('/:id').get(async (req, res) => {
         likes: post.likedBy.length,
         accepted: post.acceptedParticipantIds,
         // hasRequests: (post.pendingRequestIds.length > 0),
-        requests: requestUsers
+        requests: requestUsers,
+        dislikes: post.dislikedBy.length,
+        comments: post.comments.length,
       }
       let comments = [];
       for (let i = 0; i < post.comments.length; i++) {
@@ -266,7 +268,9 @@ router.route('/:id').get(async (req, res) => {
           likes: post.likedBy.length,
           accepted: post.acceptedParticipantIds,
           // hasRequests: (post.pendingRequestIds.length > 0),
-          requests: requestUsers
+          requests: requestUsers,
+          dislikes: post.dislikedBy.length,
+          comments: post.comments.length
         }
         let comments = [];
         for (let i = 0; i < post.comments.length; i++) {
@@ -297,6 +301,12 @@ router.route('/:id').get(async (req, res) => {
 
 router.get('/:id/like', (req, res) => {
   // TODO: Implement the logic for liking a post
+  // if (!req.session.user) {
+  //   return res.redirect('profile/login')
+  // } else{
+    
+    //res.redirect(`/posts/${req.params.id}`)
+  // }
   res.redirect(`/posts/${req.params.id}`)
 });
 
