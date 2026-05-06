@@ -336,16 +336,62 @@ router.get('/:id/decline/:userId', (req, res) => {
   res.redirect(`/posts/${req.params.id}`);
 });
 
-router.route('/:id/edit').get(async(req, res) => { //TODO both get and post routes
-    const postId = req.params.id;
-    res.render('post/postEdit', { //Delete this and replace with actual logic
-        title: 'Edit Post',
-        post: samplePosts.find(p => p.id === parseInt(postId))
-    });
-})
-.post((req, res) => {
-    // TODO: Implement the logic for updating a post
-    res.redirect(`/posts/${req.params.id}`);
+// GET /posts/:id/edit
+router.get('/:id/edit', async (req, res) => {
+  try{
+    const post = await getPostById(req.params.id);
+      return res.render('post/postEdit', {
+          title: 'Edit Post',
+          post
+      });
+  } catch(e){
+    return res.status(404).render("error", {error: e.toString()});
+  }
 });
+
+// POST /posts/:id/edit
+router.post("/:id/edit", async (req, res) =>{
+  try{
+    const {
+      title,
+      sport,
+      description,
+      eventDateTime,
+      maxParticipants,
+      ageRestriction,
+      skillLevelRestriction,
+      genderRestriction,
+      location,
+      status
+    } = req.body;
+    const updatedPost = await updatePost(
+      req.params.id,
+      title,
+      sport,
+      description,
+      new Date(eventDateTime),
+      Number(maxParticipants),
+      {
+        min: Number(ageRestriction.min),
+        max: Number(ageRestriction.max)
+      },
+      skillLevelRestriction,
+      genderRestriction,
+      location,
+      status
+    );
+    return res.redirect(`/posts/${updatedPost._id.toString()}`);
+  } catch(e){
+    return res.status(400).render("post/postEdit", {
+      title: "Edit Post",
+      error: e.toString(),
+      post:{
+        _id: req.params.id,
+        ...req.body
+      }
+    });
+  }
+});
+
 
 export default router;
