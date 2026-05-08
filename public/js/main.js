@@ -229,6 +229,10 @@ document.addEventListener('DOMContentLoaded', () => {
           commentElement.appendChild(authorElement)
           commentElement.appendChild(contentElement)
           commentList.appendChild(commentElement)
+          const commentCount = document.querySelector('.comment-count')
+          if (commentCount && typeof data.commentCount === 'number') {
+            commentCount.textContent = `💬 ${data.commentCount}`
+          }
           commentForm.querySelector('textarea[name="comment"]').value = ''
         },
         (error) => {

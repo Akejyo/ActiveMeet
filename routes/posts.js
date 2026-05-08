@@ -283,11 +283,11 @@ router.route('/:id').get(async (req, res) => {
     return res.status(400).json({success: false, errors: message});
   } else{
     try{
-      await addComment(req.params.id, req.session.user._id, comment);
+      const updatedPost = await addComment(req.params.id, req.session.user._id, comment);
       return res.status(200).json({success: true, comment: {
         author: `${req.session.user.firstName} ${req.session.user.lastName}`,
         content: comment
-      }});
+      }, commentCount: updatedPost.comments.length});
     } catch(e) {
       return res.status(500).json({success: false, errors: [`An error occurred: ${e}`]});
     }
