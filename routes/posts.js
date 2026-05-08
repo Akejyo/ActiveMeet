@@ -9,11 +9,11 @@ import { posts, users, joinRequests } from '../config/mongoCollections.js';
 import { samplePosts } from './sampleData.js';
 import { checkDateAndTime, checkLocation, checkMaxParticipants, parsAndCheckAgeRestriction, 
   checkSport, checkTitle, checkSkillLevelRestriction, checkGenderRestriction, checkDescription,
-  checkComment, sanitize
+  checkComment, sanitize, checkStatusPosts
 } from '../helpers.js';
 import e from 'express';
 import { addComment, createPost, likePost, dislikePost, getPostById, updatePost } from '../data/posts.js';
-import {createJoinRequest} from "../data/joinRequests.js";
+import {checkRequesterMeetsRequirements, createJoinRequest} from "../data/joinRequests.js";
 
 // Gets the empty create post page
 router.route('/create').get((req, res) => {
@@ -194,6 +194,11 @@ router.route('/:id').get(async (req, res) => {
           requesterId: req.session.user._id, 
           status: 'pending' 
         });
+      let existingDen = await jr1.findOne(
+        { postId: postId, 
+          requesterId: req.session.user._id, 
+          status: 'denied' 
+        });
       let post2 = {
         id: post._id,
         sport: post.sport,
@@ -219,7 +224,8 @@ router.route('/:id').get(async (req, res) => {
         isLiked: post.likedBy.includes(req.session.user._id),
         isDisliked: post.dislikedBy.includes(req.session.user._id),
         isAccepted: post.acceptedParticipantIds.includes(req.session.user._id),
-        hasPendingRequest: !!existingReq
+        hasPendingRequest: !!existingReq,
+        hasDeniedRequest: !!existingDen
       }
       let comments = [];
       for (let i = 0; i < post.comments.length; i++) {
@@ -296,9 +302,14 @@ router.route('/:id').get(async (req, res) => {
       let jr1 = await joinRequests();
       let existingReq = await jr1.findOne(
       { postId: postId, 
-        requesterId: req.session.user._id, 
-        status: 'pending' 
+        requesterId: req.session.user._id,
+        status: 'pending'
       });
+      let existingDen = await jr1.findOne(
+        { postId: postId, 
+          requesterId: req.session.user._id, 
+          status: 'denied' 
+        });
       let post2 = {
         id: post._id,
         sport: post.sport,
@@ -323,7 +334,8 @@ router.route('/:id').get(async (req, res) => {
         isLiked: post.likedBy.includes(req.session.user._id),
         isDisliked: post.dislikedBy.includes(req.session.user._id),
         isAccepted: post.acceptedParticipantIds.includes(req.session.user._id),
-        hasPendingRequest: !!existingReq
+        hasPendingRequest: !!existingReq,
+        hasDeniedRequest: !!existingDen
       }
       let comments = [];
       for (let i = 0; i < post.comments.length; i++) {
@@ -387,6 +399,7 @@ router.post('/:id/join', async (req, res) => {
     if(!existing){
       await createJoinRequest(req.params.id, req.session.user._id, "");
     }
+    let a = await checkRequesterMeetsRequirements(req.session.user._id, req.params.id);
     res.redirect(`/posts/${req.params.id}`);
   } catch(e){
     return res.status(500).json({error: `An error occured: ${e}`});
@@ -555,23 +568,30 @@ router.post("/:id/edit", async (req, res) =>{
       title,
       sport,
       description,
-      eventDateTime,
+      date,
+      time,
       maxParticipants,
-      ageRestriction,
-      skillLevelRestriction,
+      ageMin, 
+      ageMax,
+      skillLevel,
       genderRestriction,
       location,
       status
     } = req.body;
-    title = sanitize(title);
-    sport = sanitize(sport);
-    description = sanitize(description);
-    eventDateTime = sanitize(eventDateTime);
-    maxParticipants = sanitize(maxParticipants);
-    skillLevelRestriction = sanitize(skillLevelRestriction);
-    genderRestriction = sanitize(genderRestriction);
-    location = sanitize(location);
-    status = sanitize(status);
+    let eventDateTime = (`${date}T${time}`)
+    title = checkTitle(sanitize(title));
+    sport = checkSport(sanitize(sport));
+    description = checkDescription(sanitize(description));
+    eventDateTime = checkDateAndTime(new Date(sanitize(eventDateTime)));
+    maxParticipants = checkMaxParticipants(sanitize(maxParticipants));
+    skillLevel = checkSkillLevelRestriction(sanitize(skillLevel));
+    genderRestriction = checkGenderRestriction(sanitize(genderRestriction));
+    location = checkLocation(sanitize(location));
+    status = checkStatusPosts(sanitize(status));
+    let ageRestriction = {
+      min: Number(sanitize(ageMin)),
+      max: Number(sanitize(ageMax))
+    };
 
     let ageRestrictionObj;
     if (typeof ageRestriction === 'string') {
@@ -595,7 +615,7 @@ router.post("/:id/edit", async (req, res) =>{
       new Date(eventDateTime),
       Number(maxParticipants),
       ageRestrictionObj,
-      skillLevelRestriction,
+      skillLevel,
       genderRestriction,
       location,
       status

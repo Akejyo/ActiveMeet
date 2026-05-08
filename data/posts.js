@@ -125,7 +125,7 @@ export async function updatePost(postId, title, sport, description, eventDateTim
         {_id: new ObjectId(postId)},
         {$set: updateObj}
     );
-    if(!update.acknowledged || update.modifiedCount === 0) throw "Error: Could not update post";
+    if(!update.acknowledged) throw "Error: Could not update post";
     return await getPostById(postId);
 }
 // Removes post by postId (Finds and deleted post by postId)

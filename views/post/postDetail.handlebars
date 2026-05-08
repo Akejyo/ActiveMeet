@@ -29,6 +29,8 @@
         <span class="btn btn-outline">✅ Accepted</span>
       {{else if post.hasPendingRequest}}
         <span class="btn btn-outline">⏳ Request Pending</span>
+      {{else if post.hasDeniedRequest}}
+        <span class="btn btn-outline">❌ Request Denied</span>
       {{else}}
         <form action="/posts/{{post.id}}/join" method="POST" style="display:inline">
           <button type="submit" class="btn">Request to Join</button>
