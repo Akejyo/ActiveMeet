@@ -1,84 +1,95 @@
-
 <section class='card profile-header'>
-    <div>
+  <div>
     <h1>{{user.firstName}} {{user.lastName}}</h1>
-    <p class='muted'>{{user.email}}</p>   {{! Need to show for reporting purposes }}
+    <p class='muted'>{{user.email}}</p>
+    {{! Need to show for reporting purposes }}
     {{#if public}}
-    <p class='muted'>{{user.city}}, {{user.state}}</p>
-    <p>{{user.bio}}</p>
+      <p class='muted'>{{user.city}}, {{user.state}}</p>
+      <p>{{user.bio}}</p>
     {{else}}
-    <p class='muted'>This is a private profile.</p>
+      <p class='muted'>This is a private profile.</p>
     {{/if}}
   </div>
 
   <div class='profile-stats'>
     {{#if public}}
-    <div><strong>{{user.followerIds.length}}</strong><span>Followers</span></div>
-    <div><strong>{{user.followingIds.length}}</strong><span>Following</span></div>
-    <div><strong>{{user.skill}}</strong><span>Level</span></div>
+      <div><strong>{{user.followerIds.length}}</strong><span
+        >Followers</span></div>
+      <div><strong>{{user.followingIds.length}}</strong><span
+        >Following</span></div>
+      <div><strong>{{user.skill}}</strong><span>Level</span></div>
     {{else}}
-    <div><strong>Private</strong><span>Followers</span></div>
-    <div><strong>Private</strong><span>Following</span></div>
-    <div><strong>Private</strong><span>Level</span></div>
+      <div><strong>Private</strong><span>Followers</span></div>
+      <div><strong>Private</strong><span>Following</span></div>
+      <div><strong>Private</strong><span>Level</span></div>
     {{/if}}
+    <div class='profile-action-stack'>
+  {{#if blocked}}
+    <form action='/profile/{{user._id}}/unblock' method='POST'>
+      <button type='submit' class='btn small btn-outline'>Unblock</button>
+    </form>
+  {{else}}
     {{#if following}}
-    <form action='/profile/{{user._id}}/unfollow' method='POST'>
-      <button type='submit' class='btn small'>Unfollow</button>
-    </form>
+      <form action='/profile/{{user._id}}/unfollow' method='POST'>
+        <button type='submit' class='btn small'>Unfollow</button>
+      </form>
     {{else}}
-    <form action='/profile/{{user._id}}/follow' method='POST'>
-      <button type='submit' class='btn small'>Follow</button>
-    </form>
+      <form action='/profile/{{user._id}}/follow' method='POST'>
+        <button type='submit' class='btn small'>Follow</button>
+      </form>
     {{/if}}
-  </div>
+    <form action='/profile/{{user._id}}/block' method='POST'>
+      <button type='submit' class='btn small danger'>Block</button>
+    </form>
+  {{/if}}
+</div>
 </section>
 
 {{#if public}}
-<section class='card'>
-  <h2>Interests</h2>
-  <div class='chips'>
-    {{#each user.sportsInterests}}
-      <span class='chip'>{{this}}</span>
-    {{/each}}
-  </div>
-</section>
+  <section class='card'>
+    <h2>Interests</h2>
+    <div class='chips'>
+      {{#each user.sportsInterests}}
+        <span class='chip'>{{this}}</span>
+      {{/each}}
+    </div>
+  </section>
 {{/if}}
 
 {{#if public}}
-<section>
-  <div class='section-title'>
-    <h2>Joined Posts</h2>
-  </div>
+  <section>
+    <div class='section-title'>
+      <h2>Joined Posts</h2>
+    </div>
 
-  <div class='post-list'>
-    {{#each postsJoined}}
-      <article class='card post-card'>
-        <span class='tag'>{{sport}}</span>
-        <h3>{{title}}</h3>
-        <p class='muted'>{{location}} · {{eventDateTime}}</p>
-        <p>{{description}}</p>
-        <a href='/posts/{{_id}}' class='btn small'>Open</a>
-      </article>
-    {{/each}}
-  </div>
-</section>
+    <div class='post-list'>
+      {{#each postsJoined}}
+        <article class='card post-card'>
+          <span class='tag'>{{sport}}</span>
+          <h3>{{title}}</h3>
+          <p class='muted'>{{location}} · {{eventDateTime}}</p>
+          <p>{{description}}</p>
+          <a href='/posts/{{_id}}' class='btn small'>Open</a>
+        </article>
+      {{/each}}
+    </div>
+  </section>
 
-<section>
-  <div class='section-title'>
-    <h2>Their Posts</h2>
-  </div>
+  <section>
+    <div class='section-title'>
+      <h2>Their Posts</h2>
+    </div>
 
-  <div class='post-list'>
-    {{#each posts}}
-      <article class='card post-card'>
-        <span class='tag'>{{sport}}</span>
-        <h3>{{title}}</h3>
-        <p class='muted'>{{location}} · {{eventDateTime}}</p>
-        <p>{{description}}</p>
-        <a href='/posts/{{_id}}' class='btn small'>Open</a>
-      </article>
-    {{/each}}
-  </div>
-</section>
+    <div class='post-list'>
+      {{#each posts}}
+        <article class='card post-card'>
+          <span class='tag'>{{sport}}</span>
+          <h3>{{title}}</h3>
+          <p class='muted'>{{location}} · {{eventDateTime}}</p>
+          <p>{{description}}</p>
+          <a href='/posts/{{_id}}' class='btn small'>Open</a>
+        </article>
+      {{/each}}
+    </div>
+  </section>
 {{/if}}
-
