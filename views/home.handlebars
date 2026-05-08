@@ -12,7 +12,12 @@
 <section class='card'>
   <h2>Search & Filters</h2>
   <form class='grid-3' action='/' method='POST'>
-    <input type='text' name="searchText" value="{{prev}}" placeholder='Search sports or activities...'>
+    <input
+      type='text'
+      name='searchText'
+      value='{{prev}}'
+      placeholder='Search sports or activities...'
+    />
     <select name='sport'>
       <option>All Sports</option>
       {{#if isBasketball}}
@@ -127,13 +132,16 @@
   <h2>Recommended Posts</h2>
   <div class='post-list'>
     {{#each posts}}
-      <article class='card post-card'>
+      <article class='card post-card clickable-card' data-href='/posts/{{id}}'>
         <div class='post-top'>
           <span class='tag'>{{sport}}</span>
           <span class='muted'>{{date}} · {{time}}</span>
         </div>
         <h3>{{title}}</h3>
-        <p class='muted'>By <a href='/profile/{{authorId}}'>{{author}}</a> · {{location}}</p>
+        <p class='muted'>By
+          <a href='/profile/{{authorId}}'>{{author}}</a>
+          ·
+          {{location}}</p>
         <p>{{description}}</p>
 
         <div class='meta-row'>

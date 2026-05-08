@@ -247,4 +247,33 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 200)
     })
   })
+
+  // Make post cards clickable
+  const clickableCards = document.querySelectorAll('.clickable-card[data-href]')
+
+  clickableCards.forEach((card) => {
+    card.addEventListener('click', (e) => {
+      if (e.target.closest('a, button, form, input, select, textarea')) {
+        return
+      }
+
+      const href = card.getAttribute('data-href')
+      if (href) {
+        document.body.classList.add('page-transition-out')
+        setTimeout(() => {
+          window.location.href = href
+        }, 220)
+      }
+    })
+
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const href = card.getAttribute('data-href')
+        if (href) window.location.href = href
+      }
+    })
+
+    card.setAttribute('tabindex', '0')
+    card.setAttribute('role', 'link')
+  })
 })

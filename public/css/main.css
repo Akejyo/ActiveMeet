@@ -544,6 +544,15 @@ body.page-transition-out {
   flex-wrap: wrap;
 }
 
+.clickable-card {
+  cursor: pointer;
+}
+
+.clickable-card:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 4px;
+}
+
 .action-row {
   align-items: center;
 }
