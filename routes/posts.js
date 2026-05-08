@@ -130,6 +130,7 @@ router.route('/create').get((req, res) => {
         let newPost = await createPost(title, req.session.user._id, sport, description,
           dateAndTime, maxParticipants, ageRestriction2, skillLevel, genderRestriction, location
         )
+        req.session.user.createdPostIds.push(newPost._id);
         res.redirect(`/posts/${newPost._id}`);
       }catch(e){
         return res.status(500).render('post/postCreate', { title: 'Create Post', logedIn: true, 
@@ -157,14 +158,17 @@ router.route('/:id').get(async (req, res) => {
         return res.status(404).json({ error: 'User not found' });
       }
       let requestUsers = [];
+      let alreadyRequested = false;
       for (let i = 0; i < post.pendingRequestIds.length; i++) {
         let joinRequest1 = await joinRequests();
         let joinObj = await joinRequest1.findOne({ _id: new ObjectId(post.pendingRequestIds[i]) });
         let requestUser = await users1.findOne({ _id: new ObjectId(joinObj.requesterId) });
         if (requestUser) {
+          if(joinObj.requesterId === req.session.user._id) alreadyRequested = true;
           requestUsers.push({ id: requestUser._id, name: `${requestUser.firstName} ${requestUser.lastName}` });
         }
       }
+      let alreadyJoined = post.acceptedParticipantIds.includes(req.session.user._id) || alreadyRequested;
       let post2 = {
         id: post._id,
         sport: post.sport,
@@ -177,6 +181,7 @@ router.route('/:id').get(async (req, res) => {
         skill: post.skillLevelRestriction,
         ageRange: `${post.ageRestriction.min}-${post.ageRestriction.max}`,
         gender: post.genderRestriction,
+        status: post.status,
         description: post.description,
         likes: post.likedBy.length,
         accepted: post.acceptedParticipantIds,
@@ -196,7 +201,7 @@ router.route('/:id').get(async (req, res) => {
       }
       let isAuthor = post.authorId === req.session.user._id;
       res.status(200).render('post/postDetail', { title: 'Post Detail', 
-        post: post2, comments: comments, isAuthor: isAuthor, logedIn: true });
+        post: post2, comments: comments, isAuthor: isAuthor, alreadyJoined: alreadyJoined, logedIn: true });
     }catch(e) {
       return res.status(500).json({ error: `An error occurred: ${e}`});
     }
@@ -300,24 +305,33 @@ router.route('/:id').get(async (req, res) => {
 });
 
 router.get('/:id/like', (req, res) => {
-  // TODO: Implement the logic for liking a post
-  // if (!req.session.user) {
-  //   return res.redirect('profile/login')
-  // } else{
-    
-    //res.redirect(`/posts/${req.params.id}`)
-  // }
-  res.redirect(`/posts/${req.params.id}`)
+  if(!req.session.user) return res.redirect("/profile/login");
+  try{
+    await likePost(req.params.id, req.session.user._id);
+  } catch(e){
+    // Post already liked, ignore
+  }
+  res.redirect(`/posts/${req.params.id}`);
 });
 
 router.get('/:id/dislike', (req, res) => {
-  // TODO: Implement the logic for disliking a post
-  res.redirect(`/posts/${req.params.id}`)
+  if(!req.session.user) return res.redirect("/profile/login");
+  try{
+    await dislikePost(req.params.id, req.session.user._id);
+  } catch(e){
+    // Post already disliked, ignore
+  }
+  res.redirect(`/posts/${req.params.id}`);
 });
 
 // TODO: Add a POST route for processing a request to join a post.
 router.get('/:id/join', (req, res) => {
-  // TODO: Implement the logic for joining a post
+  if (!req.session.user) return res.redirect('/profile/login');
+  try {
+    await createJoinRequest(req.params.id, req.session.user._id, '');
+  } catch(e) {
+    
+  }
   res.redirect(`/posts/${req.params.id}`);
 });
 
@@ -339,13 +353,15 @@ router.get('/:id/decline/:userId', (req, res) => {
 // GET /posts/:id/edit
 router.get('/:id/edit', async (req, res) => {
   try{
+    if(!req.session.user) return res.redirect("/profile/login");
     const post = await getPostById(req.params.id);
       return res.render('post/postEdit', {
           title: 'Edit Post',
+          logedin: true,
           post
       });
   } catch(e){
-    return res.status(404).render("error", {error: e.toString()});
+    return res.status(404).render("post/postEdit", {error: e.toString()});
   }
 });
 
