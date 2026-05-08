@@ -448,6 +448,56 @@ body.page-fade-out .login-page-container {
   transform: translateX(-2px);
 }
 
+/* General Page Transitions */
+body {
+  opacity: 1;
+  transition: opacity 0.28s ease, transform 0.28s ease;
+}
+
+body.page-transition-out {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+/* General Back Arrow */
+.page-back-arrow {
+  position: fixed;
+  top: 104px;
+  left: 32px;
+  width: 40px;
+  height: 6px;
+  background: var(--primary);
+  border-radius: 999px;
+  z-index: 20;
+  transition: transform 0.25s ease, background 0.25s ease, opacity 0.25s ease;
+}
+
+.page-back-arrow::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 13px;
+  height: 13px;
+  border-left: 5px solid var(--primary);
+  border-bottom: 5px solid var(--primary);
+  transform: translateY(-50%) rotate(45deg);
+  transition: border-color 0.25s ease;
+}
+
+.page-back-arrow:hover {
+  transform: translateX(-5px);
+  background: var(--primary-dark);
+}
+
+.page-back-arrow:hover::before {
+  border-color: var(--primary-dark);
+}
+
+.page-back-arrow:active {
+  transform: translateX(-2px);
+}
+
 /* Grids */
 .grid-2,
 .grid-3 {

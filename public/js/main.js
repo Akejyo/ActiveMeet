@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Register
   const registerForm = document.querySelector(
-    'form[action="/profile/register"]',
+    'form[action="/profile/register"]'
   )
   if (registerForm) {
     registerForm.addEventListener('submit', (e) => {
@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const skillLevel = getFieldValue(postCreateForm, 'skillLevel')
       const genderRestriction = getFieldValue(
         postCreateForm,
-        'genderRestriction',
+        'genderRestriction'
       )
       const description = getFieldValue(postCreateForm, 'description')
 
@@ -244,7 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       setTimeout(() => {
         window.location.href = href
-      }, 350)
+      }, 200)
     })
   })
 })
