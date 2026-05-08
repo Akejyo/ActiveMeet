@@ -38,13 +38,15 @@
       {{/if}}
 
       {{#if post.isLiked}}
-        <span class="btn btn-outline">👍 Liked</span>
+        {{!-- <span class="btn btn-outline">👍 Liked</span> --}}
+        <a href="/posts/{{post.id}}/unlike" class="btn btn-outline">👍 Liked</a>
       {{else}}
         <a href="/posts/{{post.id}}/like" class="btn btn-outline">👍 Like</a>
       {{/if}}
 
       {{#if post.isDisliked}}
-        <span class="btn btn-outline">👎 Disliked</span>
+        {{!-- <span class="btn btn-outline">👎 Disliked</span> --}}
+        <a href="/posts/{{post.id}}/undislike" class="btn btn-outline">👎 Disliked</a>
       {{else}}
         <a href="/posts/{{post.id}}/dislike" class="btn btn-outline">👎 Dislike</a>
       {{/if}}

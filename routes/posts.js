@@ -12,7 +12,7 @@ import { checkDateAndTime, checkLocation, checkMaxParticipants, parsAndCheckAgeR
   checkComment, sanitize, checkStatusPosts
 } from '../helpers.js';
 import e from 'express';
-import { addComment, createPost, likePost, dislikePost, getPostById, updatePost } from '../data/posts.js';
+import { addComment, createPost, likePost, dislikePost, getPostById, updatePost, unlikePost, undislikePost } from '../data/posts.js';
 import {checkRequesterMeetsRequirements, createJoinRequest} from "../data/joinRequests.js";
 
 // Gets the empty create post page
@@ -375,6 +375,17 @@ router.get('/:id/like', async (req, res) => {
   res.redirect(`/posts/${req.params.id}`)
 });
 
+router.get('/:id/unlike', async (req, res) => {
+  if(!req.session.user) return res.redirect("/profile/login");
+  if(!ObjectId.isValid(req.params.id)) return res.redirect('/');
+  try{
+    await unlikePost(req.params.id, req.session.user._id);
+  } catch(e){
+    // ignore
+  }
+  res.redirect(`/posts/${req.params.id}`)
+});
+
 router.get('/:id/dislike', async (req, res) => {
   if(!req.session.user) return res.redirect("/profile/login");
   if(!ObjectId.isValid(req.params.id)) return res.redirect('/');
@@ -382,6 +393,17 @@ router.get('/:id/dislike', async (req, res) => {
     await dislikePost(req.params.id, req.session.user._id);
   } catch(e){
     // Either already disliked or some insignificant error, ignore
+  }
+  res.redirect(`/posts/${req.params.id}`)
+});
+
+router.get('/:id/undislike', async (req, res) => {
+  if(!req.session.user) return res.redirect("/profile/login");
+  if(!ObjectId.isValid(req.params.id)) return res.redirect('/');
+  try{
+    await undislikePost(req.params.id, req.session.user._id);
+  } catch(e){
+    // ignore
   }
   res.redirect(`/posts/${req.params.id}`)
 });
