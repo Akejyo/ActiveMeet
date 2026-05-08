@@ -45,15 +45,15 @@
 
     <div class='grid-3'>
       <label>Date
-        <input type='date' value='{{post.date}}'>
+        <input type='date' name="date" value='{{post.date}}'>
       </label>
 
       <label>Time
-        <input type='time' value='{{post.time}}'>
+        <input type='time' name="time" value='{{post.time}}'>
       </label>
 
-      <label>Skill Level
-        <input type='text' value='{{post.skill}}'>
+      <label>Max Participants
+        <input type='number' name="maxParticipants" value='{{post.maxParticipants}}'>
       </label>
     </div>
 
@@ -63,26 +63,41 @@
         <input type="number" name="ageMin" value="{{post.ageMin}}" min="0" required>
       </label>
       <label>Max Age
-        <input type="number" name="ageMax" value="{{post.ageMax}}" max="0" required>
+        <input type="number" name="ageMax" value="{{post.ageMax}}" min="0" required>
       </label>
     </div>
 
-    <label>Skill Level
-      <select name="skillLevel" required>
-        <option value="beginner" 
-      </select>
-    </label>
+    <div class="grid-3">
+      <label>Skill Level
+        <select name="skillLevel" required>
+          <option value="beginner" {{#if post.isBeginner}}selected{{/if}}>Beginner</option>
+          <option value="intermediate" {{#if post.isIntermediate}}selected{{/if}}>Intermediate</option>
+          <option value="advanced" {{#if post.isAdvanced}}selected{{/if}}>Advanced</option>
+          <option value="all levels" {{#if post.isAllLevels}}selected{{/if}}>All Levels</option>
+        </select>
+      </label>
 
-    <label>Status
-      <option value="open" {{#if post.isOpen}}selected{{/if}}>Open</option>
-      <option value="full" {{#if post.isFull}}selected{{/if}}>Full</option>
-      <option value="closed" {{#if post.isClosed}}selected{{/if}}>Closed</option>
-      <option value="cancelled" {{#if post.isCancelled}}selected{{/if}}>Cancelled</option>
-    </label>
+      <label>Gender
+        <select name="genderRestriction" required>
+          <option value="co-ed" {{#if post.isCoed}}selected{{/if}}>Co-ed</option>
+          <option value="male only" {{#if post.isMaleOnly}}selected{{/if}}>Male Only</option>
+          <option value="female only" {{#if post.isFemaleOnly}}selected{{/if}}>Female Only</option>
+        </select>
+      </label>
 
-    <label>Description
-      <textarea name="description" rows='5'>{{post.description}}</textarea>
-    </label>
+      <label>Status
+        <select name="status" required>
+          <option value="open" {{#if post.isOpen}}selected{{/if}}>Open</option>
+          <option value="full" {{#if post.isFull}}selected{{/if}}>Full</option>
+          <option value="closed" {{#if post.isClosed}}selected{{/if}}>Closed</option>
+          <option value="cancelled" {{#if post.isCancelled}}selected{{/if}}>Cancelled</option>
+        </select>
+      </label>
+    </div>
+
+      <label>Description
+        <textarea name="description" rows='5'>{{post.description}}</textarea>
+      </label>
 
     <div class='action-row'>
       <button type='submit' class='btn'>Save Changes</button>

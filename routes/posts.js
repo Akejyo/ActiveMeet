@@ -471,7 +471,27 @@ router.get('/:id/edit', async (req, res) => {
       isAllLevels: post.skillLevelRestriction === "all levels",
       isCoed: post.genderRestriction === "co-ed",
       isMaleOnly: post.genderRestriction === "male only",
-      isFemaleOnly: post.genderRestriction === "female only"   
+      isFemaleOnly: post.genderRestriction === "female only",
+      isBasketball: post.sport === "basketball",
+      isSoccer: post.sport === "soccer",
+      isTennis: post.sport === "tennis",
+      isBaseball: post.sport === "baseball",
+      isVolleyball: post.sport === "volleyball",
+      isFootball: post.sport === "football",
+      isHockey: post.sport === "hockey",
+      isGolf: post.sport === "golf",
+      isSwimming: post.sport === "swimming",
+      isRunning: post.sport === "running",
+      isBadminton: post.sport === "badminton",
+      isBowling: post.sport === "bowling",
+      isArchery: post.sport === "archery",
+      isCycling: post.sport === "cycling",
+      isBoxing: post.sport === "boxing",
+      isCricket: post.sport === "cricket",
+      isDarts: post.sport === "darts",
+      isGymnastics: post.sport === "gymnastics",
+      isGym: post.sport === "gym",
+      isHiking: post.sport === "hiking"
     };
     return res.render("post/postEdit", {title: "Edit Post", logedIn: true, post: postData});
   } catch(e){
