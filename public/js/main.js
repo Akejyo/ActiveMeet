@@ -36,6 +36,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // Home
+  const searchForm = document.querySelector('form[action="/"]')
+  if (searchForm) {
+    searchForm.addEventListener('submit', (e) => {
+      const searchText = getFieldValue(searchForm, 'searchText')
+      const sports = getFieldValue(searchForm, 'sport')
+
+      const errors = []
+      checkCheck.isValidRange(sports, errors, 'sport')
+      checkCheck.isValidSearch(searchText, errors)
+      if (errors.length > 0) {
+        e.preventDefault()
+        // showErrors(searchForm, errors)
+        alert(errors.join('\n'))
+      }
+    })
+  }
+
   // Login
   const showLoginButton = document.getElementById('show-login-button')
   const loginPage = document.getElementById('login-page')
@@ -47,13 +65,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const loginForm = document.getElementById('login-form')
-
   if (loginForm) {
     loginForm.addEventListener('submit', (e) => {
       const email = getFieldValue(loginForm, 'email')
       const password = getFieldValue(loginForm, 'password')
 
-      const errors = []
+      let errors = []
       errors = checkCheck.isValidEmail(email, errors)
       errors = checkCheck.isValidPassword(password, errors)
 
@@ -71,7 +88,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const registerForm = document.querySelector(
     'form[action="/profile/register"]',
   )
-
   if (registerForm) {
     registerForm.addEventListener('submit', (e) => {
       const firstName = getFieldValue(registerForm, 'firstName')
@@ -84,16 +100,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const city = getFieldValue(registerForm, 'city')
       const state = getFieldValue(registerForm, 'state')
 
-      const errors = []
-      errors = checkCheck.isValidName(firstName, errors)
-      errors = checkCheck.isValidName(lastName, errors)
-      errors = checkCheck.isValidEmail(email, errors)
-      errors = checkCheck.isValidPassword(password, errors)
-      errors = checkCheck.isValidAge(age, errors)
-      errors = checkCheck.isExist(gender, errors)
-      errors = checkCheck.isExist(skill, errors)
-      errors = checkCheck.isExist(city, errors)
-      errors = checkCheck.isExist(state, errors)
+      let errors = []
+      checkCheck.isValidName(firstName, errors)
+      checkCheck.isValidName(lastName, errors)
+      checkCheck.isValidEmail(email, errors)
+      checkCheck.isValidPassword(password, errors)
+      checkCheck.isValidAge(age, errors)
+      checkCheck.isValidRange(gender, errors, 'gender')
+      checkCheck.isValidRange(skill, errors, 'skill')
+      checkCheck.isValidRange(city, errors, 'city')
+      checkCheck.isValidRange(state, errors, 'state')
 
       if (errors.length > 0) {
         e.preventDefault()
@@ -106,7 +122,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Create post
   const postCreateForm = document.querySelector('form[action="/posts/create"]')
-
   if (postCreateForm) {
     postCreateForm.addEventListener('submit', (e) => {
       const title = getFieldValue(postCreateForm, 'title')
@@ -115,6 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const date = getFieldValue(postCreateForm, 'date')
       const time = getFieldValue(postCreateForm, 'time')
       const maxParticipants = getFieldValue(postCreateForm, 'maxParticipants')
+      const ageRestriction = getFieldValue(postCreateForm, 'ageRestriction')
       const skillLevel = getFieldValue(postCreateForm, 'skillLevel')
       const genderRestriction = getFieldValue(
         postCreateForm,
@@ -122,16 +138,16 @@ document.addEventListener('DOMContentLoaded', () => {
       )
       const description = getFieldValue(postCreateForm, 'description')
 
-      const errors = []
-      errors = checkCheck.isExist(title, errors)
-      errors = checkCheck.isExist(sport, errors)
-      errors = checkCheck.isExist(location, errors)
-      errors = checkCheck.isExist(date, errors)
-      errors = checkCheck.isExist(time, errors)
-      errors = checkCheck.isValidMaxParticipants(maxParticipants, errors)
-      errors = checkCheck.isExist(skillLevel, errors)
-      errors = checkCheck.isExist(genderRestriction, errors)
-      errors = checkCheck.isValidDescription(description, errors)
+      let errors = []
+      checkCheck.isValideTitle(title, errors)
+      checkCheck.isValidRange(sport, errors, 'sport')
+      checkCheck.isValideLocation(location, errors)
+      checkCheck.isValideDateAndTime(date, time, errors)
+      checkCheck.isValidMaxParticipants(maxParticipants, errors)
+      checkCheck.isValidAgeRestriction(ageRestriction, errors)
+      checkCheck.isValidRange(skillLevel, errors, 'skill')
+      checkCheck.isValidRange(genderRestriction, errors, 'genderRestriction')
+      checkCheck.isValidDescription(description, errors)
 
       if (errors.length > 0) {
         e.preventDefault()
@@ -144,25 +160,69 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Edit profile
   const profileEditForm = document.querySelector('form[action="/profile/edit"]')
-
   if (profileEditForm) {
     profileEditForm.addEventListener('submit', (e) => {
       const firstName = getFieldValue(profileEditForm, 'firstName')
       const lastName = getFieldValue(profileEditForm, 'lastName')
       const city = getFieldValue(profileEditForm, 'city')
       const state = getFieldValue(profileEditForm, 'state')
+      const bio = getFieldValue(profileEditForm, 'bio')
 
-      const errors = []
-      errors = checkCheck.isExist(firstName, errors)
-      errors = checkCheck.isExist(lastName, errors)
-      errors = checkCheck.isExist(city, errors)
-      errors = checkCheck.isExist(state, errors)
+      let errors = []
+      checkCheck.isValidName(firstName, errors)
+      checkCheck.isValidName(lastName, errors)
+      checkCheck.isValidCity(city, errors)
+      checkCheck.isValidRange(state, errors, 'state')
+      checkCheck.isValidBio(bio, errors)
 
       if (errors.length > 0) {
         e.preventDefault()
         showErrors(profileEditForm, errors)
       } else {
         showErrors(profileEditForm, [])
+      }
+    })
+  }
+
+  // edit comment
+  const commentForm = document
+    .querySelector('textarea[name="comment"]')
+    ?.closest('form')
+  if (commentForm) {
+    commentForm.addEventListener('submit', (e) => {
+      const comment = getFieldValue(commentForm, 'comment')
+      const errors = []
+      checkCheck.isValidComment(comment, errors)
+
+      if (errors.length > 0) {
+        e.preventDefault()
+        showErrors(commentForm, errors)
+      } else {
+        showErrors(commentForm, [])
+      }
+    })
+  }
+
+  // Report page
+  const reportForm = document.querySelector('form[action="/report"]')
+  if (reportForm) {
+    reportForm.addEventListener('submit', (e) => {
+      const reportType = getFieldValue(reportForm, 'reportType')
+      const targetEmail = getFieldValue(reportForm, 'targetEmail')
+      const reason = getFieldValue(reportForm, 'reason')
+      const description = getFieldValue(reportForm, 'description')
+
+      let errors = []
+      checkCheck.isValidRange(reportType, errors, 'reportType')
+      checkCheck.isValidEmail(targetEmail, errors)
+      checkCheck.isValidRange(reason, errors, 'reason')
+      checkCheck.isValidDescription(description, errors)
+
+      if (errors.length > 0) {
+        e.preventDefault()
+        showErrors(reportForm, errors)
+      } else {
+        showErrors(reportForm, [])
       }
     })
   }
