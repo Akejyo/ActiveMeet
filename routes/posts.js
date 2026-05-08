@@ -227,110 +227,109 @@ router.route('/:id').get(async (req, res) => {
     return res.redirect('/profile/login');
   } 
   if(!ObjectId.isValid(req.params.id)) return res.redirect('/');
-  else{
-    let { comment } = req.body;
-    let message = [];
-    let error = false;
-    try{
-      comment = checkComment(comment);
-    }catch(e){
-      message.push(e);
-      error = true;
+  let { comment } = req.body;
+  let message = [];
+  let error = false;
+  try{
+    comment = checkComment(comment);
+  }catch(e){
+    message.push(e);
+    error = true;
+  }
+  try{
+    let posts1 = await posts();
+    let post = await posts1.findOne({ _id: new ObjectId(req.params.id) });
+    if (!post) throw "Post not found, possible internal error";
+    let userComments = post.comments.filter(c => c.userId === req.session.user._id);
+    if (userComments.length > 0) {
+      let lastComment = userComments[userComments.length - 1];
+      let now = new Date();
+      if (now - lastComment.commentedAt < 30000) {
+        throw "To avoid spam, you must wait 30 seconds between comments.";
+      }
     }
-    try{
-      let posts1 = await posts();
-      let post = await posts1.findOne({ _id: new ObjectId(req.params.id) });
-      if (!post) throw "Post not found, possible internal error";
-      let userComments = post.comments.filter(c => c.userId === req.session.user._id);
-      if (userComments.length > 0) {
-        let lastComment = userComments[userComments.length - 1];
-        let now = new Date();
-        if (now - lastComment.commentedAt < 30000) {
-          throw "To avoid spam, you must wait 30 seconds between comments.";
+  } catch(e) {
+    message.push(e);
+    error = true;
+  }
+  if (error) {
+    let prev = { comment: comment };
+    const postId = req.params.id;
+    try {
+      let posts1 = await posts()
+      let post = await posts1.findOne({ _id: new ObjectId(postId) });
+      if (!post) {
+        return res.status(404).json({ error: 'Post not found' });
+      }
+      let users1 = await users();
+      let user = await users1.findOne({ _id: new ObjectId(post.authorId) });
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+      let requestUsers = [];
+      for (let i = 0; i < post.pendingRequestIds.length; i++) {
+        let requestUser = await users1.findOne({ _id: new ObjectId(post.pendingRequestIds[i]) });
+        if (requestUser) {
+          requestUsers.push({ id: requestUser._id, name: `${requestUser.firstName} ${requestUser.lastName}` });
         }
       }
-    } catch(e) {
-      message.push(e);
-      error = true;
-    }
-    if (error) {
-      let prev = { comment: comment };
-      const postId = req.params.id;
-      try {
-        let posts1 = await posts()
-        let post = await posts1.findOne({ _id: new ObjectId(postId) });
-        if (!post) {
-          return res.status(404).json({ error: 'Post not found' });
-        }
-        let users1 = await users();
-        let user = await users1.findOne({ _id: new ObjectId(post.authorId) });
-        if (!user) {
-          return res.status(404).json({ error: 'User not found' });
-        }
-        let requestUsers = [];
-        for (let i = 0; i < post.pendingRequestIds.length; i++) {
-          let requestUser = await users1.findOne({ _id: new ObjectId(post.pendingRequestIds[i]) });
-          if (requestUser) {
-            requestUsers.push({ id: requestUser._id, name: `${requestUser.firstName} ${requestUser.lastName}` });
-          }
-        }
-        let jr1 = await joinRequests();
-        let existingReq = await jr1.findOne(
-        { postId: postId, 
-          requesterId: req.session.user._id, 
-          status: 'pending' 
+      let jr1 = await joinRequests();
+      let existingReq = await jr1.findOne(
+      { postId: postId, 
+        requesterId: req.session.user._id, 
+        status: 'pending' 
+      });
+      let post2 = {
+        id: post._id,
+        sport: post.sport,
+        title: post.title,
+        status: post.status,
+        author: user.firstName + ' ' + user.lastName,
+        authorId: post.authorId,
+        location: post.location,
+        date: post.eventDateTime.toLocaleDateString(),
+        time: post.eventDateTime.toLocaleTimeString(),
+        skill: post.skillLevelRestriction,
+        ageRange: `${post.ageRestriction.min}-${post.ageRestriction.max}`,
+        gender: post.genderRestriction,
+        description: post.description,
+        likes: post.likedBy.length,
+        maxParticipants: post.maxParticipants,
+        accepted: post.acceptedParticipantIds,
+        // hasRequests: (post.pendingRequestIds.length > 0),
+        requests: requestUsers,
+        dislikes: post.dislikedBy.length,
+        comments: post.comments.length,
+        isLiked: post.likedBy.includes(req.session.user._id),
+        isDisliked: post.dislikedBy.includes(req.session.user._id),
+        isAccepted: post.acceptedParticipantIds.includes(req.session.user._id),
+        hasPendingRequest: !!existingReq
+      }
+      let comments = [];
+      for (let i = 0; i < post.comments.length; i++) {
+        let author = await users1.findOne({ _id: new ObjectId(post.comments[i].userId) });
+        comments.push({
+          id: post.comments[i]._id,
+          author: author.firstName + ' ' + author.lastName,
+          content: post.comments[i].commentText
         });
-        let post2 = {
-          id: post._id,
-          sport: post.sport,
-          title: post.title,
-          status: post.status,
-          author: user.firstName + ' ' + user.lastName,
-          authorId: post.authorId,
-          location: post.location,
-          date: post.eventDateTime.toLocaleDateString(),
-          time: post.eventDateTime.toLocaleTimeString(),
-          skill: post.skillLevelRestriction,
-          ageRange: `${post.ageRestriction.min}-${post.ageRestriction.max}`,
-          gender: post.genderRestriction,
-          description: post.description,
-          likes: post.likedBy.length,
-          maxParticipants: post.maxParticipants,
-          accepted: post.acceptedParticipantIds,
-          // hasRequests: (post.pendingRequestIds.length > 0),
-          requests: requestUsers,
-          dislikes: post.dislikedBy.length,
-          comments: post.comments.length,
-          isLiked: post.likedBy.includes(req.session.user._id),
-          isDisliked: post.dislikedBy.includes(req.session.user._id),
-          isAccepted: post.acceptedParticipantIds.includes(req.session.user._id),
-          hasPendingRequest: !!existingReq
-        }
-        let comments = [];
-        for (let i = 0; i < post.comments.length; i++) {
-          let author = await users1.findOne({ _id: new ObjectId(post.comments[i].userId) });
-          comments.push({
-            id: post.comments[i]._id,
-            author: author.firstName + ' ' + author.lastName,
-            content: post.comments[i].commentText
-          });
-        }
-        let isAuthor = post.authorId === req.session.user._id;
-        return res.status(400).render('post/postDetail', { title: 'Post Detail', 
-          post: post2, comments: comments, isAuthor: isAuthor, logedIn: true, error: true,
-          message: message.join(" AND "), prev: prev });
-      }catch(e) {
-        return res.status(500).json({ error: `An error occurred: ${e}`});
       }
-    } else{
-      try{
-        let newcomment = await addComment(req.params.id, req.session.user._id, comment);
-        return res.redirect(`/posts/${req.params.id}`);
-      } catch(e) {
-        return res.status(500).json({ error: `An error occurred: ${e}`});
-      }
+      let isAuthor = post.authorId === req.session.user._id;
+      return res.status(400).render('post/postDetail', { title: 'Post Detail', 
+        post: post2, comments: comments, isAuthor: isAuthor, logedIn: true, error: true,
+        message: message.join(" AND "), prev: prev });
+    }catch(e) {
+      return res.status(500).json({ error: `An error occurred: ${e}`});
+    }
+  } else{
+    try{
+      let newcomment = await addComment(req.params.id, req.session.user._id, comment);
+      return res.redirect(`/posts/${req.params.id}`);
+    } catch(e) {
+      return res.status(500).json({ error: `An error occurred: ${e}`});
     }
   }
+  
 });
 
 router.get('/:id/like', async (req, res) => {
