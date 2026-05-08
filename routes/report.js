@@ -1,5 +1,5 @@
 import express from 'express';
-import { checkDescription, checkEmailFieldsOnly, checkReason2, checkReportType 
+import { checkDescription, checkEmailFieldsOnly, checkReason2, checkReportType, sanitize
 } from '../helpers.js';
 import { users } from '../config/mongoCollections.js';
 import { createReport2 } from '../data/reports.js';
@@ -16,7 +16,12 @@ router.route('/').get( async (req, res) => {
     if (!req.session.user) {
         return res.redirect('/profile/login');
     } else {
-        let { reportType, targetEmail, reason, description } = req.body
+        let { reportType, targetEmail, reason, description } = req.body;
+        reportType = sanitize(reportType);
+        targetEmail = sanitize(targetEmail);
+        reason = sanitize(reason);
+        description = sanitize(description);
+        
         let message = []
         let error = false;
         try{

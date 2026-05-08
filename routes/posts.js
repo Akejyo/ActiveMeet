@@ -9,10 +9,10 @@ import { posts, users, joinRequests } from '../config/mongoCollections.js';
 import { samplePosts } from './sampleData.js';
 import { checkDateAndTime, checkLocation, checkMaxParticipants, parsAndCheckAgeRestriction, 
   checkSport, checkTitle, checkSkillLevelRestriction, checkGenderRestriction, checkDescription,
-  checkComment
+  checkComment, sanitize
 } from '../helpers.js';
 import e from 'express';
-import { addComment, createPost } from '../data/posts.js';
+import { addComment, createPost, getPostById, updatePost } from '../data/posts.js';
 
 router.route('/create').get((req, res) => {
   if (!req.session.user) {
@@ -27,6 +27,19 @@ router.route('/create').get((req, res) => {
   } else {
     let { sport, title, location, date, time, maxParticipants, ageRestriction, 
       skillLevel, genderRestriction, description } = req.body;
+    
+    sport = sanitize(sport);
+    title = sanitize(title);
+    location = sanitize(location);
+    date = sanitize(date);
+    time = sanitize(time);
+    maxParticipants = sanitize(maxParticipants);
+    skillLevel = sanitize(skillLevel);
+    genderRestriction = sanitize(genderRestriction);
+    description = sanitize(description);
+    ageRestriction = sanitize(ageRestriction);
+
+
     let message = []
     let error = false;
     try{
@@ -212,6 +225,7 @@ router.route('/:id').get(async (req, res) => {
     return res.redirect('/profile/login');
   }else{
     let { comment } = req.body;
+    comment = sanitize(comment);
     let message = [];
     let error = false;
     try{
@@ -368,7 +382,7 @@ router.get('/:id/edit', async (req, res) => {
 // POST /posts/:id/edit
 router.post("/:id/edit", async (req, res) =>{
   try{
-    const {
+    let {
       title,
       sport,
       description,
@@ -380,6 +394,26 @@ router.post("/:id/edit", async (req, res) =>{
       location,
       status
     } = req.body;
+    title = sanitize(title);
+    sport = sanitize(sport);
+    description = sanitize(description);
+    eventDateTime = sanitize(eventDateTime);
+    maxParticipants = sanitize(maxParticipants);
+    skillLevelRestriction = sanitize(skillLevelRestriction);
+    genderRestriction = sanitize(genderRestriction);
+    location = sanitize(location);
+    status = sanitize(status);
+
+    let ageRestrictionObj;
+    if (typeof ageRestriction === 'string') {
+      ageRestrictionObj = parsAndCheckAgeRestriction(sanitize(ageRestriction));
+    } else if (ageRestriction && typeof ageRestriction === 'object' && !Array.isArray(ageRestriction)) {
+      ageRestrictionObj = {
+        min: Number(sanitize(ageRestriction.min)),
+        max: Number(sanitize(ageRestriction.max))
+      };
+    }
+
     const updatedPost = await updatePost(
       req.params.id,
       title,
@@ -387,10 +421,7 @@ router.post("/:id/edit", async (req, res) =>{
       description,
       new Date(eventDateTime),
       Number(maxParticipants),
-      {
-        min: Number(ageRestriction.min),
-        max: Number(ageRestriction.max)
-      },
+      ageRestrictionObj,
       skillLevelRestriction,
       genderRestriction,
       location,

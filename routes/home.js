@@ -2,7 +2,7 @@ import express from 'express';
 const router = express.Router();
 
 import { getAllPosts } from '../data/posts.js';
-import {findAuthor, checkSport, checkSearchText} from "../helpers.js"
+import {findAuthor, checkSport, checkSearchText, sanitize} from "../helpers.js"
 
 router.route('/').get(async (req, res) => {
   if (!req.session.user){
@@ -10,17 +10,17 @@ router.route('/').get(async (req, res) => {
   } else {
     try{
       let us = {
-        firstName: req.session.user.firstName,
-        lastName: req.session.user.lastName,
-        city: req.session.user.city,
-        state: req.session.user.state,
-        age: req.session.user.age,
-        gender: req.session.user.gender,
-        skill: req.session.user.skill,
-        bio: req.session.user.bio,
-        interests: req.session.user.sportsInterests,
-        followers: req.session.user.followerNumber,
-        following: req.session.user.followingNumber,
+        firstName: sanitize(req.session.user.firstName),
+        lastName: sanitize(req.session.user.lastName),
+        city: sanitize(req.session.user.city),
+        state: sanitize(req.session.user.state),
+        age: sanitize(req.session.user.age),
+        gender: sanitize(req.session.user.gender),
+        skill: sanitize(req.session.user.skill),
+        bio: sanitize(req.session.user.bio),
+        interests: sanitize(req.session.user.sportsInterests),
+        followers: sanitize(req.session.user.followerNumber),
+        following: sanitize(req.session.user.followingNumber),
         badges: [] //Change later when we have badges implemented
       }
       let posts1 = await getAllPosts()
@@ -103,17 +103,17 @@ router.route('/').get(async (req, res) => {
       message.push(e)
     }
     let us = {
-        firstName: req.session.user.firstName,
-        lastName: req.session.user.lastName,
-        city: req.session.user.city,
-        state: req.session.user.state,
-        age: req.session.user.age,
-        gender: req.session.user.gender,
-        skill: req.session.user.skill,
-        bio: req.session.user.bio,
-        interests: req.session.user.sportsInterests,
-        followers: req.session.user.followerNumber,
-        following: req.session.user.followingNumber,
+        firstName: sanitize(req.session.user.firstName),
+        lastName: sanitize(req.session.user.lastName),
+        city: sanitize(req.session.user.city),
+        state: sanitize(req.session.user.state),
+        age: sanitize(req.session.user.age),
+        gender: sanitize(req.session.user.gender),
+        skill: sanitize(req.session.user.skill),
+        bio: sanitize(req.session.user.bio),
+        interests: sanitize(req.session.user.sportsInterests),
+        followers: sanitize(req.session.user.followerNumber),
+        following: sanitize(req.session.user.followingNumber),
         badges: [] //Change later when we have badges implemented
       }
     if (error) {
