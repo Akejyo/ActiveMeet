@@ -268,7 +268,9 @@ router.route('/:id').get(async (req, res) => {
       }
       let requestUsers = [];
       for (let i = 0; i < post.pendingRequestIds.length; i++) {
-        let requestUser = await users1.findOne({ _id: new ObjectId(post.pendingRequestIds[i]) });
+        let joinRequest1 = await joinRequests();
+        let joinObj = await joinRequest1.findOne({_id: new ObjectId(post.pendingRequests[i])});
+        let requestUser = await users1.findOne({_id: new ObjectId(joinObj.requesterId)});
         if (requestUser) {
           requestUsers.push({ id: requestUser._id, name: `${requestUser.firstName} ${requestUser.lastName}` });
         }
