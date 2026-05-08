@@ -4,7 +4,7 @@ const router = express.Router();
 import { posts, users } from '../config/mongoCollections.js';
 import { ObjectId } from 'mongodb';
 import { checkEmailFieldsOnly, checkFirstName, checkLastName, checkCity, checkState, 
-  checkAge, checkGender, checkEmail, checkSkillLevel, checkPassword, checkVisibility, checkBio } from '../helpers.js';
+  checkAge, checkGender, checkEmail, checkSkillLevel, checkPassword, checkVisibility, checkBio, sanitize } from '../helpers.js';
 import { authenticateUser } from '../data/users.js';
 import { createUser, editSportInterests, editProfile } from '../data/users.js';
 
@@ -14,17 +14,17 @@ router.route('/')
     res.redirect('/profile/login')
   }else{
     let us = {
-      firstName: req.session.user.firstName,
-      lastName: req.session.user.lastName,
-      city: req.session.user.city,
-      state: req.session.user.state,
-      age: req.session.user.age,
-      gender: req.session.user.gender,
-      skill: req.session.user.skill,
-      bio: req.session.user.bio,
-      interests: req.session.user.sportsInterests,
-      followers: req.session.user.followerNumber,
-      following: req.session.user.followingNumber,
+      firstName: sanitize(req.session.user.firstName),
+      lastName: sanitize(req.session.user.lastName),
+      city: sanitize(req.session.user.city),
+      state: sanitize(req.session.user.state),
+      age: sanitize(req.session.user.age),
+      gender: sanitize(req.session.user.gender),
+      skill: sanitize(req.session.user.skill),
+      bio: sanitize(req.session.user.bio),
+      interests: sanitize(req.session.user.sportsInterests),
+      followers: sanitize(req.session.user.followerNumber),
+      following: sanitize(req.session.user.followingNumber),
       badges: [] //Change later when we have badges implemented
     }
     let pos = []
@@ -71,11 +71,11 @@ router.route('/edit')
     res.render('profile/profileEdit', {
       title: 'Edit Profile',
       user: req.session.user,
-      isBeginner: (req.session.user.skill === 'beginner'),
-      isIntermediate: (req.session.user.skill === 'intermediate'),
-      isAdvanced: (req.session.user.skill === 'advanced'),
-      isPublic: (req.session.user.visibility === 'public'),
-      isPrivate: (req.session.user.visibility === 'private'),
+      isBeginner: (sanitize(req.session.user.skill) === 'beginner'),
+      isIntermediate: (sanitize(req.session.user.skill) === 'intermediate'),
+      isAdvanced: (sanitize(req.session.user.skill) === 'advanced'),
+      isPublic: (sanitize(req.session.user.visibility) === 'public'),
+      isPrivate: (sanitize(req.session.user.visibility) === 'private'),
       logedIn: true
     });
   }
@@ -85,6 +85,14 @@ router.route('/edit')
     res.redirect('/profile/login')
   }else{
     let { firstName, lastName, city, state, bio, skill, visibility } = req.body;
+    firstName = sanitize(firstName);
+    lastName = sanitize(lastName);
+    city = sanitize(city);
+    state = sanitize(state);
+    bio = sanitize(bio);
+    skill = sanitize(skill);
+    visibility = sanitize(visibility);
+
     let message = [];
     let error = false;
     try{
@@ -178,11 +186,11 @@ router.route('/edit')
       }catch(e){
         return res.status(400).render('profile/profileEdit', { title: 'Edit Profile',
           user: req.session.user,
-          isBeginner: (req.session.user.skill === 'beginner'),
-          isIntermediate: (req.session.user.skill === 'intermediate'),
-          isAdvanced: (req.session.user.skill === 'advanced'),
-          isPublic: (req.session.user.visibility === 'public'),
-          isPrivate: (req.session.user.visibility === 'private'),
+          isBeginner: (sanitize(req.session.user.skill) === 'beginner'),
+          isIntermediate: (sanitize(req.session.user.skill) === 'intermediate'),
+          isAdvanced: (sanitize(req.session.user.skill) === 'advanced'),
+          isPublic: (sanitize(req.session.user.visibility) === 'public'),
+          isPrivate: (sanitize(req.session.user.visibility) === 'private'),
           logedIn: true,
           error: true, message: e });
       }
@@ -201,6 +209,8 @@ router.route('/login')
 })
 .post(async (req, res) => { //TODO xss protection and check session
   let { email, password } = req.body
+  email = sanitize(email);
+  password = sanitize(password);
   let message = []
   let error = false
   try{
@@ -266,6 +276,16 @@ router.route('/register')
     res.redirect('/profile')
   } else {
     let { firstName, lastName, email, password, age, city, state, gender, skill } = req.body
+    firstName = sanitize(firstName);
+    lastName = sanitize(lastName);
+    email = sanitize(email);
+    password = sanitize(password);
+    age = sanitize(age);
+    city = sanitize(city);
+    state = sanitize(state);
+    gender = sanitize(gender);
+    skill = sanitize(skill);
+    
     let message = []
     let error = false
     try{
