@@ -190,16 +190,60 @@ document.addEventListener('DOMContentLoaded', () => {
     ?.closest('form')
   if (commentForm) {
     commentForm.addEventListener('submit', (e) => {
+      e.preventDefault()
       const comment = getFieldValue(commentForm, 'comment')
       const errors = []
       checkCheck.isValidComment(comment, errors)
 
       if (errors.length > 0) {
-        e.preventDefault()
         showErrors(commentForm, errors)
-      } else {
-        showErrors(commentForm, [])
+        return
       }
+
+      const requestConfig = {
+        method: 'POST',
+        url: commentForm.action,
+        contentType: 'application/json',
+        data: JSON.stringify({ comment })
+      }
+
+      $.ajax(requestConfig).then(
+        (data) => {
+          if (!data.success) {
+            showErrors(commentForm, data.errors || ['Could not post comment.'])
+            return
+          }
+
+          showErrors(commentForm, [])
+
+          const commentList = document.querySelector('.comment-list')
+          const commentElement = document.createElement('div')
+          commentElement.className = 'comment'
+
+          const authorElement = document.createElement('strong')
+          authorElement.textContent = data.comment.author
+
+          const contentElement = document.createElement('p')
+          contentElement.textContent = data.comment.content
+
+          commentElement.appendChild(authorElement)
+          commentElement.appendChild(contentElement)
+          commentList.appendChild(commentElement)
+          commentForm.querySelector('textarea[name="comment"]').value = ''
+        },
+        (error) => {
+          if (error.status === 401) {
+            window.location.href = '/profile/login'
+            return
+          }
+
+          if (error.responseJSON && error.responseJSON.errors) {
+            showErrors(commentForm, error.responseJSON.errors)
+          } else {
+            showErrors(commentForm, ['Could not submit comment. Please try again.'])
+          }
+        }
+      )
     })
   }
 
