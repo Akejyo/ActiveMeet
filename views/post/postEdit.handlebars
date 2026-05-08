@@ -2,42 +2,106 @@
   <h1>Edit Post</h1>
   <p class='muted'>Update your event details and restrictions.</p>
 
-  <form class='form'>
+  {{#if error}}
+    <p class="error">{{message}}</p>
+  {{/if}}
+
+
+  <form class='form' action="/posts/{{post.id}}/edit" method="POST">
     <label>Post Title
-      <input type='text' value='{{post.title}}'>
+      <input type='text' name="title" value='{{post.title}}' required>
     </label>
 
     <div class='grid-2'>
       <label>Sport Type
-        <input type='text' value='{{post.sport}}'>
+        <select name="sport" required>
+          <option value="basketball" {{#if post.isBasketball}}selected{{/if}}>Basketball</option>
+          <option value="soccer" {{#if post.isSoccer}}selected{{/if}}>Soccer</option>
+          <option value="tennis" {{#if post.isTennis}}selected{{/if}}>Tennis</option>
+          <option value="baseball" {{#if post.isBaseball}}selected{{/if}}>Baseball</option>
+          <option value="volleyball" {{#if post.isVolleyball}}selected{{/if}}>Volleyball</option>
+          <option value="football" {{#if post.isFootball}}selected{{/if}}>Football</option>
+          <option value="hockey" {{#if post.isHockey}}selected{{/if}}>Hockey</option>
+          <option value="golf" {{#if post.isGolf}}selected{{/if}}>Golf</option>
+          <option value="swimming" {{#if post.isSwimming}}selected{{/if}}>Swimming</option>
+          <option value="running" {{#if post.isRunning}}selected{{/if}}>Running</option>
+          <option value="badminton" {{#if post.isBadminton}}selected{{/if}}>Badminton</option>
+          <option value="bowling" {{#if post.isBowling}}selected{{/if}}>Bowling</option>
+          <option value="archery" {{#if post.isArchery}}selected{{/if}}>Archery</option>
+          <option value="cycling" {{#if post.isCycling}}selected{{/if}}>Cycling</option>
+          <option value="boxing" {{#if post.isBoxing}}selected{{/if}}>Boxing</option>
+          <option value="cricket" {{#if post.isCricket}}selected{{/if}}>Cricket</option>
+          <option value="darts" {{#if post.isDarts}}selected{{/if}}>Darts</option>
+          <option value="gymnastics" {{#if post.isGymnastics}}selected{{/if}}>Gymnastics</option>
+          <option value="gym" {{#if post.isGym}}selected{{/if}}>Gym</option>
+          <option value="hiking" {{#if post.isHiking}}selected{{/if}}>Hiking</option>
+        </select>
       </label>
 
       <label>Location
-        <input type='text' value='{{post.location}}'>
+        <input type='text' name="location" value='{{post.location}}' required>
       </label>
     </div>
 
     <div class='grid-3'>
       <label>Date
-        <input type='date' value='{{post.date}}'>
+        <input type='date' name="date" value='{{post.date}}'>
       </label>
 
       <label>Time
-        <input type='time' value='{{post.time}}'>
+        <input type='time' name="time" value='{{post.time}}'>
       </label>
 
-      <label>Skill Level
-        <input type='text' value='{{post.skill}}'>
+      <label>Max Participants
+        <input type='number' name="maxParticipants" value='{{post.maxParticipants}}'>
       </label>
     </div>
 
-    <label>Description
-      <textarea rows='5'>{{post.description}}</textarea>
-    </label>
+
+    <div class="grid-2">
+      <label>Min Age
+        <input type="number" name="ageMin" value="{{post.ageMin}}" min="0" required>
+      </label>
+      <label>Max Age
+        <input type="number" name="ageMax" value="{{post.ageMax}}" min="0" required>
+      </label>
+    </div>
+
+    <div class="grid-3">
+      <label>Skill Level
+        <select name="skillLevel" required>
+          <option value="beginner" {{#if post.isBeginner}}selected{{/if}}>Beginner</option>
+          <option value="intermediate" {{#if post.isIntermediate}}selected{{/if}}>Intermediate</option>
+          <option value="advanced" {{#if post.isAdvanced}}selected{{/if}}>Advanced</option>
+          <option value="all levels" {{#if post.isAllLevels}}selected{{/if}}>All Levels</option>
+        </select>
+      </label>
+
+      <label>Gender
+        <select name="genderRestriction" required>
+          <option value="co-ed" {{#if post.isCoed}}selected{{/if}}>Co-ed</option>
+          <option value="male only" {{#if post.isMaleOnly}}selected{{/if}}>Male Only</option>
+          <option value="female only" {{#if post.isFemaleOnly}}selected{{/if}}>Female Only</option>
+        </select>
+      </label>
+
+      <label>Status
+        <select name="status" required>
+          <option value="open" {{#if post.isOpen}}selected{{/if}}>Open</option>
+          <option value="full" {{#if post.isFull}}selected{{/if}}>Full</option>
+          <option value="closed" {{#if post.isClosed}}selected{{/if}}>Closed</option>
+          <option value="cancelled" {{#if post.isCancelled}}selected{{/if}}>Cancelled</option>
+        </select>
+      </label>
+    </div>
+
+      <label>Description
+        <textarea name="description" rows='5'>{{post.description}}</textarea>
+      </label>
 
     <div class='action-row'>
       <button type='submit' class='btn'>Save Changes</button>
-      <button type='button' class='btn danger'>Delete Post</button>
+      <a href="/posts/{{post.id}}" class="btn btn-outline">Cancel</a>
     </div>
   </form>
 </section>

@@ -2,6 +2,7 @@
   <div class='post-top'>
     <span class='tag'>{{post.sport}}</span>
     <span class='muted'>{{post.date}} · {{post.time}}</span>
+    <span class="tag tag-status">{{post.status}}</span>
   </div>
 
   <h1>{{post.title}}</h1>
@@ -12,6 +13,7 @@
     <span>Skill: {{post.skill}}</span>
     <span>Age: {{post.ageRange}}</span>
     <span>{{post.gender}}</span>
+    <span>{{post.accepted.length}} / {{post.maxParticipants}} participants</span>
   </div>
 
   <div class='meta-row'>
@@ -20,15 +22,33 @@
     <span>💬 {{post.comments}}</span>
   </div>
 
+
   <div class='action-row'>
+    {{#unless isAuthor}}
+      {{#if post.isAccepted}}
+        <span class="btn btn-outline">✅ Accepted</span>
+      {{else if post.hasPendingRequest}}
+        <span class="btn btn-outline">⏳ Request Pending</span>
+      {{else}}
+        <form action="/posts/{{post.id}}/join" method="POST" style="display:inline">
+          <button type="submit" class="btn">Request to Join</button>
+        </form>
+      {{/if}}
+
+      {{#if post.isLiked}}
+        <span class="btn btn-outline">👍 Liked</span>
+      {{else}}
+        <a href="/posts/{{post.id}}/like" class="btn btn-outline">👍 Like</a>
+      {{/if}}
+
+      {{#if post.isDisliked}}
+        <span class="btn btn-outline">👎 Disliked</span>
+      {{else}}
+        <a href="/posts/{{post.id}}/dislike" class="btn btn-outline">👎 Dislike</a>
+      {{/if}}
+    {{/unless}}
     {{#if isAuthor}}
-    {{else}}
-    <a href='/posts/{{post.id}}/join' class='btn'>Request to Join</a>
-    <a href='/posts/{{post.id}}/like' class='btn btn-outline'>Like</a>
-    <a href='/posts/{{post.id}}/dislike' class='btn btn-outline'>Dislike</a>
-    {{/if}}
-    {{#if isAuthor}}
-      <a href='/posts/{{post.id}}/edit' class='btn'>Edit</a>
+      <a href="/posts/{{post.id}}/edit" class="btn">Edit</a>
     {{/if}}
   </div>
   <br>
