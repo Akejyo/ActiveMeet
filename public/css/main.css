@@ -266,14 +266,25 @@ body:has(.login-page-container),
 body:has(.auth-wrapper) {
   min-height: 100vh;
   overflow-x: hidden;
-  overflow-y: hidden;
   display: grid;
   grid-template-rows: auto 1fr auto;
 }
 
-.page:has(.login-page-container),
-.page:has(.auth-wrapper) {
+body:has(.login-page-container) {
+  overflow-y: hidden;
+}
+
+body:has(.auth-wrapper) {
+  overflow-y: auto;
+}
+
+.page:has(.login-page-container) {
   padding: 0;
+  width: 100%;
+}
+
+.page:has(.auth-wrapper) {
+  padding: 32px 0;
   width: 100%;
 }
 
