@@ -2,6 +2,8 @@ import express from 'express';
 const router = express.Router();
 import { ObjectId } from 'mongodb';
 import { posts, users, joinRequests } from '../config/mongoCollections.js';
+import { likePost, dislikePost } from '../data/posts.js';
+import { createJoinRequest } from '../data/joinRequests.js';
 
 //TODO: Finish remaning Routes at the end
 
@@ -9,7 +11,7 @@ import { posts, users, joinRequests } from '../config/mongoCollections.js';
 import { samplePosts } from './sampleData.js';
 import { checkDateAndTime, checkLocation, checkMaxParticipants, parsAndCheckAgeRestriction, 
   checkSport, checkTitle, checkSkillLevelRestriction, checkGenderRestriction, checkDescription,
-  checkComment
+  checkComment, sanitize
 } from '../helpers.js';
 import e from 'express';
 import { addComment, createPost, likePost, dislikePost, getPostById, updatePost } from '../data/posts.js';
@@ -30,6 +32,19 @@ router.route('/create').get((req, res) => {
   } else {
     let { sport, title, location, date, time, maxParticipants, ageRestriction, 
       skillLevel, genderRestriction, description } = req.body;
+    
+    sport = sanitize(sport);
+    title = sanitize(title);
+    location = sanitize(location);
+    date = sanitize(date);
+    time = sanitize(time);
+    maxParticipants = sanitize(maxParticipants);
+    skillLevel = sanitize(skillLevel);
+    genderRestriction = sanitize(genderRestriction);
+    description = sanitize(description);
+    ageRestriction = sanitize(ageRestriction);
+
+
     let message = []
     let error = false;
     try{
@@ -135,6 +150,7 @@ router.route('/create').get((req, res) => {
         let newPost = await createPost(title, req.session.user._id, sport, description,
           dateAndTime, maxParticipants, ageRestriction2, skillLevel, genderRestriction, location
         )
+        req.session.user.createdPostIds.push(newPost._id);
         res.redirect(`/posts/${newPost._id}`);
       }catch(e){
         return res.status(500).render('post/postCreate', { title: 'Create Post', logedIn: true, 
@@ -163,14 +179,17 @@ router.route('/:id').get(async (req, res) => {
         return res.status(404).json({ error: 'User not found' });
       }
       let requestUsers = [];
+      let alreadyRequested = false;
       for (let i = 0; i < post.pendingRequestIds.length; i++) {
         let joinRequest1 = await joinRequests();
         let joinObj = await joinRequest1.findOne({ _id: new ObjectId(post.pendingRequestIds[i]) });
         let requestUser = await users1.findOne({ _id: new ObjectId(joinObj.requesterId) });
         if (requestUser) {
+          if(joinObj.requesterId === req.session.user._id) alreadyRequested = true;
           requestUsers.push({ id: requestUser._id, name: `${requestUser.firstName} ${requestUser.lastName}` });
         }
       }
+      let alreadyJoined = post.acceptedParticipantIds.includes(req.session.user._id) || alreadyRequested;
       let jr1 = await joinRequests();
       let existingReq = await jr1.findOne(
         { postId: postId, 
@@ -190,6 +209,7 @@ router.route('/:id').get(async (req, res) => {
         skill: post.skillLevelRestriction,
         ageRange: `${post.ageRestriction.min}-${post.ageRestriction.max}`,
         gender: post.genderRestriction,
+        status: post.status,
         description: post.description,
         likes: post.likedBy.length,
         maxParticipants: post.maxParticipants,
@@ -214,7 +234,7 @@ router.route('/:id').get(async (req, res) => {
       }
       let isAuthor = post.authorId === req.session.user._id;
       res.status(200).render('post/postDetail', { title: 'Post Detail', 
-        post: post2, comments: comments, isAuthor: isAuthor, logedIn: true });
+        post: post2, comments: comments, isAuthor: isAuthor, alreadyJoined: alreadyJoined, logedIn: true });
     }catch(e) {
       return res.status(500).json({ error: `An error occurred: ${e}`});
     }
@@ -463,6 +483,7 @@ router.get('/:id/edit', async (req, res) => {
   if(!req.session.user) return res.redirect("/profile/login");
   if(!ObjectId.isValid(req.params.id)) return res.redirect('/');
   try{
+    if(!req.session.user) return res.redirect("/profile/login");
     const post = await getPostById(req.params.id);
     if(post.authorId !== req.session.user._id){
       return res.status(403).json({error: "Only the post author can edit this post"});
@@ -525,24 +546,58 @@ router.post("/:id/edit", async (req, res) =>{
   if(!ObjectId.isValid(req.params.id)) return res.redirect('/');
 
   try{
-    let existingPost = await getPostById(req.params.id);
-    if(existingPost.authorId !== req.session.user._id){
-      return res.status(403).json({error: "Only the post author can edit this post"});
-    }
-    let {
-      title, sport, location, date, time, maxParticipants, ageMin, ageMax, 
-      skillLevel, genderRestriction, description, status
+     let existingPost = await getPostById(req.params.id);
+     if(existingPost.authorId !== req.session.user._id){
+       return res.status(403).json({error: "Only the post author can edit this post"});
+     }
+     let {
+      title,
+      sport,
+      description,
+      eventDateTime,
+      maxParticipants,
+      ageRestriction,
+      skillLevelRestriction,
+      genderRestriction,
+      location,
+      status
     } = req.body;
+    title = sanitize(title);
+    sport = sanitize(sport);
+    description = sanitize(description);
+    eventDateTime = sanitize(eventDateTime);
+    maxParticipants = sanitize(maxParticipants);
+    skillLevelRestriction = sanitize(skillLevelRestriction);
+    genderRestriction = sanitize(genderRestriction);
+    location = sanitize(location);
+    status = sanitize(status);
 
+    let ageRestrictionObj;
+    if (typeof ageRestriction === 'string') {
+      ageRestrictionObj = parsAndCheckAgeRestriction(sanitize(ageRestriction));
+    } else if (ageRestriction && typeof ageRestriction === 'object' && !Array.isArray(ageRestriction)) {
+      ageRestrictionObj = {
+        min: Number(sanitize(ageRestriction.min)),
+        max: Number(sanitize(ageRestriction.max))
+      };
+    }
     if(!date || !time) throw "Date and time are required.";
     let dateAndTime = new Date(`${date}T${time}`);
     if(isNaN(dateAndTime.getTime())) throw "Invalid date or time.";
     dateAndTime = checkDateAndTime(dateAndTime);
 
-    let updatedPost = await updatePost(req.params.id, title, sport, description,
-      dateAndTime, Number(maxParticipants), 
-      {min: Number(ageMin), max: Number(ageMax)}, skillLevel, genderRestriction,
-      location, status
+    const updatedPost = await updatePost(
+      req.params.id,
+      title,
+      sport,
+      description,
+      new Date(eventDateTime),
+      Number(maxParticipants),
+      ageRestrictionObj,
+      skillLevelRestriction,
+      genderRestriction,
+      location,
+      status
     );
     return res.redirect(`/posts/${updatedPost._id.toString()}`);
   } catch(e){

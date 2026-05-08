@@ -2,6 +2,12 @@
 //Could copy and add the necessary ones to client side validation
 import {users, posts, joinRequests, reports} from "./config/mongoCollections.js";
 import {ObjectId} from 'mongodb';
+import xss from 'xss';
+
+export function sanitize(val) {
+    if (typeof val == 'string') return xss(val)
+    return val
+}
 
 export function checkId(id){
     if (!id) throw "Id was not provided"

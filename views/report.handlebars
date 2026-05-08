@@ -2,9 +2,9 @@
   <h1>Report Content or User</h1>
   <p class='muted'>Help us keep the community safe and respectful.</p>
 
-  <form class='form' action="/report" method="POST">
+  <form class='form' action='/report' method='POST'>
     <label>Report Type
-      <select name="reportType">
+      <select name='reportType'>
         {{#if prev.isPost}}
           <option selected>Post</option>
         {{else}}
@@ -19,9 +19,15 @@
     </label>
 
     <label>Email of Author or Person being reported
-      <input type='email' name='targetEmail' value="{{prev.targetEmail}}" placeholder='john@example.com' />
+      <input
+        type='email'
+        name='targetEmail'
+        value='{{prev.targetEmail}}'
+        placeholder='john@example.com'
+        required
+      />
     </label>
-    
+
     <label>Reason
       <select name='reason'>
         {{#if prev.isInappropriate}}
@@ -53,7 +59,11 @@
     </label>
 
     <label>Description
-      <textarea rows='5' name='description' placeholder='Describe the issue...'>{{prev.description}}</textarea>
+      <textarea
+        rows='5'
+        name='description'
+        placeholder='Describe the issue...'
+      >{{prev.description}}</textarea>
     </label>
 
     {{#if error}}
