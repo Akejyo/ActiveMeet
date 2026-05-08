@@ -2,8 +2,6 @@ import express from 'express';
 const router = express.Router();
 import { ObjectId } from 'mongodb';
 import { posts, users, joinRequests } from '../config/mongoCollections.js';
-import { likePost, dislikePost } from '../data/posts.js';
-import { createJoinRequest } from '../data/joinRequests.js';
 
 //TODO: Finish remaning Routes at the end
 
@@ -427,6 +425,9 @@ router.get('/:id/accept/:userId', async (req, res) => {
         $addToSet: {acceptedParticipantIds: req.params.userId}
       }
     );
+    let users1 = await users();
+    let up2 = await users1.updateOne({_id: new ObjectId(req.params.userId)}, 
+    {$addToSet: {joinedPostIds: req.params.id}});
 
     let updated = await posts1.findOne({_id: new ObjectId(req.params.id)});
     if(updated.acceptedParticipantIds.length >= updated.maxParticipants){
