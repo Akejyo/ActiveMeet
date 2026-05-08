@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Register
   const registerForm = document.querySelector(
-    'form[action="/profile/register"]',
+    'form[action="/profile/register"]'
   )
   if (registerForm) {
     registerForm.addEventListener('submit', (e) => {
@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const skillLevel = getFieldValue(postCreateForm, 'skillLevel')
       const genderRestriction = getFieldValue(
         postCreateForm,
-        'genderRestriction',
+        'genderRestriction'
       )
       const description = getFieldValue(postCreateForm, 'description')
 
@@ -288,7 +288,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
       setTimeout(() => {
         window.location.href = href
-      }, 350)
+      }, 200)
     })
+  })
+
+  // Make post cards clickable
+  const clickableCards = document.querySelectorAll('.clickable-card[data-href]')
+
+  clickableCards.forEach((card) => {
+    card.addEventListener('click', (e) => {
+      if (e.target.closest('a, button, form, input, select, textarea')) {
+        return
+      }
+
+      const href = card.getAttribute('data-href')
+      if (href) {
+        document.body.classList.add('page-transition-out')
+        setTimeout(() => {
+          window.location.href = href
+        }, 220)
+      }
+    })
+
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const href = card.getAttribute('data-href')
+        if (href) window.location.href = href
+      }
+    })
+
+    card.setAttribute('tabindex', '0')
+    card.setAttribute('role', 'link')
   })
 })

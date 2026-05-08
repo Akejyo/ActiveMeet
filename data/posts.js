@@ -125,7 +125,7 @@ export async function updatePost(postId, title, sport, description, eventDateTim
         {_id: new ObjectId(postId)},
         {$set: updateObj}
     );
-    if(!update.acknowledged || update.modifiedCount === 0) throw "Error: Could not update post";
+    if(!update.acknowledged) throw "Error: Could not update post";
     return await getPostById(postId);
 }
 // Removes post by postId (Finds and deleted post by postId)
@@ -154,6 +154,21 @@ export async function likePost(postId, userId){
     if(!update.acknowledged || update.matchedCount === 0) throw "Error: Could not like post";
     return await getPostById(postId);
 }
+export async function unlikePost(postId, userId){
+    postId = await checkPostId(postId);
+    userId = await checkAuthorId(userId);
+    const postsCollection = await posts();
+
+    const update = await postsCollection.updateOne(
+        {_id: new ObjectId(postId)},
+        {
+            $pull: {likedBy: userId}
+        }
+    );
+    if(!update.acknowledged || update.matchedCount === 0) throw "Error: Could not unlike post";
+    return await getPostById(postId);
+}
+
 // Dislikes post
 export async function dislikePost(postId, userId){
     postId = await checkPostId(postId);
@@ -170,3 +185,17 @@ export async function dislikePost(postId, userId){
     return await getPostById(postId);
 }
 
+export async function undislikePost(postId, userId){
+    postId = await checkPostId(postId);
+    userId = await checkAuthorId(userId);
+    const postsCollection = await posts();
+
+    const update = await postsCollection.updateOne(
+        {_id: new ObjectId(postId)},
+        {
+            $pull: {dislikedBy: userId}
+        }
+    );
+    if(!update.acknowledged || update.matchedCount === 0) throw "Error: Could not undislike post";
+    return await getPostById(postId);
+}

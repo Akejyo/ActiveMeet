@@ -1,3 +1,9 @@
+<a
+  href='/'
+  class='page-back-arrow'
+  aria-label='Back to home page'
+></a>
+
 <section class='card'>
   <div class='post-top'>
     <span class='tag'>{{post.sport}}</span>
@@ -29,6 +35,8 @@
         <span class="btn btn-outline">✅ Accepted</span>
       {{else if post.hasPendingRequest}}
         <span class="btn btn-outline">⏳ Request Pending</span>
+      {{else if post.hasDeniedRequest}}
+        <span class="btn btn-outline">❌ Request Denied</span>
       {{else}}
         <form action="/posts/{{post.id}}/join" method="POST" style="display:inline">
           <button type="submit" class="btn">Request to Join</button>
@@ -36,13 +44,15 @@
       {{/if}}
 
       {{#if post.isLiked}}
-        <span class="btn btn-outline">👍 Liked</span>
+        {{!-- <span class="btn btn-outline">👍 Liked</span> --}}
+        <a href="/posts/{{post.id}}/unlike" class="btn btn-outline">👍 Liked</a>
       {{else}}
         <a href="/posts/{{post.id}}/like" class="btn btn-outline">👍 Like</a>
       {{/if}}
 
       {{#if post.isDisliked}}
-        <span class="btn btn-outline">👎 Disliked</span>
+        {{!-- <span class="btn btn-outline">👎 Disliked</span> --}}
+        <a href="/posts/{{post.id}}/undislike" class="btn btn-outline">👎 Disliked</a>
       {{else}}
         <a href="/posts/{{post.id}}/dislike" class="btn btn-outline">👎 Dislike</a>
       {{/if}}
