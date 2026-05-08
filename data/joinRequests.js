@@ -58,6 +58,12 @@ export async function checkRequesterMeetsRequirements(requesterId, postId) {
     if (post.status !== 'open') {
         autoreject = true
     }
+    //check that user is not blocked. 
+    let author = await users1.findOne({_id: new ObjectId(post.authorId)})
+    if (author.blockedUserIds.includes(requester._id.toString())) {
+        autoreject = true
+    }
+
     if (autoreject) {
         let requests = await joinRequests();
         let joinReq = await requests.findOne({
