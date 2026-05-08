@@ -15,7 +15,7 @@ import e from 'express';
 import { addComment, createPost, likePost, dislikePost, getPostById, updatePost } from '../data/posts.js';
 import {createJoinRequest} from "../data/joinRequests.js";
 
-
+// Gets the empty create post page
 router.route('/create').get((req, res) => {
   if (!req.session.user) {
     return res.redirect('/profile/login');
@@ -23,6 +23,7 @@ router.route('/create').get((req, res) => {
     res.render('post/postCreate', { title: 'Create Post', logedIn: true });
   }
 })
+// Submit the create post form
 .post(async (req, res) => {
   if (!req.session.user) {
     return res.redirect('/profile/login');
@@ -143,12 +144,13 @@ router.route('/create').get((req, res) => {
   }
 });
 
-
+// Loading a post
 router.route('/:id').get(async (req, res) => {
   if (!req.session.user) {
     return res.redirect('/profile/login');
   } else {
     const postId = req.params.id;
+    if (!ObjectId.isValid(postId)) return res.redirect('/');
     try {
       let posts1 = await posts()
       let post = await posts1.findOne({ _id: new ObjectId(postId) });
@@ -218,10 +220,14 @@ router.route('/:id').get(async (req, res) => {
     }
   }
 })
+
+// Posting a comment on a post
 .post(async (req, res) => {
   if (!req.session.user) {
     return res.redirect('/profile/login');
-  }else{
+  } 
+  if(!ObjectId.isValid(req.params.id)) return res.redirect('/');
+  else{
     let { comment } = req.body;
     let message = [];
     let error = false;
@@ -329,6 +335,7 @@ router.route('/:id').get(async (req, res) => {
 
 router.get('/:id/like', async (req, res) => {
   if(!req.session.user) return res.redirect("/profile/login");
+  if(!ObjectId.isValid(req.params.id)) return res.redirect('/');
   try{
     await likePost(req.params.id, req.session.user._id);
   } catch(e){
@@ -339,6 +346,7 @@ router.get('/:id/like', async (req, res) => {
 
 router.get('/:id/dislike', async (req, res) => {
   if(!req.session.user) return res.redirect("/profile/login");
+  if(!ObjectId.isValid(req.params.id)) return res.redirect('/');
   try{
     await dislikePost(req.params.id, req.session.user._id);
   } catch(e){
@@ -347,9 +355,9 @@ router.get('/:id/dislike', async (req, res) => {
   res.redirect(`/posts/${req.params.id}`)
 });
 
-// TODO: Add a POST route for processing a request to join a post.
 router.post('/:id/join', async (req, res) => {
   if(!req.session.user) return res.redirect("/profile/login");
+  if(!ObjectId.isValid(req.params.id)) return res.redirect('/');
   try{
     let requests = await joinRequests();
     let existing = await requests.findOne({
@@ -366,14 +374,16 @@ router.post('/:id/join', async (req, res) => {
   }
 });
 
+// Accept a join request
 router.get('/:id/accept/:userId', async (req, res) => {
   if(!req.session.user) return res.redirect("/profile/login");
+  if(!ObjectId.isValid(req.params.id)) return res.redirect('/');
   try{
     let posts1 = await posts();
     let post = await posts1.findOne({_id: new ObjectId(req.params.id)});
     if(!post) return res.status(404).json({error: "Post not found"});
     if(post.authorId !== req.session.user._id){
-      return res.status(403).json({error: "Only the post auth or can accept requests"});
+      return res.status(403).json({error: "Only the post author can accept requests"});
     }
 
     let requests = await joinRequests();
@@ -411,8 +421,10 @@ router.get('/:id/accept/:userId', async (req, res) => {
   }
 });
 
+// Decline a join request
 router.get('/:id/decline/:userId', async (req, res) => {
   if(!req.session.user) return res.redirect("/profile/login");
+  if(!ObjectId.isValid(req.params.id)) return res.redirect('/');
   try{
     let posts1 = await posts();
     let post = await posts1.findOne({_id: new ObjectId(req.params.id)});
@@ -448,6 +460,7 @@ router.get('/:id/decline/:userId', async (req, res) => {
 // GET /posts/:id/edit
 router.get('/:id/edit', async (req, res) => {
   if(!req.session.user) return res.redirect("/profile/login");
+  if(!ObjectId.isValid(req.params.id)) return res.redirect('/');
   try{
     const post = await getPostById(req.params.id);
     if(post.authorId !== req.session.user._id){
@@ -508,6 +521,8 @@ router.get('/:id/edit', async (req, res) => {
 // POST /posts/:id/edit
 router.post("/:id/edit", async (req, res) =>{
   if(!req.session.user) return res.redirect("/profile/login");
+  if(!ObjectId.isValid(req.params.id)) return res.redirect('/');
+
   try{
     let existingPost = await getPostById(req.params.id);
     if(existingPost.authorId !== req.session.user._id){
