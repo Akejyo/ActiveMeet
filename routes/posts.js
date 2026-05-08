@@ -51,7 +51,9 @@ router.route('/create').get((req, res) => {
     }
     let dateAndTime = undefined
     try{
+      if(!date || !time) throw "Date and time are required.";
       dateAndTime = new Date(`${date}T${time}`);
+      if(isNaN(dateAndTime.getTime())) throw "Invalid date or time.";
       dateAndTime = checkDateAndTime(dateAndTime);
     }catch(e){
       message.push(e)
@@ -177,6 +179,7 @@ router.route('/:id').get(async (req, res) => {
         id: post._id,
         sport: post.sport,
         title: post.title,
+        status: post.status,
         author: user.firstName + ' ' + user.lastName,
         authorId: post.authorId,
         location: post.location,
@@ -187,6 +190,7 @@ router.route('/:id').get(async (req, res) => {
         gender: post.genderRestriction,
         description: post.description,
         likes: post.likedBy.length,
+        maxParticipants: post.maxParticipants,
         accepted: post.acceptedParticipantIds,
         // hasRequests: (post.pendingRequestIds.length > 0),
         requests: requestUsers,
@@ -274,6 +278,7 @@ router.route('/:id').get(async (req, res) => {
           id: post._id,
           sport: post.sport,
           title: post.title,
+          status: post.status,
           author: user.firstName + ' ' + user.lastName,
           authorId: post.authorId,
           location: post.location,
@@ -284,6 +289,7 @@ router.route('/:id').get(async (req, res) => {
           gender: post.genderRestriction,
           description: post.description,
           likes: post.likedBy.length,
+          maxParticipants: post.maxParticipants,
           accepted: post.acceptedParticipantIds,
           // hasRequests: (post.pendingRequestIds.length > 0),
           requests: requestUsers,
@@ -512,8 +518,13 @@ router.post("/:id/edit", async (req, res) =>{
       skillLevel, genderRestriction, description, status
     } = req.body;
 
+    if(!date || !time) throw "Date and time are required.";
+    let dateAndTime = new Date(`${date}T${time}`);
+    if(isNaN(dateAndTime.getTime())) throw "Invalid date or time.";
+    dateAndTime = checkDateAndTime(dateAndTime);
+
     let updatedPost = await updatePost(req.params.id, title, sport, description,
-      new Date(`${date}T${time}`), Number(maxParticipants), 
+      dateAndTime, Number(maxParticipants), 
       {min: Number(ageMin), max: Number(ageMax)}, skillLevel, genderRestriction,
       location, status
     );
