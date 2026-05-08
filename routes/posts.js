@@ -248,10 +248,13 @@ router.route('/:id').get(async (req, res) => {
 // Posting a comment on a post
 .post(async (req, res) => {
   if (!req.session.user) {
-    return res.redirect('/profile/login');
+    return res.status(401).json({success: false, errors: ['You must be logged in to comment.']});
   } 
-  if(!ObjectId.isValid(req.params.id)) return res.redirect('/');
+  if(!ObjectId.isValid(req.params.id)){
+    return res.status(400).json({success: false, errors: ['Invalid post id.']});
+  }
   let { comment } = req.body;
+  comment = sanitize(comment);
   let message = [];
   let error = false;
   try{
@@ -277,88 +280,16 @@ router.route('/:id').get(async (req, res) => {
     error = true;
   }
   if (error) {
-    let prev = { comment: comment };
-    const postId = req.params.id;
-    try {
-      let posts1 = await posts()
-      let post = await posts1.findOne({ _id: new ObjectId(postId) });
-      if (!post) {
-        return res.status(404).json({ error: 'Post not found' });
-      }
-      let users1 = await users();
-      let user = await users1.findOne({ _id: new ObjectId(post.authorId) });
-      if (!user) {
-        return res.status(404).json({ error: 'User not found' });
-      }
-      let requestUsers = [];
-      for (let i = 0; i < post.pendingRequestIds.length; i++) {
-        let joinRequest1 = await joinRequests();
-        let joinObj = await joinRequest1.findOne({_id: new ObjectId(post.pendingRequests[i])});
-        let requestUser = await users1.findOne({_id: new ObjectId(joinObj.requesterId)});
-        if (requestUser) {
-          requestUsers.push({ id: requestUser._id, name: `${requestUser.firstName} ${requestUser.lastName}` });
-        }
-      }
-      let jr1 = await joinRequests();
-      let existingReq = await jr1.findOne(
-      { postId: postId, 
-        requesterId: req.session.user._id,
-        status: 'pending'
-      });
-      let existingDen = await jr1.findOne(
-        { postId: postId, 
-          requesterId: req.session.user._id, 
-          status: 'denied' 
-        });
-      let post2 = {
-        id: post._id,
-        sport: post.sport,
-        title: post.title,
-        status: post.status,
-        author: user.firstName + ' ' + user.lastName,
-        authorId: post.authorId,
-        location: post.location,
-        date: post.eventDateTime.toLocaleDateString(),
-        time: post.eventDateTime.toLocaleTimeString(),
-        skill: post.skillLevelRestriction,
-        ageRange: `${post.ageRestriction.min}-${post.ageRestriction.max}`,
-        gender: post.genderRestriction,
-        description: post.description,
-        likes: post.likedBy.length,
-        maxParticipants: post.maxParticipants,
-        accepted: post.acceptedParticipantIds,
-        // hasRequests: (post.pendingRequestIds.length > 0),
-        requests: requestUsers,
-        dislikes: post.dislikedBy.length,
-        comments: post.comments.length,
-        isLiked: post.likedBy.includes(req.session.user._id),
-        isDisliked: post.dislikedBy.includes(req.session.user._id),
-        isAccepted: post.acceptedParticipantIds.includes(req.session.user._id),
-        hasPendingRequest: !!existingReq,
-        hasDeniedRequest: !!existingDen
-      }
-      let comments = [];
-      for (let i = 0; i < post.comments.length; i++) {
-        let author = await users1.findOne({ _id: new ObjectId(post.comments[i].userId) });
-        comments.push({
-          id: post.comments[i]._id,
-          author: author.firstName + ' ' + author.lastName,
-          content: post.comments[i].commentText
-        });
-      }
-      let isAuthor = post.authorId === req.session.user._id;
-      return res.status(400).render('post/postDetail', { title: 'Post Detail', 
-        post: post2, comments: comments, isAuthor: isAuthor, logedIn: true, error: true,
-        message: message.join(" AND "), prev: prev });
-    }catch(e) {
-      return res.status(500).json({ error: `An error occurred: ${e}`});
-    }
+    return res.status(400).json({success: false, errors: message});
   } else{
     try{
-      let newcomment = await addComment(req.params.id, req.session.user._id, comment);
-      return res.redirect(`/posts/${req.params.id}`);
+      await addComment(req.params.id, req.session.user._id, comment);
+      return res.status(200).json({success: true, comment: {
+        author: `${req.session.user.firstName} ${req.session.user.lastName}`,
+        content: comment
+      }});
     } catch(e) {
-      return res.status(500).json({ error: `An error occurred: ${e}`});
+      return res.status(500).json({success: false, errors: [`An error occurred: ${e}`]});
     }
   }
   
