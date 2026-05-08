@@ -2,6 +2,7 @@
   <div class='post-top'>
     <span class='tag'>{{post.sport}}</span>
     <span class='muted'>{{post.date}} · {{post.time}}</span>
+    <span class="tag tag-status">{{post.status}}</span>
   </div>
 
   <h1>{{post.title}}</h1>
@@ -12,6 +13,7 @@
     <span>Skill: {{post.skill}}</span>
     <span>Age: {{post.ageRange}}</span>
     <span>{{post.gender}}</span>
+    <span>{{post.accepted.length}} / {{post.maxParticipants}} participants</span>
   </div>
 
   <div class='meta-row'>
@@ -19,6 +21,7 @@
     <span>👎 {{post.dislikes}}</span>
     <span>💬 {{post.comments}}</span>
   </div>
+
 
   <div class='action-row'>
     {{#if isAuthor}}

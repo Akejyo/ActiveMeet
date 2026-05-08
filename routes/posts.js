@@ -13,6 +13,8 @@ import { checkDateAndTime, checkLocation, checkMaxParticipants, parsAndCheckAgeR
 } from '../helpers.js';
 import e from 'express';
 import { addComment, createPost, likePost, dislikePost, getPostById, updatePost } from '../data/posts.js';
+import {createJoinRequest} from "../data/joinRequests.js";
+
 
 router.route('/create').get((req, res) => {
   if (!req.session.user) {
@@ -165,6 +167,12 @@ router.route('/:id').get(async (req, res) => {
           requestUsers.push({ id: requestUser._id, name: `${requestUser.firstName} ${requestUser.lastName}` });
         }
       }
+      let jr1 = await joinRequests();
+      let existingReq = await jr1.findOne(
+        { postId: postId, 
+          requesterId: req.session.user._id, 
+          status: 'pending' 
+        });
       let post2 = {
         id: post._id,
         sport: post.sport,
@@ -184,6 +192,10 @@ router.route('/:id').get(async (req, res) => {
         requests: requestUsers,
         dislikes: post.dislikedBy.length,
         comments: post.comments.length,
+        isLiked: post.likedBy.includes(req.session.user._id),
+        isDisliked: post.dislikedBy.includes(req.session.user._id),
+        isAccepted: post.acceptedParticipantIds.includes(req.session.user._id),
+        hasPendingRequest: !!existingReq
       }
       let comments = [];
       for (let i = 0; i < post.comments.length; i++) {
@@ -252,6 +264,12 @@ router.route('/:id').get(async (req, res) => {
             requestUsers.push({ id: requestUser._id, name: `${requestUser.firstName} ${requestUser.lastName}` });
           }
         }
+        let jr1 = await joinRequests();
+        let existingReq = await jr1.findOne(
+        { postId: postId, 
+          requesterId: req.session.user._id, 
+          status: 'pending' 
+        });
         let post2 = {
           id: post._id,
           sport: post.sport,
@@ -270,7 +288,11 @@ router.route('/:id').get(async (req, res) => {
           // hasRequests: (post.pendingRequestIds.length > 0),
           requests: requestUsers,
           dislikes: post.dislikedBy.length,
-          comments: post.comments.length
+          comments: post.comments.length,
+          isLiked: post.likedBy.includes(req.session.user._id),
+          isDisliked: post.dislikedBy.includes(req.session.user._id),
+          isAccepted: post.acceptedParticipantIds.includes(req.session.user._id),
+          hasPendingRequest: !!existingReq
         }
         let comments = [];
         for (let i = 0; i < post.comments.length; i++) {
@@ -300,7 +322,7 @@ router.route('/:id').get(async (req, res) => {
 });
 
 router.get('/:id/like', async (req, res) => {
-  if(!req.session.user) return res.redirect('profile/login');
+  if(!req.session.user) return res.redirect("/profile/login");
   try{
     await likePost(req.params.id, req.session.user._id);
   } catch(e){
@@ -310,7 +332,7 @@ router.get('/:id/like', async (req, res) => {
 });
 
 router.get('/:id/dislike', async (req, res) => {
-  if(!req.session.user) return res.redirect('profile/login');
+  if(!req.session.user) return res.redirect("/profile/login");
   try{
     await dislikePost(req.params.id, req.session.user._id);
   } catch(e){
@@ -321,7 +343,7 @@ router.get('/:id/dislike', async (req, res) => {
 
 // TODO: Add a POST route for processing a request to join a post.
 router.post('/:id/join', async (req, res) => {
-  if(!req.session.user) return res.redirect('profile/login');
+  if(!req.session.user) return res.redirect("/profile/login");
   try{
     let requests = await joinRequests();
     let existing = await requests.findOne({
@@ -339,7 +361,7 @@ router.post('/:id/join', async (req, res) => {
 });
 
 router.get('/:id/accept/:userId', async (req, res) => {
-  if(!req.session.user) return res.redirect('profile/login');
+  if(!req.session.user) return res.redirect("/profile/login");
   try{
     let posts1 = await posts();
     let post = await posts1.findOne({_id: new ObjectId(req.params.id)});
@@ -384,7 +406,7 @@ router.get('/:id/accept/:userId', async (req, res) => {
 });
 
 router.get('/:id/decline/:userId', async (req, res) => {
-  if(!req.session.user) return res.redirect('profile/login');
+  if(!req.session.user) return res.redirect("/profile/login");
   try{
     let posts1 = await posts();
     let post = await posts1.findOne({_id: new ObjectId(req.params.id)});
@@ -419,7 +441,7 @@ router.get('/:id/decline/:userId', async (req, res) => {
 
 // GET /posts/:id/edit
 router.get('/:id/edit', async (req, res) => {
-  if(!req.session.user) return res.redirect('profile/login');
+  if(!req.session.user) return res.redirect("/profile/login");
   try{
     const post = await getPostById(req.params.id);
     if(post.authorId !== req.session.user._id){
@@ -459,7 +481,7 @@ router.get('/:id/edit', async (req, res) => {
 
 // POST /posts/:id/edit
 router.post("/:id/edit", async (req, res) =>{
-  if(!req.session.user) return res.redirect('profile/login');
+  if(!req.session.user) return res.redirect("/profile/login");
   try{
     let existingPost = await getPostById(req.params.id);
     if(existingPost.authorId !== req.session.user._id){
