@@ -2,6 +2,8 @@ import express from 'express';
 const router = express.Router();
 import { ObjectId } from 'mongodb';
 import { posts, users, joinRequests } from '../config/mongoCollections.js';
+import { likePost, dislikePost } from '../data/posts.js';
+import { createJoinRequest } from '../data/joinRequests.js';
 
 //TODO: Finish remaning Routes at the end
 
@@ -318,7 +320,7 @@ router.route('/:id').get(async (req, res) => {
   }
 });
 
-router.get('/:id/like', (req, res) => {
+router.get('/:id/like', async (req, res) => {
   if(!req.session.user) return res.redirect("/profile/login");
   try{
     await likePost(req.params.id, req.session.user._id);
@@ -328,7 +330,7 @@ router.get('/:id/like', (req, res) => {
   res.redirect(`/posts/${req.params.id}`);
 });
 
-router.get('/:id/dislike', (req, res) => {
+router.get('/:id/dislike', async (req, res) => {
   if(!req.session.user) return res.redirect("/profile/login");
   try{
     await dislikePost(req.params.id, req.session.user._id);
@@ -339,7 +341,7 @@ router.get('/:id/dislike', (req, res) => {
 });
 
 // TODO: Add a POST route for processing a request to join a post.
-router.get('/:id/join', (req, res) => {
+router.get('/:id/join', async (req, res) => {
   if (!req.session.user) return res.redirect('/profile/login');
   try {
     await createJoinRequest(req.params.id, req.session.user._id, '');
