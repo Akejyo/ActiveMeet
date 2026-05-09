@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
       checkCheck.isValideDateAndTime(date, time, errors)
       checkCheck.isValidMaxParticipants(maxParticipants, errors)
       checkCheck.isValidAgeRestriction(ageRestriction, errors)
-      checkCheck.isValidRange(skillLevel, errors, 'skill')
+      checkCheck.isValidRange(skillLevel, errors, 'skillRestriction')
       checkCheck.isValidRange(genderRestriction, errors, 'genderRestriction')
       checkCheck.isValidDescription(description, errors)
 
