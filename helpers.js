@@ -365,9 +365,9 @@ export function checkTitle(title) {
   title = title.trim()
   if (title.length < 3 || title.length > 20)
     throw 'Title has to be between 3 and 20 characters'
-  let accept1 = /^[a-zA-Z\s]+$/
+  let accept1 = /^[a-zA-Z0-9\s]+$/
   if (!accept1.test(title))
-    throw 'Invalid character in title, can only contain letters and spaces'
+    throw 'Invalid character in title, can only contain letters, numbers, spaces'
   return title
 }
 

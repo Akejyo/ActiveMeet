@@ -1,7 +1,7 @@
 import { validRange } from './validRange.js'
 const nameRegex = /^[a-zA-Z]+$/
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-const titleRegex = /^[a-zA-Z\s]+$/
+const titleRegex = /^[a-zA-Z0-9\s]+$/
 const cityRegex = /^[a-zA-Z\s]+$/
 
 export const checkCheck = {
@@ -118,7 +118,7 @@ export const checkCheck = {
         title,
         err,
         titleRegex,
-        'Invalid character in title, can only contain letters and spaces',
+        'Invalid character in title, can only contain letters, numbers, and spaces',
       )
     )
       return
