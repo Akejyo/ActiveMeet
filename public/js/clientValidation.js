@@ -118,6 +118,7 @@ export const checkCheck = {
   },
   isValideLocation(location, err) {
     if (!this.isExist(location, err, 'Location')) return
+    if(!this.isValidRex(location, err, /^[a-zA-Z0-9\s,.''\-#()]+$/, "Location can only contain letters, numbers, spaces, commas, apostrophes, dashes, and parentheses")) return;
     this.isValidLength(location, err, 5, 100, 'Location')
   },
   isValideDateAndTime(date, time, err) {

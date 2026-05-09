@@ -479,6 +479,8 @@ export function checkLocation(locObj) {
   locObj = locObj.trim()
   if (locObj.length < 5 || locObj.length > 100)
     throw 'Location has to be between 5 and 100 characters'
+  if (!/^[a-zA-Z0-9\s,.''\-#()]+$/.test(locObj))
+    throw "Location can only contain letters, numbers, spaces, commas, periods, dashes, apostrophes, and parentheses"
   return locObj
 }
 
