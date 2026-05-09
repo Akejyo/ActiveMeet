@@ -6,6 +6,11 @@
     <h1>{{user.firstName}} {{user.lastName}}</h1>
     <p class='muted'>{{user.city}}, {{user.state}}</p>
     <p>{{user.bio}}</p>
+
+    <div class='profile-card-actions'>
+      <a href='/profile/edit' class='btn small'>Edit Profile</a>
+      <a href='/profile/interest-setup' class='btn small'>Set Interests</a>
+    </div>
   </div>
 
   <div class='profile-stats'>
@@ -36,8 +41,6 @@
 <section>
   <div class='section-title'>
     <h2>Your Posts</h2>
-    <a href='/profile/edit' class='btn small'>Edit Profile</a>
-    <a href="/profile/interest-setup" class='btn small'>Set Interests</a>
   </div>
 
   <div class='post-list'>

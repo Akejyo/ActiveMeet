@@ -26,8 +26,7 @@
 body {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
-  background:
-    radial-gradient(
+  background: radial-gradient(
       circle at top right,
       rgba(34, 197, 94, 0.13),
       transparent 34%
@@ -93,9 +92,7 @@ a {
 .nav-links a {
   color: var(--muted);
   font-weight: 600;
-  transition:
-    color 0.2s ease,
-    transform 0.2s ease;
+  transition: color 0.2s ease, transform 0.2s ease;
 }
 
 .nav-links a:hover {
@@ -171,10 +168,7 @@ h3 {
   font-weight: 800;
   cursor: pointer;
   display: inline-block;
-  transition:
-    transform 0.2s ease,
-    color 0.2s ease,
-    background 0.2s ease,
+  transition: transform 0.2s ease, color 0.2s ease, background 0.2s ease,
     border-color 0.2s ease;
 }
 
@@ -240,10 +234,7 @@ textarea {
   background: var(--panel-2);
   color: var(--text);
   outline: none;
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease,
-    background 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
 input:focus,
@@ -314,9 +305,7 @@ body:has(.auth-wrapper) {
   grid-template-columns: 1fr 420px;
   align-items: center;
   gap: 40px;
-  transition:
-    opacity 0.45s ease,
-    transform 0.45s ease;
+  transition: opacity 0.45s ease, transform 0.45s ease;
 }
 
 body.page-fade-out .login-page-container {
@@ -333,10 +322,7 @@ body.page-fade-out .login-page-container {
   right: -410px;
   bottom: -35px;
   z-index: 0;
-  transition:
-    background 0.65s ease,
-    box-shadow 0.65s ease,
-    transform 0.65s ease;
+  transition: background 0.65s ease, box-shadow 0.65s ease, transform 0.65s ease;
 }
 
 .login-main-panel,
@@ -388,10 +374,7 @@ body.page-fade-out .login-page-container {
   justify-content: center;
   appearance: none;
   -webkit-appearance: none;
-  transition:
-    transform 0.2s ease,
-    background 0.2s ease,
-    color 0.2s ease;
+  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
 }
 
 .login-signup-button:hover {
@@ -405,9 +388,7 @@ body.page-fade-out .login-page-container {
   opacity: 0;
   pointer-events: none;
   transform: translateX(80px);
-  transition:
-    opacity 0.5s ease,
-    transform 0.5s ease;
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
 .login-panel.auth-card {
@@ -438,10 +419,7 @@ body.page-fade-out .login-page-container {
   border-radius: 999px;
   cursor: pointer;
   z-index: 20;
-  transition:
-    transform 0.3s ease,
-    opacity 0.3s ease,
-    background 0.3s ease;
+  transition: transform 0.3s ease, opacity 0.3s ease, background 0.3s ease;
 }
 
 .auth-back-arrow::before {
@@ -473,9 +451,7 @@ body.page-fade-out .login-page-container {
 /* General Page Transitions */
 body {
   opacity: 1;
-  transition:
-    opacity 0.28s ease,
-    transform 0.28s ease;
+  transition: opacity 0.28s ease, transform 0.28s ease;
 }
 
 body.page-transition-out {
@@ -493,10 +469,7 @@ body.page-transition-out {
   background: var(--primary);
   border-radius: 999px;
   z-index: 20;
-  transition:
-    transform 0.25s ease,
-    background 0.25s ease,
-    opacity 0.25s ease;
+  transition: transform 0.25s ease, background 0.25s ease, opacity 0.25s ease;
 }
 
 .page-back-arrow::before {
@@ -549,9 +522,7 @@ body.page-transition-out {
 }
 
 .post-card {
-  transition:
-    transform 0.2s ease,
-    border-color 0.2s ease;
+  transition: transform 0.2s ease, border-color 0.2s ease;
 }
 
 .post-card:hover {
@@ -632,10 +603,7 @@ body.page-transition-out {
   padding: 10px 15px;
   border-radius: 999px;
   font-weight: 600;
-  transition:
-    border-color 0.2s ease,
-    background 0.2s ease,
-    transform 0.2s ease;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
 }
 
 .chip-option:hover {
@@ -653,9 +621,7 @@ body.page-transition-out {
   border-radius: 6px;
   cursor: pointer;
   position: relative;
-  transition:
-    border-color 0.2s ease,
-    background 0.2s ease;
+  transition: border-color 0.2s ease, background 0.2s ease;
 }
 
 /* Custom checkbox checkmark */
@@ -737,6 +703,13 @@ body.page-transition-out {
 .profile-action-stack .btn {
   min-width: 150px;
   text-align: center;
+}
+
+.profile-card-actions {
+  display: flex;
+  gap: 22px;
+  margin-top: 28px;
+  flex-wrap: wrap;
 }
 
 /* Auth Pages */
@@ -891,10 +864,7 @@ body.page-transition-out {
     border-radius: 999px;
     cursor: pointer;
     z-index: 20;
-    transition:
-      transform 0.3s ease,
-      opacity 0.3s ease,
-      background 0.3s ease;
+    transition: transform 0.3s ease, opacity 0.3s ease, background 0.3s ease;
   }
 
   .auth-back-arrow::before {
