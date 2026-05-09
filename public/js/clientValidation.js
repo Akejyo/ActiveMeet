@@ -122,7 +122,7 @@ export const checkCheck = {
       )
     )
       return
-    this.isValidLength(title, err, 3, 20, 'Title')
+    this.isValidLength(title, err, 3, 50, 'Title')
   },
   isValideLocation(location, err) {
     if (!this.isExist(location, err, 'Location')) return
