@@ -204,7 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
         method: 'POST',
         url: commentForm.action,
         contentType: 'application/json',
-        data: JSON.stringify({ comment })
+        data: JSON.stringify({ comment }),
       }
 
       $.ajax(requestConfig).then(
@@ -244,7 +244,9 @@ document.addEventListener('DOMContentLoaded', () => {
           if (error.responseJSON && error.responseJSON.errors) {
             showErrors(commentForm, error.responseJSON.errors)
           } else {
-            showErrors(commentForm, ['Could not submit comment. Please try again.'])
+            showErrors(commentForm, [
+              'Could not submit comment. Please try again.',
+            ])
           }
         }
       )
@@ -298,7 +300,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Make post cards clickable
   const clickableCards = document.querySelectorAll('.clickable-card[data-href]')
-
   clickableCards.forEach((card) => {
     card.addEventListener('click', (e) => {
       if (e.target.closest('a, button, form, input, select, textarea')) {
@@ -323,5 +324,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     card.setAttribute('tabindex', '0')
     card.setAttribute('role', 'link')
+  })
+
+  // Back arrow uses browser history when possible
+  const backLinks = document.querySelectorAll('.back-link')
+  backLinks.forEach((link) => {
+    link.addEventListener('click', (e) => {
+      if (window.history.length > 1) {
+        e.preventDefault()
+        window.history.back()
+      }
+    })
   })
 })
