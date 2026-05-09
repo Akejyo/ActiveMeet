@@ -30,24 +30,24 @@
       <div><strong>Private</strong><span>Level</span></div>
     {{/if}}
     <div class='profile-action-stack'>
-  {{#if blocked}}
-    <form action='/profile/{{user._id}}/unblock' method='POST'>
-      <button type='submit' class='btn small btn-outline'>Unblock</button>
-    </form>
-  {{else}}
-    {{#if following}}
-      <form action='/profile/{{user._id}}/unfollow' method='POST'>
-        <button type='submit' class='btn small'>Unfollow</button>
-      </form>
-    {{else}}
-      <form action='/profile/{{user._id}}/follow' method='POST'>
-        <button type='submit' class='btn small'>Follow</button>
-      </form>
-    {{/if}}
-    <form action='/profile/{{user._id}}/block' method='POST'>
-      <button type='submit' class='btn small danger'>Block</button>
-    </form>
-  {{/if}}
+      {{#if blocked}}
+        <form action='/profile/{{user._id}}/unblock' method='POST'>
+          <button type='submit' class='btn small btn-outline'>Unblock</button>
+        </form>
+      {{else}}
+        {{#if following}}
+          <form action='/profile/{{user._id}}/unfollow' method='POST'>
+            <button type='submit' class='btn small'>Unfollow</button>
+          </form>
+        {{else}}
+          <form action='/profile/{{user._id}}/follow' method='POST'>
+            <button type='submit' class='btn small'>Follow</button>
+          </form>
+        {{/if}}
+        <form action='/profile/{{user._id}}/block' method='POST'>
+          <button type='submit' class='btn small danger'>Block</button>
+        </form>
+      {{/if}}
     </div>
   </div>
 </section>
@@ -71,7 +71,10 @@
 
     <div class='post-list'>
       {{#each postsJoined}}
-        <article class='card post-card'>
+        <article
+          class='card post-card clickable-card'
+          data-href='/posts/{{_id}}'
+        >
           <span class='tag'>{{sport}}</span>
           <h3>{{title}}</h3>
           <p class='muted'>{{location}} · {{eventDateTime}}</p>
@@ -89,7 +92,10 @@
 
     <div class='post-list'>
       {{#each posts}}
-        <article class='card post-card'>
+        <article
+          class='card post-card clickable-card'
+          data-href='/posts/{{_id}}'
+        >
           <span class='tag'>{{sport}}</span>
           <h3>{{title}}</h3>
           <p class='muted'>{{location}} · {{eventDateTime}}</p>

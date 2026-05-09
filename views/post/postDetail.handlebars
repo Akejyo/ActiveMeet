@@ -1,10 +1,10 @@
 <a
   href='/'
-  class='page-back-arrow'
+  class='page-back-arrow back-link'
   aria-label='Back to home page'
 ></a>
 
-<section class='card'>
+<section class='card post-page-card'>
   <div class='post-top'>
     <span class='tag'>{{post.sport}}</span>
     <span class='muted'>{{post.date}} · {{post.time}}</span>
@@ -78,7 +78,7 @@
   {{/if}}
 </section>
 
-<section class='card'>
+<section class='card post-page-card'>
   <h2>Comments</h2>
   <div class='comment-list'>
     {{#each comments}}

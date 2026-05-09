@@ -336,4 +336,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     })
   })
+
+  // Bug fix when using back arrow from profile posts
+  window.addEventListener('pageshow', () => {
+    document.body.classList.remove('page-transition-out')
+    document.body.classList.remove('page-fade-out')
+  })
 })

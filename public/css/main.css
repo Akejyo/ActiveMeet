@@ -34,6 +34,10 @@ body {
     linear-gradient(180deg, var(--bg), #070b14);
   color: var(--text);
   min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  opacity: 1;
+  transition: opacity 0.28s ease, transform 0.28s ease;
 }
 
 a {
@@ -262,14 +266,6 @@ textarea {
 }
 
 /* Login / Auth Page Layout */
-body:has(.login-page-container),
-body:has(.auth-wrapper) {
-  min-height: 100vh;
-  overflow-x: hidden;
-  display: grid;
-  grid-template-rows: 1fr auto;
-}
-
 body:has(.login-page-container) {
   overflow-y: hidden;
 }
@@ -327,7 +323,7 @@ body.page-fade-out .login-page-container {
   height: 1180px;
   border-radius: 50%;
   background: rgba(34, 197, 94, 0.12);
-  right: -410px;
+  right: -450px;
   bottom: -35px;
   z-index: 0;
   transition: background 0.65s ease, box-shadow 0.65s ease, transform 0.65s ease;
@@ -417,51 +413,18 @@ body.page-fade-out .login-page-container {
 
 /* Register / Auth Back Arrow */
 .auth-back-arrow {
-  position: fixed;
-  top: 40px;
-  left: 32px;
-  width: 42px;
-  height: 6px;
-  background: var(--primary);
-  border: none;
-  border-radius: 999px;
-  cursor: pointer;
-  z-index: 20;
-  transition: transform 0.3s ease, opacity 0.3s ease, background 0.3s ease;
+  top: 36px;
+  width: 46px;
 }
 
 .auth-back-arrow::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 50%;
-  width: 13px;
-  height: 13px;
-  border-left: 5px solid var(--primary);
-  border-bottom: 5px solid var(--primary);
-  transform: translateY(-50%) rotate(45deg);
-  transition: border-color 0.3s ease;
-}
-
-.auth-back-arrow:hover {
-  transform: translateX(-5px);
-  background: var(--primary-dark);
-}
-
-.auth-back-arrow:hover::before {
-  border-color: var(--primary-dark);
-}
-
-.auth-back-arrow:active {
-  transform: translateX(-2px);
+  width: 15px;
+  height: 15px;
+  border-left-width: 6px;
+  border-bottom-width: 6px;
 }
 
 /* General Page Transitions */
-body {
-  opacity: 1;
-  transition: opacity 0.28s ease, transform 0.28s ease;
-}
-
 body.page-transition-out {
   opacity: 0;
   transform: translateY(8px);
@@ -540,6 +503,21 @@ body.page-transition-out {
 
 .post-card h3 {
   margin-bottom: 8px;
+}
+
+.post-page-card {
+  width: min(900px, 92%);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.page:has(.post-page-card) {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 22px;
+  padding-top: 24px;
+  padding-bottom: 24px;
 }
 
 .post-top,

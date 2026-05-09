@@ -45,7 +45,7 @@
 
   <div class='post-list'>
     {{#each posts}}
-      <article class='card post-card'>
+      <article class='card post-card clickable-card' data-href='/posts/{{_id}}'>
         <span class='tag'>{{sport}}</span>
         <h3>{{title}}</h3>
         <p class='muted'>{{location}} · {{eventDateTime}}</p>
@@ -62,7 +62,7 @@
   </div>
   <div class='post-list'>
     {{#each joinedPosts}}
-      <article class='card post-card'>
+      <article class='card post-card clickable-card' data-href='/posts/{{_id}}'>
         <span class='tag'>{{sport}}</span>
         <h3>{{title}}</h3>
         <p class='muted'>{{location}} · {{eventDateTime}}</p>
