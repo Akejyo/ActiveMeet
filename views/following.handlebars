@@ -17,3 +17,18 @@
     {{/each}}
   </div>
 </section>
+<br>
+<br>
+<section>
+  <h1>Blocked Users</h1>
+  <p class="muted">People you have blocked and whose posts will not appear in your feed.</p>
+  {{#each blocked}}
+    <div class='card list-item'>
+      <h2><a href='/profile/{{id}}'>{{name}}</a></h2>
+    </div>
+  {{/each}}
+</section>
+
+{{#if error}}
+  <p class="text-danger">{{message}}</p>
+{{/if}}

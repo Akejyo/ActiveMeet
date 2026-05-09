@@ -23,14 +23,28 @@ router.get('/', async (req, res) => {
         }
         following.push(obj)
       }
+      let blocked = []
+      for (let b of req.session.user.blockedUserIds){
+        let user = await users1.findOne({_id: new ObjectId(b)})
+        if (!user) throw "No user with that Id"
+        let obj = {
+          name: `${user.firstName} ${user.lastName}`,
+          id: user._id
+        }
+        blocked.push(obj)
+      }
       res.render('following', {
         title: 'Following',
         logedIn: true,
-        following: following
+        following: following,
+        blocked: blocked
       })
     }catch(e){
-      console.log(e)
-      res.status(400).json({ error: e });
+      res.status(400).render('following', { title: 'Following',
+        logedIn: true,
+        following: [],
+        blocked: [],
+        error: true, message: e });
     }
   }
 });
