@@ -415,13 +415,41 @@ body.page-fade-out .login-page-container {
 .auth-back-arrow {
   top: 36px;
   width: 46px;
+  position: fixed;
+  left: 32px;
+  height: 6px;
+  background: var(--primary);
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  z-index: 20;
+  transition: transform 0.3s ease, opacity 0.3s ease, background 0.3s ease;
 }
 
 .auth-back-arrow::before {
   width: 15px;
   height: 15px;
-  border-left-width: 6px;
-  border-bottom-width: 6px;
+  border-left: 6px solid var(--primary);
+  border-bottom: 6px solid var(--primary);
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+  transition: border-color 0.3s ease;
+}
+
+.auth-back-arrow:hover {
+  transform: translateX(-5px);
+  background: var(--primary-dark);
+}
+
+.auth-back-arrow:hover::before {
+  border-color: var(--primary-dark);
+}
+
+.auth-back-arrow:active {
+  transform: translateX(-2px);
 }
 
 /* General Page Transitions */
