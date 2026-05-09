@@ -561,6 +561,10 @@ router.route('/:id').get(async (req, res) => {
         ) {
           following = true
         }
+        let blocked = false
+        if (req.session.user.blockedUserIds.includes(req.params.id)) {
+          blocked = true
+        }
         if (user.visibility === 'private') {
           return res.status(200).render('profile/publicProfile', {
             title: 'Public Profile',
@@ -568,6 +572,7 @@ router.route('/:id').get(async (req, res) => {
             public: false,
             user: user,
             following: following,
+            blocked: blocked
           })
         } else {
           let postsJoined = []
@@ -604,6 +609,7 @@ router.route('/:id').get(async (req, res) => {
             following: following,
             postsJoined: postsJoined,
             posts: posts2,
+            blocked: blocked
           })
         }
       }
@@ -612,6 +618,42 @@ router.route('/:id').get(async (req, res) => {
     }
   }
 })
+
+router.route("/:id/block").post(async (req, res) => {
+  if(!req.session.user) {
+    return res.redirect('/profile/login')
+  }
+  try{
+    //Add blocked user Id to blockedUserIds
+    let users1 = await users()
+    let update = await users1.updateOne(
+      { _id: new ObjectId(req.session.user._id) },
+      { $addToSet: { blockedUserIds: req.params.id } }
+    )
+    req.session.user.blockedUserIds.push(req.params.id)
+    res.redirect(`/profile/${req.params.id}`)
+  }catch(e){
+    return res.status(500).json({ error: 'Failed to block user, possible internal server error' })
+  }
+});
+
+router.route("/:id/unblock").post(async (req, res) => {
+  if(!req.session.user) {
+    return res.redirect('/profile/login')
+  }
+  try{
+    //Remove blocked user Id from blockedUserIds
+    let users1 = await users()
+    let update = await users1.updateOne(
+      { _id: new ObjectId(req.session.user._id) },
+      { $pull: { blockedUserIds: req.params.id } }
+    )
+    req.session.user.blockedUserIds = req.session.user.blockedUserIds.filter((id) => id !== req.params.id)
+    res.redirect(`/profile/${req.params.id}`)
+  }catch(e){
+    return res.status(500).json({ error: 'Failed to unblock user, possible internal server error' })
+  }
+});
 
 router.route('/:id/follow').post(async (req, res) => {
   if (!req.session.user) {

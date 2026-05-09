@@ -177,7 +177,7 @@ router.route('/').get(async (req, res) => {
         }
         posts2.push(b)
       }
-      //filter out blocked users
+      //filter out blocked users (comment next line to be able to see blocked user's posts)
       posts2 = posts2.filter(post => !req.session.user.blockedUserIds.includes(post.authorId));
       //filter out own posts
       posts2 = posts2.filter(post => post.authorId !== req.session.user._id.toString());

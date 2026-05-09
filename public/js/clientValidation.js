@@ -158,6 +158,7 @@ export const checkCheck = {
     this.isValidWords(comment, err)
   },
   isValidSearch(searchText, err) {
+    if (searchText == "") return
     if (!this.isExist(searchText, err, 'Search text')) return
     if (!this.isValidLength(searchText, err, 0, 100, 'Search text')) return
     this.isValidWords(searchText, err)
