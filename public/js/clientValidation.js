@@ -1,7 +1,7 @@
 import { validRange } from './validRange.js'
 const nameRegex = /^[a-zA-Z]+$/
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-const titleRegex = /^[a-zA-Z0-9\s]+$/
+// const titleRegex = /^[a-zA-Z0-9\s]+$/
 const cityRegex = /^[a-zA-Z\s]+$/
 
 export const checkCheck = {
@@ -113,16 +113,8 @@ export const checkCheck = {
   },
   isValideTitle(title, err) {
     if (!this.isExist(title, err, 'Title')) return
-    if (
-      !this.isValidRex(
-        title,
-        err,
-        titleRegex,
-        'Invalid character in title, can only contain letters, numbers, and spaces',
-      )
-    )
-      return
-    this.isValidLength(title, err, 3, 50, 'Title')
+    if (!this.isValidLength(title, err, 3, 50, 'Title')) return
+    this.isValidWords(title, err)
   },
   isValideLocation(location, err) {
     if (!this.isExist(location, err, 'Location')) return
@@ -158,7 +150,7 @@ export const checkCheck = {
     this.isValidWords(comment, err)
   },
   isValidSearch(searchText, err) {
-    if (searchText == "") return
+    if (searchText == '') return
     if (!this.isExist(searchText, err, 'Search text')) return
     if (!this.isValidLength(searchText, err, 0, 100, 'Search text')) return
     this.isValidWords(searchText, err)
