@@ -267,7 +267,7 @@ body:has(.auth-wrapper) {
   min-height: 100vh;
   overflow-x: hidden;
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: 1fr auto;
 }
 
 body:has(.login-page-container) {
@@ -281,11 +281,13 @@ body:has(.auth-wrapper) {
 .page:has(.login-page-container) {
   padding: 0;
   width: 100%;
+  min-height: calc(100vh - 58px);
 }
 
 .page:has(.auth-wrapper) {
   padding: 32px 0;
   width: 100%;
+  min-height: calc(100vh - 58px);
 }
 
 .page.container:has(.login-page-container),
@@ -293,6 +295,12 @@ body:has(.auth-wrapper) {
   width: 100%;
   max-width: none;
   margin: 0;
+}
+
+/* Remove header on login/register pages */
+body:has(.login-page-container) .site-header,
+body:has(.auth-wrapper) .site-header {
+  display: none;
 }
 
 .login-page-container {
@@ -410,7 +418,7 @@ body.page-fade-out .login-page-container {
 /* Register / Auth Back Arrow */
 .auth-back-arrow {
   position: fixed;
-  top: 115px;
+  top: 40px;
   left: 32px;
   width: 42px;
   height: 6px;
