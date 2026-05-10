@@ -39,3 +39,8 @@ Alternatively:
 * Password2!
 
 Please enjoy our application and have a nice day. 
+
+## Github Repo:
+
+* https://github.com/Akejyo/ActiveMeet
+
