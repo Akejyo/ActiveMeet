@@ -20,7 +20,7 @@
 
     <div class='grid-2'>
       <label>Sport Type
-        <select name="sport" required>
+        <select name="sport">
           <option value="basketball" {{#if post.isBasketball}}selected{{/if}}>Basketball</option>
           <option value="soccer" {{#if post.isSoccer}}selected{{/if}}>Soccer</option>
           <option value="tennis" {{#if post.isTennis}}selected{{/if}}>Tennis</option>
@@ -75,7 +75,7 @@
 
     <div class="grid-3">
       <label>Skill Level
-        <select name="skillLevel" required>
+        <select name="skillLevel">
           <option value="beginner" {{#if post.isBeginner}}selected{{/if}}>Beginner</option>
           <option value="intermediate" {{#if post.isIntermediate}}selected{{/if}}>Intermediate</option>
           <option value="advanced" {{#if post.isAdvanced}}selected{{/if}}>Advanced</option>
@@ -84,7 +84,7 @@
       </label>
 
       <label>Gender
-        <select name="genderRestriction" required>
+        <select name="genderRestriction">
           <option value="co-ed" {{#if post.isCoed}}selected{{/if}}>Co-ed</option>
           <option value="male only" {{#if post.isMaleOnly}}selected{{/if}}>Male Only</option>
           <option value="female only" {{#if post.isFemaleOnly}}selected{{/if}}>Female Only</option>
@@ -92,7 +92,7 @@
       </label>
 
       <label>Status
-        <select name="status" required>
+        <select name="status">
           <option value="open" {{#if post.isOpen}}selected{{/if}}>Open</option>
           <option value="full" {{#if post.isFull}}selected{{/if}}>Full</option>
           <option value="closed" {{#if post.isClosed}}selected{{/if}}>Closed</option>
